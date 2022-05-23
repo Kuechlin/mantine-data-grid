@@ -58,7 +58,8 @@ export default function DataGrid<T>({ columns, data }: DataGridProps<T>) {
         getItem: (i) => dataSource[i],
         toggleSort: (i) =>
             setSort((s) => {
-                if (!s) return { column: i, direction: 'asc' };
+                if (!s || s.column !== i)
+                    return { column: i, direction: 'asc' };
                 if (s.column === i && s.direction === 'asc')
                     return {
                         column: i,
@@ -106,8 +107,9 @@ const useCellStyles = createStyles(
     (theme, params: { last?: boolean; even?: boolean }) => ({
         cell: {
             ...theme.fn.fontStyles(),
-
+            position: 'relative',
             padding: theme.spacing.sm,
+            paddingRight: theme.spacing.xs,
 
             // cell border
             borderRightColor: theme.colors.dark[4],
@@ -130,6 +132,18 @@ const useCellStyles = createStyles(
             overflow: 'hidden',
             textOverflow: 'ellipsis',
             whiteSpace: 'nowrap',
+        },
+        drag: {
+            position: 'absolute',
+            top: 0,
+            bottom: 0,
+            right: 0,
+            width: 3,
+            cursor: 'col-resize',
+
+            ':hover': {
+                backgroundColor: theme.colors.dark[4],
+            },
         },
     })
 );
@@ -163,6 +177,7 @@ function Th<T>({ data, index, style }: ListChildComponentProps<CellData<T>>) {
                     }}
                 />
             )}
+            <div className={classes.drag} />
         </div>
     );
 }

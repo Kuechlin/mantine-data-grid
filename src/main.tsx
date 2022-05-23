@@ -24,7 +24,13 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
             withGlobalStyles
             withNormalizeCSS
         >
-            <div style={{ height: '500px', width: '500px' }}>
+            <div
+                style={{
+                    height: '500px',
+                    width: '500px',
+                    margin: '100px auto',
+                }}
+            >
                 <DataGrid
                     data={data}
                     columns={[
