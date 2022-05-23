@@ -16,6 +16,7 @@ import {
 } from 'tabler-icons-react';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { DraggableCore } from 'react-draggable';
+import { getScrollbarWidth } from './utils';
 
 export type ColumnOption<T> = {
     width?: number;
@@ -48,6 +49,7 @@ type CellData<T> = {
 export default function DataGrid<T>({ columns, data }: DataGridProps<T>) {
     const headerRef = useRef<VariableSizeList>(null);
     const bodyRef = useRef<VariableSizeGrid>(null);
+    const { current: scrollbarWidth } = useRef(getScrollbarWidth());
     const [sort, setSort] = useState<SortState | null>(null);
     const [options, setOptions] = useState<Partial<ColumnOption<T>>[]>(
         new Array(columns.length).fill({})
@@ -104,7 +106,7 @@ export default function DataGrid<T>({ columns, data }: DataGridProps<T>) {
                         itemSize={(index) =>
                             options[index].width || columns[index].width || 100
                         }
-                        width={width - 17}
+                        width={width - scrollbarWidth}
                         itemCount={columns.length}
                         layout="horizontal"
                         style={{ overflow: 'hidden' }}
