@@ -1,13 +1,21 @@
-import { ReactNode, useRef, useState } from 'react';
+import { memo, ReactNode, useRef, useState } from 'react';
 import {
+    areEqual,
     GridChildComponentProps,
     ListChildComponentProps,
     VariableSizeGrid,
     VariableSizeList,
 } from 'react-window';
-import { Button, createStyles } from '@mantine/core';
-import { CaretDown } from 'tabler-icons-react';
+import { Button, createStyles, Popover } from '@mantine/core';
+import {
+    CaretDown,
+    Dots,
+    DotsVertical,
+    Filter,
+    Menu,
+} from 'tabler-icons-react';
 import AutoSizer from 'react-virtualized-auto-sizer';
+import { DraggableCore } from 'react-draggable';
 
 export type ColumnOption<T> = {
     width?: number;
@@ -34,11 +42,16 @@ type CellData<T> = {
     getColumn(i: number): ColumnOption<T>;
     getItem(i: number): T;
     toggleSort(i: number): void;
+    setColumn(i: number, options: Partial<ColumnOption<T>>): void;
 };
 
 export default function DataGrid<T>({ columns, data }: DataGridProps<T>) {
     const headerRef = useRef<VariableSizeList>(null);
+    const bodyRef = useRef<VariableSizeGrid>(null);
     const [sort, setSort] = useState<SortState | null>(null);
+    const [options, setOptions] = useState<Partial<ColumnOption<T>>[]>(
+        new Array(columns.length).fill({})
+    );
 
     const dataSource = [...data];
     // sort data
@@ -54,7 +67,17 @@ export default function DataGrid<T>({ columns, data }: DataGridProps<T>) {
         sort,
         columnCount: columns.length,
         rowCount: dataSource.length,
-        getColumn: (i) => columns[i],
+        setColumn: (i, c) => {
+            console.log('set', i, c);
+            setOptions((options) => {
+                const next = [...options];
+                next[i] = { ...options[i], ...c };
+                return next;
+            });
+            headerRef.current?.resetAfterIndex(i);
+            bodyRef.current?.resetAfterColumnIndex(i);
+        },
+        getColumn: (i) => ({ ...columns[i], ...options[i] }),
         getItem: (i) => dataSource[i],
         toggleSort: (i) =>
             setSort((s) => {
@@ -78,17 +101,22 @@ export default function DataGrid<T>({ columns, data }: DataGridProps<T>) {
                         itemData={cellData}
                         children={Th}
                         height={48}
-                        itemSize={(index) => columns[index].width || 100}
+                        itemSize={(index) =>
+                            options[index].width || columns[index].width || 100
+                        }
                         width={width - 17}
                         itemCount={columns.length}
                         layout="horizontal"
                         style={{ overflow: 'hidden' }}
                     />
                     <VariableSizeGrid<CellData<T>>
+                        ref={bodyRef}
                         itemData={cellData}
                         children={Td}
                         columnCount={columns.length}
-                        columnWidth={(index) => columns[index].width || 100}
+                        columnWidth={(index) =>
+                            options[index].width || columns[index].width || 100
+                        }
                         rowCount={dataSource.length}
                         rowHeight={() => 48}
                         height={height - 48}
@@ -138,9 +166,8 @@ const useCellStyles = createStyles(
             top: 0,
             bottom: 0,
             right: 0,
-            width: 3,
+            width: 4,
             cursor: 'col-resize',
-
             ':hover': {
                 backgroundColor: theme.colors.dark[4],
             },
@@ -148,60 +175,81 @@ const useCellStyles = createStyles(
     })
 );
 
-function Th<T>({ data, index, style }: ListChildComponentProps<CellData<T>>) {
-    const { classes, cx } = useCellStyles({});
+const Th = memo<ListChildComponentProps<CellData<any>>>(
+    ({ data, index, style }) => {
+        const { classes, cx } = useCellStyles({});
+        const column = data.getColumn(index);
+        const columnWidth = column.width || 100;
 
-    const column = data.getColumn(index);
+        const resizeRow = (x: number) => {
+            var width = columnWidth + x;
+            if (width < 32) {
+                width = 32;
+            }
+            data.setColumn(index, {
+                width,
+            });
+        };
 
-    // header
-    return (
-        <div
-            style={style}
-            className={cx(classes.cell, classes.header)}
-            onClick={() => data.toggleSort(index)}
-        >
-            <div className={classes.slot}>{column.label}</div>
-            {data.sort?.column === index && (
-                <Button
-                    children={<CaretDown />}
-                    variant="subtle"
-                    compact
-                    size="xs"
-                    px={0}
-                    color="gray"
-                    style={{
-                        transition: 'transform 0.25s',
-                        transform: `rotate(${
-                            data.sort.direction === 'asc' ? '180' : '0'
-                        }deg)`,
-                    }}
-                />
-            )}
-            <div className={classes.drag} />
-        </div>
-    );
-}
+        console.log(column);
 
-function Td<T>({
-    data,
-    rowIndex,
-    columnIndex,
-    style,
-}: GridChildComponentProps<CellData<T>>) {
-    const { classes, cx } = useCellStyles({
-        last: columnIndex === data.columnCount - 1,
-        even: !!(rowIndex % 2),
-    });
+        // header
+        return (
+            <div
+                style={style}
+                className={cx(classes.cell, classes.header)}
+                onClick={() => data.toggleSort(index)}
+            >
+                <div className={classes.slot}>{column.label}</div>
 
-    const column = data.getColumn(columnIndex);
-    const item = data.getItem(rowIndex);
+                {data.sort?.column === index && (
+                    <Button
+                        children={<CaretDown />}
+                        variant="subtle"
+                        compact
+                        size="xs"
+                        px={0}
+                        color="gray"
+                        style={{
+                            transition: 'transform 0.25s',
+                            transform: `rotate(${
+                                data.sort.direction === 'asc' ? '180' : '0'
+                            }deg)`,
+                        }}
+                    />
+                )}
+                <DraggableCore
+                    onDrag={(_e, { lastX, x }) => resizeRow(x - lastX)}
+                >
+                    <div
+                        className={classes.drag}
+                        onClick={(e) => e.stopPropagation()}
+                    />
+                </DraggableCore>
+            </div>
+        );
+    },
+    areEqual
+);
 
-    return (
-        <div
-            style={style}
-            className={cx(classes.cell, classes.content, classes.slot)}
-        >
-            {column.render(item)}
-        </div>
-    );
-}
+const Td = memo<GridChildComponentProps<CellData<any>>>(
+    ({ data, rowIndex, columnIndex, style }) => {
+        const { classes, cx } = useCellStyles({
+            last: columnIndex === data.columnCount - 1,
+            even: !!(rowIndex % 2),
+        });
+
+        const column = data.getColumn(columnIndex);
+        const item = data.getItem(rowIndex);
+
+        return (
+            <div
+                style={style}
+                className={cx(classes.cell, classes.content, classes.slot)}
+            >
+                {column.render(item)}
+            </div>
+        );
+    },
+    areEqual
+);
