@@ -1,8 +1,9 @@
-import { createStyles } from '@mantine/core';
+import { Button, createStyles } from '@mantine/core';
 import {
     ColumnDef,
     createTable,
     getCoreRowModel,
+    getSortedRowModel,
     Overwrite,
     ReactTableGenerics,
     Table,
@@ -13,9 +14,11 @@ import { useRef } from 'react';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import {
     GridOnScrollProps,
+    ListChildComponentProps,
     VariableSizeGrid,
     VariableSizeList,
 } from 'react-window';
+import { CaretDown } from 'tabler-icons-react';
 import { getScrollbarWidth } from './utils';
 
 const useStyles = createStyles((theme) => ({
@@ -40,6 +43,11 @@ const useStyles = createStyles((theme) => ({
 
         '&.last': {
             borderBottom: `4px solid ${theme.colors.teal[6]}`,
+        },
+
+        '&.sort': {
+            cursor: 'pointer',
+            userSelect: 'none',
         },
     },
     even: {
@@ -91,9 +99,7 @@ export default function DataTable<T>({
         columns,
         columnResizeMode: 'onChange',
         getCoreRowModel: getCoreRowModel(),
-        debugTable: true,
-        debugHeaders: true,
-        debugColumns: true,
+        getSortedRowModel: getSortedRowModel(),
         onColumnSizingInfoChange(updater) {
             instance.setState((last) => ({
                 ...last,
@@ -107,6 +113,10 @@ export default function DataTable<T>({
                 ref.resetAfterIndex(0);
             }
         },
+
+        debugTable: true,
+        debugHeaders: true,
+        debugColumns: true,
     });
 
     const headerGroups = instance.getHeaderGroups();
@@ -135,17 +145,46 @@ export default function DataTable<T>({
                             style={{ overflow: 'hidden' }}
                             children={({ index, style }) => {
                                 const header = group.headers[index];
+                                const isSorted = header.column.getIsSorted();
+                                const isLastGroup = isLast(headerGroups, i);
+                                const canSort =
+                                    isLastGroup && header.column.getCanSort();
                                 return (
                                     <div
                                         style={style}
                                         className={cx(
                                             classes.header,
                                             classes.cell,
-                                            { last: isLast(headerGroups, i) }
+                                            {
+                                                last: isLastGroup,
+                                                sort: canSort,
+                                            }
                                         )}
+                                        onClick={header.column.getToggleSortingHandler()}
                                     >
-                                        {!header.isPlaceholder &&
-                                            header.renderHeader()}
+                                        <div className={classes.slot}>
+                                            {!header.isPlaceholder &&
+                                                header.renderHeader()}
+                                        </div>
+                                        {canSort && isSorted && (
+                                            <Button
+                                                children={<CaretDown />}
+                                                variant="subtle"
+                                                compact
+                                                size="xs"
+                                                px={0}
+                                                color="gray"
+                                                style={{
+                                                    transition:
+                                                        'transform 0.25s',
+                                                    transform: `rotate(${
+                                                        isSorted === 'asc'
+                                                            ? '180'
+                                                            : '0'
+                                                    }deg)`,
+                                                }}
+                                            />
+                                        )}
                                         <div
                                             className={classes.drag}
                                             onClick={(e) => e.stopPropagation()}
