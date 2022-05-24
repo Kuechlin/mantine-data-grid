@@ -1,7 +1,8 @@
 import {
     Button,
     createStyles,
-    ScrollArea,
+    MantineColor,
+    Space,
     TextInput,
     TextInputProps,
 } from '@mantine/core';
@@ -30,29 +31,36 @@ import {
 } from 'react-window';
 import { CaretDown, Filter, Search } from 'tabler-icons-react';
 import { getScrollbarWidth } from './utils';
+import { Scrollbars } from 'react-custom-scrollbars';
 
 const useStyles = createStyles((theme) => ({
+    table: {
+        overflow: 'hidden',
+        border: `1px solid ${theme.colors.dark[4]}`,
+        borderRadius: theme.radius.md,
+    },
     cell: {
         ...theme.fn.fontStyles(),
         position: 'relative',
         padding: theme.spacing.sm,
-        paddingRight: theme.spacing.xs,
 
         // cell border
-        borderRightColor: theme.colors.dark[4],
-        borderRightStyle: 'solid',
-        borderRightWidth: '1px',
+        borderRight: `1px solid ${theme.colors.dark[4]}`,
+
+        ':last-child, &.last': {
+            borderRight: 'none',
+        },
     },
     header: {
         fontWeight: 'bold',
-        backgroundColor: theme.colors.dark[8],
+        backgroundColor: theme.colors.dark[6],
         borderBottom: `1px solid ${theme.colors.dark[4]}`,
         cursor: 'pointer',
         display: 'flex',
         justifyContent: 'space-between',
 
-        '&.last': {
-            borderBottom: `4px solid ${theme.colors.teal[6]}`,
+        '&.lastGroup': {
+            borderBottom: `4px solid ${theme.colors.teal[5]}`,
         },
 
         '&.sort': {
@@ -61,7 +69,7 @@ const useStyles = createStyles((theme) => ({
         },
     },
     even: {
-        backgroundColor: theme.colors.dark[6],
+        backgroundColor: theme.colors.dark[8],
     },
     slot: {
         // text overflow
@@ -80,8 +88,15 @@ const useStyles = createStyles((theme) => ({
             backgroundColor: theme.colors.dark[4],
         },
     },
+    thumb: {
+        backgroundColor: theme.colors.dark[1],
+        borderRadius: theme.radius.sm,
+    },
 }));
 
+const isFirst = (arr: any[], i: number) => {
+    return i === 0;
+};
 const isLast = (arr: any[], i: number) => {
     return arr.length - 1 === i;
 };
@@ -164,19 +179,20 @@ export default function DataTable<T>({
     return (
         <AutoSizer>
             {({ width, height }) => (
-                <>
+                <div className={classes.table} style={{ width, height }}>
                     <DebouncedTextInput
                         value={globalFilter}
                         onChange={setGlobalFilter}
                         style={{ width }}
                         placeholder="Search"
                         rightSection={<Search />}
-                        styles={{
-                            root: {
+                        styles={(theme) => ({
+                            input: {
                                 borderBottomRightRadius: 0,
                                 borderBottomLeftRadius: 0,
+                                borderBottom: `1px solid ${theme.colors.dark[4]}`,
                             },
-                        }}
+                        })}
                     />
                     {headerGroups.map((group, i) => (
                         <VariableSizeList
@@ -203,7 +219,8 @@ export default function DataTable<T>({
                                             classes.header,
                                             classes.cell,
                                             {
-                                                last: isLastGroup,
+                                                lastGroup: isLastGroup,
+                                                first: index === 0,
                                                 sort: canSort,
                                             }
                                         )}
@@ -213,35 +230,37 @@ export default function DataTable<T>({
                                             {!header.isPlaceholder &&
                                                 header.renderHeader()}
                                         </div>
-                                        {canSort && isSorted && (
-                                            <Button
-                                                children={<CaretDown />}
-                                                variant="subtle"
-                                                compact
-                                                size="xs"
-                                                px={0}
-                                                color="gray"
-                                                style={{
-                                                    transition:
-                                                        'transform 0.25s',
-                                                    transform: `rotate(${
-                                                        isSorted === 'asc'
-                                                            ? '180'
-                                                            : '0'
-                                                    }deg)`,
-                                                }}
-                                            />
-                                        )}
-                                        {canFitler && (
-                                            <Button
-                                                children={<Filter />}
-                                                variant="subtle"
-                                                compact
-                                                size="xs"
-                                                px={0}
-                                                color="gray"
-                                            />
-                                        )}
+                                        <div>
+                                            {canSort && isSorted && (
+                                                <Button
+                                                    children={<CaretDown />}
+                                                    variant="subtle"
+                                                    compact
+                                                    size="xs"
+                                                    px={0}
+                                                    color="gray"
+                                                    style={{
+                                                        transition:
+                                                            'transform 0.25s',
+                                                        transform: `rotate(${
+                                                            isSorted === 'asc'
+                                                                ? '180'
+                                                                : '0'
+                                                        }deg)`,
+                                                    }}
+                                                />
+                                            )}
+                                            {canFitler && (
+                                                <Button
+                                                    children={<Filter />}
+                                                    variant="subtle"
+                                                    compact
+                                                    size="xs"
+                                                    px={0}
+                                                    color="gray"
+                                                />
+                                            )}
+                                        </div>
                                         <div
                                             className={classes.drag}
                                             onClick={(e) => e.stopPropagation()}
@@ -266,6 +285,7 @@ export default function DataTable<T>({
 
                     <VariableSizeGrid
                         ref={bodyRef}
+                        outerElementType={ScrollArea}
                         columnCount={visible.length}
                         columnWidth={(index) => visible[index].getSize()}
                         rowCount={rows.length}
@@ -284,17 +304,34 @@ export default function DataTable<T>({
                                     style={style}
                                     className={cx(classes.cell, classes.slot, {
                                         [classes.even]: rowIndex % 2 === 0,
+                                        last: isLast(visible, columnIndex),
                                     })}
                                     children={cell.renderCell()}
                                 />
                             );
                         }}
                     />
-                </>
+                </div>
             )}
         </AutoSizer>
     );
 }
+
+const ScrollArea = forwardRef<any, any>((props, ref) => {
+    const { classes } = useStyles();
+    return (
+        <Scrollbars
+            {...props}
+            ref={ref}
+            renderThumbVertical={(p) => (
+                <div {...p} className={classes.thumb} />
+            )}
+            renderThumbHorizontal={(p) => (
+                <div {...p} className={classes.thumb} />
+            )}
+        />
+    );
+});
 
 function DebouncedTextInput({
     value: initialValue,
