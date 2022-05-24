@@ -1,24 +1,34 @@
-import { Button, createStyles } from '@mantine/core';
+import {
+    Button,
+    createStyles,
+    ScrollArea,
+    TextInput,
+    TextInputProps,
+} from '@mantine/core';
 import {
     ColumnDef,
-    createTable,
     getCoreRowModel,
+    getFilteredRowModel,
     getSortedRowModel,
-    Overwrite,
     ReactTableGenerics,
     Table,
-    TableGenerics,
     useTableInstance,
 } from '@tanstack/react-table';
-import { useRef } from 'react';
+import {
+    forwardRef,
+    memo,
+    useCallback,
+    useEffect,
+    useRef,
+    useState,
+} from 'react';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import {
     GridOnScrollProps,
-    ListChildComponentProps,
     VariableSizeGrid,
     VariableSizeList,
 } from 'react-window';
-import { CaretDown } from 'tabler-icons-react';
+import { CaretDown, Filter, Search } from 'tabler-icons-react';
 import { getScrollbarWidth } from './utils';
 
 const useStyles = createStyles((theme) => ({
@@ -76,6 +86,20 @@ const isLast = (arr: any[], i: number) => {
     return arr.length - 1 === i;
 };
 
+/*
+- Default Filter
+
+  includesString,
+  includesStringSensitive,
+  equalsString,
+  arrIncludes,
+  arrIncludesAll,
+  arrIncludesSome,
+  equals,
+  weakEquals,
+  inNumberRange,
+*/
+
 interface DataTableGenerics<T> extends ReactTableGenerics {
     Row: T;
 }
@@ -90,6 +114,7 @@ export default function DataTable<T>({
     columns,
     data,
 }: DataTableProps<T>) {
+    const [globalFilter, setGlobalFilter] = useState('');
     const scrollbarWidth = getScrollbarWidth();
     const { classes, cx } = useStyles();
     const headerRefs = useRef<VariableSizeList[]>([]);
@@ -98,8 +123,15 @@ export default function DataTable<T>({
         data,
         columns,
         columnResizeMode: 'onChange',
+        state: {
+            globalFilter,
+        },
+        onGlobalFilterChange: setGlobalFilter,
+
         getCoreRowModel: getCoreRowModel(),
         getSortedRowModel: getSortedRowModel(),
+        getFilteredRowModel: getFilteredRowModel(),
+
         onColumnSizingInfoChange(updater) {
             instance.setState((last) => ({
                 ...last,
@@ -133,6 +165,19 @@ export default function DataTable<T>({
         <AutoSizer>
             {({ width, height }) => (
                 <>
+                    <DebouncedTextInput
+                        value={globalFilter}
+                        onChange={setGlobalFilter}
+                        style={{ width }}
+                        placeholder="Search"
+                        rightSection={<Search />}
+                        styles={{
+                            root: {
+                                borderBottomRightRadius: 0,
+                                borderBottomLeftRadius: 0,
+                            },
+                        }}
+                    />
                     {headerGroups.map((group, i) => (
                         <VariableSizeList
                             ref={(ref) => ref && (headerRefs.current[i] = ref)}
@@ -140,7 +185,7 @@ export default function DataTable<T>({
                             direction="horizontal"
                             itemCount={group.headers.length}
                             itemSize={(i) => group.headers[i].getSize()}
-                            width={width - scrollbarWidth}
+                            width={width}
                             height={48}
                             style={{ overflow: 'hidden' }}
                             children={({ index, style }) => {
@@ -149,6 +194,8 @@ export default function DataTable<T>({
                                 const isLastGroup = isLast(headerGroups, i);
                                 const canSort =
                                     isLastGroup && header.column.getCanSort();
+                                const canFitler =
+                                    isLastGroup && header.column.getCanFilter();
                                 return (
                                     <div
                                         style={style}
@@ -185,6 +232,16 @@ export default function DataTable<T>({
                                                 }}
                                             />
                                         )}
+                                        {canFitler && (
+                                            <Button
+                                                children={<Filter />}
+                                                variant="subtle"
+                                                compact
+                                                size="xs"
+                                                px={0}
+                                                color="gray"
+                                            />
+                                        )}
                                         <div
                                             className={classes.drag}
                                             onClick={(e) => e.stopPropagation()}
@@ -206,15 +263,17 @@ export default function DataTable<T>({
                             }}
                         />
                     ))}
+
                     <VariableSizeGrid
                         ref={bodyRef}
                         columnCount={visible.length}
                         columnWidth={(index) => visible[index].getSize()}
                         rowCount={rows.length}
                         rowHeight={() => 48}
-                        height={height - 48 * headerGroups.length}
+                        height={height - 36 - 48 * headerGroups.length}
                         width={width}
                         onScroll={onScroll}
+                        style={{ overflow: 'hidden' }}
                         children={({ style, columnIndex, rowIndex }) => {
                             const cell =
                                 rows[rowIndex].getVisibleCells()[columnIndex];
@@ -234,5 +293,38 @@ export default function DataTable<T>({
                 </>
             )}
         </AutoSizer>
+    );
+}
+
+function DebouncedTextInput({
+    value: initialValue,
+    onChange,
+    debounce = 500,
+    ...props
+}: {
+    value: string;
+    onChange: (value: string) => void;
+    debounce?: number;
+} & Omit<TextInputProps, 'onChange'>) {
+    const [value, setValue] = useState(initialValue);
+
+    useEffect(() => {
+        setValue(initialValue);
+    }, [initialValue]);
+
+    useEffect(() => {
+        const timeout = setTimeout(() => {
+            onChange(value);
+        }, debounce);
+
+        return () => clearTimeout(timeout);
+    }, [value]);
+
+    return (
+        <TextInput
+            {...props}
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
+        />
     );
 }
