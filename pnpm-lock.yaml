@@ -4,6 +4,7 @@ specifiers:
   '@faker-js/faker': ^6.3.1
   '@mantine/core': ^4.2.5
   '@mantine/hooks': ^4.2.5
+  '@tanstack/react-table': ^8.0.0-alpha.87
   '@types/react': ^18.0.0
   '@types/react-dom': ^18.0.0
   '@types/react-virtualized-auto-sizer': ^1.0.1
@@ -22,6 +23,7 @@ dependencies:
   '@faker-js/faker': 6.3.1
   '@mantine/core': 4.2.5_4ec1eda7665979c7d2472fc78156db71
   '@mantine/hooks': 4.2.5_react@18.1.0
+  '@tanstack/react-table': 8.0.0-alpha.87_react-dom@18.1.0+react@18.1.0
   react: 18.1.0
   react-dom: 18.1.0_react@18.1.0
   react-draggable: 4.4.5_react-dom@18.1.0+react@18.1.0
@@ -582,6 +584,23 @@ packages:
       estree-walker: 2.0.2
       picomatch: 2.3.1
     dev: true
+
+  /@tanstack/react-table/8.0.0-alpha.87_react-dom@18.1.0+react@18.1.0:
+    resolution: {integrity: sha512-m4PTVemBtk8i9YbvI2Q7ODcD4aCQvyQaOnTx/NWL0r8ZTJXi8BD2bq5UhIfRGuvSd/amoLLYZnVanjldVdJ2Mw==}
+    engines: {node: '>=12'}
+    peerDependencies:
+      react: '>=16'
+      react-dom: '>=16'
+    dependencies:
+      '@tanstack/table-core': 8.0.0-alpha.87
+      react: 18.1.0
+      react-dom: 18.1.0_react@18.1.0
+    dev: false
+
+  /@tanstack/table-core/8.0.0-alpha.87:
+    resolution: {integrity: sha512-6oFjMqlx37E4oYQGkZ5Ub4kJTqU78OOYVJk6dg2Zf14S5UETqBRx9UsN/3b13I0rY7KsKOAYDQJZV+rLmdl0qA==}
+    engines: {node: '>=12'}
+    dev: false
 
   /@types/prop-types/15.7.5:
     resolution: {integrity: sha512-JCB8C6SnDoQf0cNycqd/35A7MjcnK+ZTqE7judS6o7utxUCg6imJg3QK2qzHKszlTjcj2cn+NwMB2i96ubpj7w==}

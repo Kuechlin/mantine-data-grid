@@ -2,6 +2,7 @@ import {
     Anchor,
     Button,
     Center,
+    Group,
     MantineProvider,
     Stack,
     Title,
@@ -12,10 +13,13 @@ import { dateColumn, numberColumn, stringColumn } from './components/columns';
 import DataGrid from './components/DataGrid';
 import { faker } from '@faker-js/faker';
 import { BrandGithub } from 'tabler-icons-react';
+import { createTable } from '@tanstack/react-table';
+import DataTable from './components/DataTable';
 
 type Data = {
     text: string;
-    animal: string;
+    cat: string;
+    fish: string;
     city: string;
     value: number;
     date: Date;
@@ -23,11 +27,30 @@ type Data = {
 
 var data: Data[] = new Array(10000).fill({}).map((i) => ({
     text: faker.name.findName(),
-    animal: faker.animal.cat(),
+    cat: faker.animal.cat(),
+    fish: faker.animal.fish(),
     city: faker.address.city(),
     value: faker.datatype.number(),
     date: faker.datatype.datetime(),
 }));
+
+const table = createTable().setRowType<Data>();
+
+const columns = [
+    table.createDataColumn('text', {
+        header: () => 'Text',
+    }),
+    table.createGroup({
+        header: 'Animal',
+        columns: [
+            table.createDataColumn('cat', {}),
+            table.createDataColumn('fish', {}),
+        ],
+    }),
+    table.createDataColumn('city', {}),
+    table.createDataColumn('value', {}),
+    table.createDataColumn('date', {}),
+];
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>
@@ -50,40 +73,43 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
                         children="Github"
                     />
                 </Center>
-                <div
-                    style={{
-                        height: '500px',
-                        width: '500px',
-                        margin: 'auto',
-                    }}
-                >
-                    <DataGrid
-                        data={data}
-                        columns={[
-                            stringColumn<Data>({
-                                value: (d) => d.text,
-                                label: 'Full Name ',
-                            }),
-                            stringColumn<Data>({
-                                value: (d) => d.animal,
-                                label: 'Animal',
-                            }),
-                            stringColumn<Data>({
-                                value: (d) => d.city,
-                                label: 'City',
-                            }),
-                            numberColumn<Data>({
-                                value: (d) => d.value,
-                                label: 'Value',
-                            }),
-                            dateColumn<Data>({
-                                value: (d) => d.date,
-                                label: 'Date',
-                                width: 200,
-                            }),
-                        ]}
-                    />
-                </div>
+                <Group p="xl" position="center">
+                    <div style={{ height: '500px', width: '500px' }}>
+                        <DataGrid
+                            data={data}
+                            columns={[
+                                stringColumn<Data>({
+                                    value: (d) => d.text,
+                                    label: 'Full Name ',
+                                }),
+                                stringColumn<Data>({
+                                    value: (d) => d.cat,
+                                    label: 'Cat',
+                                }),
+                                stringColumn<Data>({
+                                    value: (d) => d.city,
+                                    label: 'City',
+                                }),
+                                numberColumn<Data>({
+                                    value: (d) => d.value,
+                                    label: 'Value',
+                                }),
+                                dateColumn<Data>({
+                                    value: (d) => d.date,
+                                    label: 'Date',
+                                    width: 200,
+                                }),
+                            ]}
+                        />
+                    </div>
+                    <div style={{ height: '500px', width: '500px' }}>
+                        <DataTable
+                            table={table}
+                            columns={columns}
+                            data={data}
+                        />
+                    </div>
+                </Group>
             </Stack>
         </MantineProvider>
     </React.StrictMode>

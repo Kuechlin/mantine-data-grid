@@ -11,6 +11,7 @@
     "@faker-js/faker": "^6.3.1",
     "@mantine/core": "^4.2.5",
     "@mantine/hooks": "^4.2.5",
+    "@tanstack/react-table": "^8.0.0-alpha.87",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "react-draggable": "^4.4.5",
