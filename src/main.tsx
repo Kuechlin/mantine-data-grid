@@ -12,7 +12,7 @@ import ReactDOM from 'react-dom/client';
 import { faker } from '@faker-js/faker';
 import { BrandGithub } from 'tabler-icons-react';
 import { createTable } from '@tanstack/react-table';
-import DataTable from './components/DataTable';
+import { DataGrid } from './components';
 
 type Data = {
     text: string;
@@ -74,7 +74,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
                 <div
                     style={{ height: '500px', width: '800px', margin: 'auto' }}
                 >
-                    <DataTable<Data>
+                    <DataGrid<Data>
                         table={table}
                         columns={columns}
                         data={data}
