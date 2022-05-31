@@ -9,6 +9,7 @@ import {
 } from '@mantine/core';
 import {
     BuiltInFilterFn,
+    Column,
     ColumnDef,
     getCoreRowModel,
     getFilteredRowModel,
@@ -16,6 +17,7 @@ import {
     HeaderGroup,
     ReactTableGenerics,
     Table,
+    TableInstance,
     useTableInstance,
 } from '@tanstack/react-table';
 import React, {
@@ -39,20 +41,18 @@ import {
 import { CaretDown, ChevronDown, Search, Selector } from 'tabler-icons-react';
 import { Scrollbars } from 'react-custom-scrollbars';
 import useStyles from './DataGrid.styles';
-import {
-    EqualsStringFilter,
-    IncludesStringFilter,
-    IncludesStringSensitiveFilter,
-} from './filtres';
+
 import { DataGridFilter } from './DataGridFilter';
 
 const isLast = (arr: any[], i: number) => {
     return arr.length - 1 === i;
 };
 
-interface DataTableGenerics<T> extends ReactTableGenerics {
+export interface DataTableGenerics<T> extends ReactTableGenerics {
     Row: T;
 }
+
+export type DataGridInstance<T = any> = TableInstance<DataTableGenerics<T>>;
 
 export type DataGridProps<T, F = BuiltInFilterFn> = {
     table: Table<DataTableGenerics<T>>;
@@ -60,16 +60,19 @@ export type DataGridProps<T, F = BuiltInFilterFn> = {
     data: T[];
 };
 
-export type DataGridFilterProps = {
-    value: any;
-    onChange(value: any): void;
+export type DataGridFilterProps<T = any> = {
+    instance: DataGridInstance;
+    column: Column<any>;
+    value: T;
+    onChange(value: T): void;
 };
-export type DataGridFilterComponent = ComponentType<DataGridFilterProps>;
+export type DataGridFilterComponent<T = any> = ComponentType<
+    DataGridFilterProps<T>
+>;
 
 export function DataGrid<T>({ table, columns, data }: DataGridProps<T>) {
     const [globalFilter, setGlobalFilter] = useState('');
     const { classes, cx } = useStyles();
-    const [opened, setOpen] = useState<number | null>(null);
     const headerRefs = useRef<VariableSizeList[]>([]);
     const bodyRef = useRef<VariableSizeGrid>(null);
     const instance = useTableInstance(table, {
@@ -114,11 +117,6 @@ export function DataGrid<T>({ table, columns, data }: DataGridProps<T>) {
         }
     };
 
-    const onClick = (index: number) => () => {
-        setOpen((last) => (last === index ? null : index));
-    };
-    const onClose = () => setOpen(null);
-
     const renderHeader =
         (group: HeaderGroup<DataTableGenerics<T>>, groupIndex: number) =>
         ({ index, style }: ListChildComponentProps<any>) => {
@@ -144,10 +142,8 @@ export function DataGrid<T>({ table, columns, data }: DataGridProps<T>) {
                     <Group spacing="xs">
                         {canFitler && (
                             <DataGridFilter
-                                opened={opened === index}
+                                instance={instance}
                                 column={header.column}
-                                onClick={onClick(index)}
-                                onClose={onClose}
                             />
                         )}
                         {canSort && (

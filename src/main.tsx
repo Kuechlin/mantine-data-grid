@@ -41,12 +41,16 @@ const columns = [
     table.createGroup({
         header: 'Animal',
         columns: [
-            table.createDataColumn('cat', {}),
+            table.createDataColumn('cat', {
+                filterFn: 'includesString',
+            }),
             table.createDataColumn('fish', {}),
         ],
     }),
     table.createDataColumn('city', {}),
-    table.createDataColumn('value', {}),
+    table.createDataColumn('value', {
+        filterFn: 'inNumberRange',
+    }),
     table.createDataColumn('date', {}),
 ];
 

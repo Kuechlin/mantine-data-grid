@@ -18,7 +18,7 @@ export default createStyles((theme) => ({
         justifyContent: 'space-between',
 
         '&.lastGroup': {
-            borderBottom: `4px solid ${theme.colors.teal[5]}`,
+            borderBottom: `4px solid ${theme.colors.gray[5]}`,
         },
 
         '&.sort': {
