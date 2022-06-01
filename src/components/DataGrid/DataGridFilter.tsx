@@ -55,13 +55,7 @@ const defaultFilters: Record<string, DataGridFilterComponent> = {
     inNumberRange: NumberRangeFilter,
 };
 
-export const DataGridFilter = ({
-    instance,
-    column,
-}: {
-    instance: DataGridInstance;
-    column: Column<any>;
-}) => {
+export const DataGridFilter = ({ column }: { column: Column<any> }) => {
     const [state, setState] = useState({
         opened: false,
         value: null as any,
@@ -127,12 +121,7 @@ export const DataGridFilter = ({
         >
             <Stack>
                 <Text>{filterFn}</Text>
-                <Element
-                    instance={instance}
-                    column={column}
-                    value={column.getFilterValue()}
-                    onChange={change}
-                />
+                <Element value={column.getFilterValue()} onChange={change} />
                 <Group position="apart">
                     <Button
                         children={<X />}

@@ -38,11 +38,13 @@ import {
     VariableSizeGrid,
     VariableSizeList,
 } from 'react-window';
-import { CaretDown, ChevronDown, Search, Selector } from 'tabler-icons-react';
+import { ChevronDown, Search, Selector } from 'tabler-icons-react';
 import { Scrollbars } from 'react-custom-scrollbars';
 import useStyles from './DataGrid.styles';
 
 import { DataGridFilter } from './DataGridFilter';
+import { DataGridHeader, DataGridHeaderData } from './DataGridHeader';
+import { DataGridCell, DataGridCellData } from './DataGridCell';
 
 const isLast = (arr: any[], i: number) => {
     return arr.length - 1 === i;
@@ -61,8 +63,6 @@ export type DataGridProps<T, F = BuiltInFilterFn> = {
 };
 
 export type DataGridFilterProps<T = any> = {
-    instance: DataGridInstance;
-    column: Column<any>;
     value: T;
     onChange(value: T): void;
 };
@@ -117,76 +117,6 @@ export function DataGrid<T>({ table, columns, data }: DataGridProps<T>) {
         }
     };
 
-    const renderHeader =
-        (group: HeaderGroup<DataTableGenerics<T>>, groupIndex: number) =>
-        ({ index, style }: ListChildComponentProps<any>) => {
-            const header = group.headers[index];
-            const isSorted = header.column.getIsSorted();
-            const isLastGroup = isLast(headerGroups, groupIndex);
-            const canSort = isLastGroup && header.column.getCanSort();
-            const canFitler = isLastGroup && header.column.getCanFilter();
-
-            return (
-                <div
-                    style={style}
-                    className={cx(classes.header, classes.cell, {
-                        lastGroup: isLastGroup,
-                        first: index === 0,
-                        sort: canSort,
-                    })}
-                    onClick={header.column.getToggleSortingHandler()}
-                >
-                    <div className={classes.slot}>
-                        {!header.isPlaceholder && header.renderHeader()}
-                    </div>
-                    <Group spacing="xs">
-                        {canFitler && (
-                            <DataGridFilter
-                                instance={instance}
-                                column={header.column}
-                            />
-                        )}
-                        {canSort && (
-                            <Button
-                                children={
-                                    isSorted ? (
-                                        <ChevronDown size={16} />
-                                    ) : (
-                                        <Selector size={16} />
-                                    )
-                                }
-                                variant="subtle"
-                                compact
-                                size="sm"
-                                px={0}
-                                color="gray"
-                                style={{
-                                    transition: 'transform 0.25s',
-                                    transform: `rotate(${
-                                        isSorted === 'asc' ? '180' : '0'
-                                    }deg)`,
-                                }}
-                            />
-                        )}
-                    </Group>
-                    <div
-                        className={classes.drag}
-                        onClick={(e) => e.stopPropagation()}
-                        onMouseDown={header.getResizeHandler()}
-                        onTouchStart={header.getResizeHandler()}
-                        style={{
-                            transform: header.column.getIsResizing()
-                                ? `translateX(${
-                                      instance.getState().columnSizingInfo
-                                          .deltaOffset
-                                  }px)`
-                                : '',
-                        }}
-                    />
-                </div>
-            );
-        };
-
     const renderCell = ({
         style,
         columnIndex,
@@ -217,8 +147,9 @@ export function DataGrid<T>({ table, columns, data }: DataGridProps<T>) {
                         placeholder="Search"
                         rightSection={<Search />}
                     />
+
                     {headerGroups.map((group, i) => (
-                        <VariableSizeList
+                        <VariableSizeList<DataGridHeaderData<T>>
                             ref={(ref) => ref && (headerRefs.current[i] = ref)}
                             key={group.id}
                             direction="horizontal"
@@ -227,11 +158,15 @@ export function DataGrid<T>({ table, columns, data }: DataGridProps<T>) {
                             width={width}
                             height={48}
                             style={{ overflow: 'hidden' }}
-                            children={renderHeader(group, i)}
+                            itemData={{
+                                group: group,
+                                isLastGroup: headerGroups.length - 1 === i,
+                            }}
+                            children={DataGridHeader}
                         />
                     ))}
 
-                    <VariableSizeGrid
+                    <VariableSizeGrid<DataGridCellData<T>>
                         ref={bodyRef}
                         outerElementType={ScrollArea}
                         columnCount={visible.length}
@@ -242,7 +177,11 @@ export function DataGrid<T>({ table, columns, data }: DataGridProps<T>) {
                         width={width}
                         onScroll={onScroll}
                         style={{ overflow: 'hidden' }}
-                        children={renderCell}
+                        itemData={{
+                            getCell: (col, row) =>
+                                rows[row].getVisibleCells()[col],
+                        }}
+                        children={DataGridCell}
                     />
                 </div>
             )}

@@ -24,7 +24,7 @@ type Data = {
 };
 
 var data: Data[] = new Array(10000).fill({}).map((i) => ({
-    text: faker.name.findName(),
+    text: faker.lorem.lines(),
     cat: faker.animal.cat(),
     fish: faker.animal.fish(),
     city: faker.address.city(),
