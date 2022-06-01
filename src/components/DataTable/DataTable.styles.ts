@@ -1,32 +1,23 @@
 import { createStyles } from '@mantine/core';
 
 export default createStyles((theme) => ({
-    table: {
-        overflow: 'hidden',
-    },
+    table: {},
     cell: {
-        ...theme.fn.fontStyles(),
         position: 'relative',
-        padding: theme.spacing.sm,
+        display: 'flex',
+        flexWrap: 'nowrap',
+    },
+    row: {
+        display: 'flex',
     },
     header: {
-        fontWeight: 'bold',
-        borderBottom: `1px solid ${theme.colors.dark[4]}`,
-        cursor: 'pointer',
         display: 'flex',
         justifyContent: 'space-between',
-
-        '&.lastGroup': {
-            borderBottom: `4px solid ${theme.colors.gray[5]}`,
-        },
 
         '&.sort': {
             cursor: 'pointer',
             userSelect: 'none',
         },
-    },
-    even: {
-        backgroundColor: theme.colors.dark[6],
     },
     slot: {
         // text overflow
@@ -44,9 +35,5 @@ export default createStyles((theme) => ({
         ':hover': {
             backgroundColor: theme.colors.dark[4],
         },
-    },
-    thumb: {
-        backgroundColor: theme.colors.dark[1],
-        borderRadius: theme.radius.sm,
     },
 }));

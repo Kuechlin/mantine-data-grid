@@ -4,7 +4,6 @@ import {
     Group,
     MantineColor,
     Space,
-    TextInput,
     TextInputProps,
 } from '@mantine/core';
 import {
@@ -26,25 +25,21 @@ import React, {
     forwardRef,
     memo,
     useCallback,
-    useEffect,
     useRef,
     useState,
 } from 'react';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import {
-    GridChildComponentProps,
     GridOnScrollProps,
-    ListChildComponentProps,
     VariableSizeGrid,
     VariableSizeList,
 } from 'react-window';
-import { ChevronDown, Search, Selector } from 'tabler-icons-react';
 import { Scrollbars } from 'react-custom-scrollbars';
 import useStyles from './DataGrid.styles';
 
-import { DataGridFilter } from './DataGridFilter';
 import { DataGridHeader, DataGridHeaderData } from './DataGridHeader';
 import { DataGridCell, DataGridCellData } from './DataGridCell';
+import { GlobalFilter } from '../GlobalFilter';
 
 const isLast = (arr: any[], i: number) => {
     return arr.length - 1 === i;
@@ -117,35 +112,13 @@ export function DataGrid<T>({ table, columns, data }: DataGridProps<T>) {
         }
     };
 
-    const renderCell = ({
-        style,
-        columnIndex,
-        rowIndex,
-    }: GridChildComponentProps<any>) => {
-        const cell = rows[rowIndex].getVisibleCells()[columnIndex];
-
-        return (
-            <div
-                key={cell.id}
-                style={style}
-                className={cx(classes.cell, classes.slot, {
-                    [classes.even]: rowIndex % 2 === 0,
-                })}
-                children={cell.renderCell()}
-            />
-        );
-    };
-
     return (
-        <AutoSizer defaultHeight={400}>
+        <AutoSizer>
             {({ width, height }) => (
                 <div className={classes.table} style={{ width, height }}>
-                    <DebouncedTextInput
-                        value={globalFilter}
-                        onChange={setGlobalFilter}
-                        style={{ width }}
-                        placeholder="Search"
-                        rightSection={<Search />}
+                    <GlobalFilter
+                        globalFilter={globalFilter}
+                        onGlobalFilterChange={setGlobalFilter}
                     />
 
                     {headerGroups.map((group, i) => (
@@ -204,36 +177,3 @@ const ScrollArea = forwardRef<any, any>((props, ref) => {
         />
     );
 });
-
-function DebouncedTextInput({
-    value: initialValue,
-    onChange,
-    debounce = 500,
-    ...props
-}: {
-    value: string;
-    onChange: (value: string) => void;
-    debounce?: number;
-} & Omit<TextInputProps, 'onChange'>) {
-    const [value, setValue] = useState(initialValue);
-
-    useEffect(() => {
-        setValue(initialValue);
-    }, [initialValue]);
-
-    useEffect(() => {
-        const timeout = setTimeout(() => {
-            onChange(value);
-        }, debounce);
-
-        return () => clearTimeout(timeout);
-    }, [value]);
-
-    return (
-        <TextInput
-            {...props}
-            value={value}
-            onChange={(e) => setValue(e.target.value)}
-        />
-    );
-}

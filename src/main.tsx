@@ -2,17 +2,19 @@ import {
     Anchor,
     Button,
     Center,
+    Divider,
+    Grid,
     Group,
     MantineProvider,
     Stack,
     Title,
 } from '@mantine/core';
-import React from 'react';
+import React, { CSSProperties } from 'react';
 import ReactDOM from 'react-dom/client';
 import { faker } from '@faker-js/faker';
 import { BrandGithub } from 'tabler-icons-react';
 import { createTable } from '@tanstack/react-table';
-import { DataGrid } from './components';
+import { DataGrid, DataTable } from './components';
 
 type Data = {
     text: string;
@@ -23,7 +25,7 @@ type Data = {
     date: Date;
 };
 
-var data: Data[] = new Array(10000).fill({}).map((i) => ({
+var data: Data[] = new Array(100).fill({}).map((i) => ({
     text: faker.lorem.lines(),
     cat: faker.animal.cat(),
     fish: faker.animal.fish(),
@@ -36,7 +38,7 @@ const table = createTable().setRowType<Data>();
 
 const columns = [
     table.createDataColumn('text', {
-        header: () => 'Text',
+        header: () => 'Text that is too long for a Header',
     }),
     table.createGroup({
         header: 'Animal',
@@ -53,6 +55,11 @@ const columns = [
     }),
     table.createDataColumn('date', {}),
 ];
+
+const cell: CSSProperties = {
+    height: '500px',
+    //border: '1px solid red',
+};
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>
@@ -75,15 +82,30 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
                         children="Github"
                     />
                 </Center>
-                <div
-                    style={{ height: '500px', width: '800px', margin: 'auto' }}
-                >
-                    <DataGrid<Data>
-                        table={table}
-                        columns={columns}
-                        data={data}
-                    />
-                </div>
+                <Grid justify="space-around" p="md">
+                    <Grid.Col span={5}>
+                        <Title>Data Table</Title>
+                        <Divider my="md" />
+                    </Grid.Col>
+                    <Grid.Col span={5}>
+                        <Title>Virtualized Data Grid</Title>
+                        <Divider my="md" />
+                    </Grid.Col>
+                    <Grid.Col span={5} style={cell}>
+                        <DataTable<Data>
+                            table={table}
+                            columns={columns}
+                            data={data}
+                        />
+                    </Grid.Col>
+                    <Grid.Col span={5} style={cell}>
+                        <DataGrid<Data>
+                            table={table}
+                            columns={columns}
+                            data={data}
+                        />
+                    </Grid.Col>
+                </Grid>
             </Stack>
         </MantineProvider>
     </React.StrictMode>
