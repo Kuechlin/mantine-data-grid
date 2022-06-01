@@ -13,8 +13,8 @@ import React, { CSSProperties } from 'react';
 import ReactDOM from 'react-dom/client';
 import { faker } from '@faker-js/faker';
 import { BrandGithub } from 'tabler-icons-react';
-import { createTable } from '@tanstack/react-table';
 import { DataGrid, DataTable } from './components';
+import { ColumnsFactory } from './components/types';
 
 type Data = {
     text: string;
@@ -34,26 +34,29 @@ var data: Data[] = new Array(100).fill({}).map((i) => ({
     date: faker.datatype.datetime(),
 }));
 
-const table = createTable().setRowType<Data>();
-
-const columns = [
+const createColumns: ColumnsFactory<Data> = (table) => [
     table.createDataColumn('text', {
         header: () => 'Text that is too long for a Header',
+        filterFn: 'stringFilterFn',
     }),
     table.createGroup({
         header: 'Animal',
         columns: [
             table.createDataColumn('cat', {
-                filterFn: 'includesString',
+                filterFn: 'stringFilterFn',
             }),
-            table.createDataColumn('fish', {}),
+            table.createDataColumn('fish', {
+                filterFn: 'stringFilterFn',
+            }),
         ],
     }),
-    table.createDataColumn('city', {}),
-    table.createDataColumn('value', {
-        filterFn: 'inNumberRange',
+    table.createDataColumn('city', {
+        filterFn: 'stringFilterFn',
     }),
-    table.createDataColumn('date', {}),
+    table.createDataColumn('value', {}),
+    table.createDataColumn('date', {
+        cell: ({ cell }) => cell.getValue().toLocaleDateString(),
+    }),
 ];
 
 const cell: CSSProperties = {
@@ -92,18 +95,10 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
                         <Divider my="md" />
                     </Grid.Col>
                     <Grid.Col span={5} style={cell}>
-                        <DataTable<Data>
-                            table={table}
-                            columns={columns}
-                            data={data}
-                        />
+                        <DataTable<Data> columns={createColumns} data={data} />
                     </Grid.Col>
                     <Grid.Col span={5} style={cell}>
-                        <DataGrid<Data>
-                            table={table}
-                            columns={columns}
-                            data={data}
-                        />
+                        <DataGrid<Data> columns={createColumns} data={data} />
                     </Grid.Col>
                 </Grid>
             </Stack>

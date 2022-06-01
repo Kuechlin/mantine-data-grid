@@ -13,6 +13,7 @@ import {
     BuiltInFilterFn,
     Column,
     ColumnDef,
+    createTable,
     getCoreRowModel,
     getFilteredRowModel,
     getSortedRowModel,
@@ -44,40 +45,25 @@ import { ChevronDown, Search, Selector } from 'tabler-icons-react';
 import { Scrollbars } from 'react-custom-scrollbars';
 import useStyles from './DataTable.styles';
 
-import { DataTableFilter } from './DataTableFilter';
 import { DataTableHeader } from './DataTableHeader';
 import { DataTableCell } from './DataTableCell';
 import { GlobalFilter } from '../GlobalFilter';
+import { DataTableGenerics, DataTableProps, useReactTable } from '../types';
+import { stringFilterFn } from '../ColumnFilter';
 
-const isLast = (arr: any[], i: number) => {
-    return arr.length - 1 === i;
-};
-
-export interface DataTableGenerics<T> extends ReactTableGenerics {
-    Row: T;
-}
-
-export type DataTableInstance<T = any> = TableInstance<DataTableGenerics<T>>;
-
-export type DataTableProps<T> = {
-    table: Table<DataTableGenerics<T>>;
-    columns: ColumnDef<DataTableGenerics<T>>[];
-    data: T[];
-};
-
-export type DataTableFilterProps<T = any> = {
-    value: T;
-    onChange(value: T): void;
-};
-export type DataTableFilterComponent<T = any> = ComponentType<
-    DataTableFilterProps<T>
->;
-
-export function DataTable<T>({ table, columns, data }: DataTableProps<T>) {
-    const [globalFilter, setGlobalFilter] = useState('');
+export function DataTable<T>({
+    data,
+    columns: createColumns,
+}: DataTableProps<T>) {
     const { classes, cx } = useStyles();
     const headerRefs = useRef<VariableSizeList[]>([]);
     const bodyRef = useRef<VariableSizeGrid>(null);
+
+    const table = useReactTable<T>();
+    const { current: columns } = useRef(createColumns(table));
+
+    const [globalFilter, setGlobalFilter] = useState('');
+
     const instance = useTableInstance(table, {
         data,
         columns,
@@ -137,7 +123,7 @@ export function DataTable<T>({ table, columns, data }: DataTableProps<T>) {
                                         key={header.column.id}
                                         index={headerIndex}
                                         header={header}
-                                        group={group}
+                                        instance={instance}
                                         isLastGroup={
                                             headerGroups.length - 1 ===
                                             groupIndex

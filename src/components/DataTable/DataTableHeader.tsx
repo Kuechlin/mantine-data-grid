@@ -1,28 +1,36 @@
 import { Button, Group } from '@mantine/core';
-import { Column, Header, HeaderGroup } from '@tanstack/react-table';
+import {
+    Column,
+    Header,
+    HeaderGroup,
+    TableInstance,
+} from '@tanstack/react-table';
 import { ListChildComponentProps } from 'react-window';
-import { ChevronDown, Selector } from 'tabler-icons-react';
-import { DataTableInstance, DataTableGenerics } from './DataTable';
-import { DataTableFilter } from './DataTableFilter';
+import { ChevronDown, HeartRateMonitor, Selector } from 'tabler-icons-react';
+import { canFilter, ColumnFilter } from '../ColumnFilter';
+import { DataTableGenerics } from '../types';
 import useStyles from './DataTable.styles';
 
 export type DataTableHeaderProps<T> = {
     index: number;
+    instance: TableInstance<DataTableGenerics<T>>;
     header: Header<DataTableGenerics<T>>;
-    group: HeaderGroup<DataTableGenerics<T>>;
     isLastGroup: boolean;
 };
 
 export function DataTableHeader<T>({
     index,
     header,
-    group,
+    instance,
     isLastGroup,
 }: DataTableHeaderProps<T>) {
     const { classes, cx } = useStyles();
     const isSorted = header.column.getIsSorted();
     const canSort = isLastGroup && header.column.getCanSort();
-    const canFitler = isLastGroup && header.column.getCanFilter();
+    const canFitler =
+        isLastGroup &&
+        header.column.getCanFilter() &&
+        canFilter(header.column.filterFn);
 
     return (
         <th
@@ -41,7 +49,9 @@ export function DataTableHeader<T>({
                 {!header.isPlaceholder && header.renderHeader()}
             </span>
             <Group spacing="xs" noWrap>
-                {canFitler && <DataTableFilter column={header.column} />}
+                {canFitler && (
+                    <ColumnFilter instance={instance} column={header.column} />
+                )}
                 {canSort && (
                     <Button
                         children={

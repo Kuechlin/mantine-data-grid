@@ -10,6 +10,7 @@ import {
     BuiltInFilterFn,
     Column,
     ColumnDef,
+    createTable,
     getCoreRowModel,
     getFilteredRowModel,
     getSortedRowModel,
@@ -40,36 +41,21 @@ import useStyles from './DataGrid.styles';
 import { DataGridHeader, DataGridHeaderData } from './DataGridHeader';
 import { DataGridCell, DataGridCellData } from './DataGridCell';
 import { GlobalFilter } from '../GlobalFilter';
+import { DataTableGenerics, DataTableProps, useReactTable } from '../types';
+import { stringFilterFn } from '../ColumnFilter';
 
-const isLast = (arr: any[], i: number) => {
-    return arr.length - 1 === i;
-};
-
-export interface DataTableGenerics<T> extends ReactTableGenerics {
-    Row: T;
-}
-
-export type DataGridInstance<T = any> = TableInstance<DataTableGenerics<T>>;
-
-export type DataGridProps<T, F = BuiltInFilterFn> = {
-    table: Table<DataTableGenerics<T>>;
-    columns: ColumnDef<DataTableGenerics<T>>[];
-    data: T[];
-};
-
-export type DataGridFilterProps<T = any> = {
-    value: T;
-    onChange(value: T): void;
-};
-export type DataGridFilterComponent<T = any> = ComponentType<
-    DataGridFilterProps<T>
->;
-
-export function DataGrid<T>({ table, columns, data }: DataGridProps<T>) {
-    const [globalFilter, setGlobalFilter] = useState('');
+export function DataGrid<T>({
+    columns: createColumns,
+    data,
+}: DataTableProps<T>) {
     const { classes, cx } = useStyles();
     const headerRefs = useRef<VariableSizeList[]>([]);
     const bodyRef = useRef<VariableSizeGrid>(null);
+
+    const table = useReactTable<T>();
+    const { current: columns } = useRef(createColumns(table));
+
+    const [globalFilter, setGlobalFilter] = useState('');
     const instance = useTableInstance(table, {
         data,
         columns,
@@ -132,7 +118,8 @@ export function DataGrid<T>({ table, columns, data }: DataGridProps<T>) {
                             height={48}
                             style={{ overflow: 'hidden' }}
                             itemData={{
-                                group: group,
+                                group,
+                                instance,
                                 isLastGroup: headerGroups.length - 1 === i,
                             }}
                             children={DataGridHeader}

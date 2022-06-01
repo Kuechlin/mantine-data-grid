@@ -1,12 +1,13 @@
 import { Button, Group } from '@mantine/core';
-import { HeaderGroup } from '@tanstack/react-table';
+import { HeaderGroup, TableInstance } from '@tanstack/react-table';
 import { ListChildComponentProps } from 'react-window';
 import { ChevronDown, Selector } from 'tabler-icons-react';
-import { DataGridInstance, DataTableGenerics } from './DataGrid';
-import { DataGridFilter } from './DataGridFilter';
+import { canFilter, ColumnFilter } from '../ColumnFilter';
+import { DataTableGenerics } from '../types';
 import useStyles from './DataGrid.styles';
 
 export type DataGridHeaderData<T> = {
+    instance: TableInstance<DataTableGenerics<T>>;
     group: HeaderGroup<DataTableGenerics<T>>;
     isLastGroup: boolean;
 };
@@ -17,13 +18,16 @@ export type DataGridHeaderProps<T> = ListChildComponentProps<
 export function DataGridHeader<T>({
     index,
     style,
-    data: { group, isLastGroup },
+    data: { instance, group, isLastGroup },
 }: DataGridHeaderProps<T>) {
     const { classes, cx } = useStyles();
     const header = group.headers[index];
     const isSorted = header.column.getIsSorted();
     const canSort = isLastGroup && header.column.getCanSort();
-    const canFitler = isLastGroup && header.column.getCanFilter();
+    const canFitler =
+        isLastGroup &&
+        header.column.getCanFilter() &&
+        canFilter(header.column.filterFn);
 
     return (
         <div
@@ -38,8 +42,10 @@ export function DataGridHeader<T>({
             <div className={classes.slot}>
                 {!header.isPlaceholder && header.renderHeader()}
             </div>
-            <Group spacing="xs">
-                {canFitler && <DataGridFilter column={header.column} />}
+            <Group spacing="xs" noWrap>
+                {canFitler && (
+                    <ColumnFilter instance={instance} column={header.column} />
+                )}
                 {canSort && (
                     <Button
                         children={

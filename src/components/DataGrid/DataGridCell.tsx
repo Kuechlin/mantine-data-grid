@@ -1,6 +1,6 @@
 import { Cell } from '@tanstack/react-table';
 import { GridChildComponentProps } from 'react-window';
-import { DataTableGenerics } from './DataGrid';
+import { DataTableGenerics } from '../types';
 import useStyles from './DataGrid.styles';
 
 export type DataGridCellData<T> = {

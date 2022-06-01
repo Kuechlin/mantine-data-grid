@@ -1,5 +1,5 @@
 import { Cell } from '@tanstack/react-table';
-import { DataTableGenerics } from './DataTable';
+import { DataTableGenerics } from '../types';
 import useStyles from './DataTable.styles';
 
 export type DataTableCellProps<T> = {
