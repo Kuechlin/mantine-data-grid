@@ -21,8 +21,8 @@ Component is in early development, everything is likely to change.
 -   [x] Global Filter
 -   [ ] Column Filter
     -   [x] string filter
-    -   [ ] number filter
-    -   [ ] date filter
+    -   [x] number filter
+    -   [x] date filter
     -   [ ] custom fitler
 -   [x] Column Sizing
 -   [x] Column sorting
