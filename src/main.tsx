@@ -6,6 +6,7 @@ import {
     Grid,
     Group,
     MantineProvider,
+    ScrollArea,
     Stack,
     Title,
 } from '@mantine/core';
@@ -37,23 +38,25 @@ var data: Data[] = new Array(100).fill({}).map((i) => ({
 const createColumns: ColumnsFactory<Data> = (table) => [
     table.createDataColumn('text', {
         header: () => 'Text that is too long for a Header',
-        filterFn: 'stringFilterFn',
+        filterFn: 'stringFilter',
     }),
     table.createGroup({
         header: 'Animal',
         columns: [
             table.createDataColumn('cat', {
-                filterFn: 'stringFilterFn',
+                filterFn: 'stringFilter',
             }),
             table.createDataColumn('fish', {
-                filterFn: 'stringFilterFn',
+                filterFn: 'stringFilter',
             }),
         ],
     }),
     table.createDataColumn('city', {
-        filterFn: 'stringFilterFn',
+        filterFn: 'stringFilter',
     }),
-    table.createDataColumn('value', {}),
+    table.createDataColumn('value', {
+        filterFn: 'numberFilter',
+    }),
     table.createDataColumn('date', {
         cell: ({ cell }) => cell.getValue().toLocaleDateString(),
     }),
@@ -95,7 +98,12 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
                         <Divider my="md" />
                     </Grid.Col>
                     <Grid.Col span={5} style={cell}>
-                        <DataTable<Data> columns={createColumns} data={data} />
+                        <ScrollArea style={{ width: '100%', height: '100%' }}>
+                            <DataTable<Data>
+                                columns={createColumns}
+                                data={data}
+                            />
+                        </ScrollArea>
                     </Grid.Col>
                     <Grid.Col span={5} style={cell}>
                         <DataGrid<Data> columns={createColumns} data={data} />

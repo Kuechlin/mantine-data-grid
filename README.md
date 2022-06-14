@@ -13,3 +13,23 @@ Component is in early development, everything is likely to change.
     pnpm i
 
     pnpm dev
+
+## Roadmap
+
+-   [x] Simple Data Grid
+-   [x] Virualized Data Grid
+-   [x] Global Filter
+-   [ ] Column Filter
+    -   [x] string filter
+    -   [ ] number filter
+    -   [ ] date filter
+    -   [ ] custom fitler
+-   [x] Column Sizing
+-   [x] Column sorting
+-   [ ] Scrolling
+-   [ ] Fixed Header
+-   [ ] Column pinning
+-   [ ] Column Ordering
+-   [ ] Pagination
+-   [ ] Styles Api
+-   [ ] Docs

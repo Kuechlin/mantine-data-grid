@@ -1,32 +1,24 @@
 import { Cell } from '@tanstack/react-table';
-import { GridChildComponentProps } from 'react-window';
 import { DataTableGenerics } from '../types';
 import useStyles from './DataGrid.styles';
 
-export type DataGridCellData<T> = {
-    getCell(column: number, row: number): Cell<DataTableGenerics<T>>;
+export type DataTableCellProps<T> = {
+    cell: Cell<DataTableGenerics<T>>;
 };
 
-export type DataGridCellProps<T> = GridChildComponentProps<DataGridCellData<T>>;
-
-export function DataGridCell<T>({
-    columnIndex,
-    rowIndex,
-    style,
-    data: { getCell },
-}: DataGridCellProps<T>) {
+export function DataTableCell<T>({ cell }: DataTableCellProps<T>) {
     const { classes, cx } = useStyles();
 
-    const cell = getCell(columnIndex, rowIndex);
-
     return (
-        <div
+        <td
             key={cell.id}
-            style={style}
-            className={cx(classes.cell, classes.slot, {
-                [classes.even]: rowIndex % 2 === 0,
-            })}
-            children={cell.renderCell()}
+            style={{
+                width: cell.column.getSize(),
+            }}
+            className={classes.cell}
+            children={
+                <span className={classes.slot} children={cell.renderCell()} />
+            }
         />
     );
 }

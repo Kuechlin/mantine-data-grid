@@ -1,2 +1,2 @@
+export * from './VirtualizedDataGrid';
 export * from './DataGrid';
-export * from './DataTable';

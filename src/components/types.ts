@@ -8,15 +8,18 @@ import {
     createTable,
 } from '@tanstack/react-table';
 import { ComponentType, useRef } from 'react';
-import { stringFilterFn } from './ColumnFilter';
+import { dataGridfilterFns } from './ColumnFilter';
+
+export type DataTableFilterFns = Record<
+    keyof typeof dataGridfilterFns,
+    FilterFn<any>
+>;
 
 export type DataTableGenerics<T> = Overwrite<
     ReactTableGenerics,
     {
         Row: T;
-        FilterFns: {
-            stringFilterFn: FilterFn<any>;
-        };
+        FilterFns: DataTableFilterFns;
     }
 >;
 
@@ -29,23 +32,31 @@ export type ColumnsFactory<T> = (
 export type DataTableProps<T> = {
     columns: ColumnsFactory<T>;
     data: T[];
+    filters?: Record<string, DataTableFitler<T>>;
+};
+
+export type DataTableFitler<T> = {
+    filterFn: FilterFn<any>;
+    element: ComponentType<DataTableFilterProps<T>>;
+    init(): any;
 };
 
 export type DataTableFilterProps<T = any> = {
-    value: T;
-    onChange(value: T): void;
+    filter: T;
+    onFilterChange(value: T): void;
 };
-export type DataTableFilterComponent<T = any> = ComponentType<
-    DataTableFilterProps<T>
->;
 
 export function useReactTable<T>() {
     const { current: table } = useRef(
-        createTable().setRowType<T>().setOptions({
-            filterFns: {
-                stringFilterFn,
-            },
-        }) as Table<DataTableGenerics<T>>
+        createTable()
+            .setRowType<T>()
+            .setOptions({
+                filterFns: {
+                    stringFilter: dataGridfilterFns.stringFilter.filterFn,
+                    dateFilter: dataGridfilterFns.dateFilter.filterFn,
+                    numberFilter: dataGridfilterFns.numberFilter.filterFn,
+                },
+            }) as Table<DataTableGenerics<T>>
     );
     return table;
 }

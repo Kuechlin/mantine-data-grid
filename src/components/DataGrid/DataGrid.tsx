@@ -1,9 +1,13 @@
 import {
+    Box,
     Button,
     createStyles,
     Group,
     MantineColor,
+    ScrollArea,
     Space,
+    Table as MantineTable,
+    TextInput,
     TextInputProps,
 } from '@mantine/core';
 import {
@@ -26,27 +30,30 @@ import React, {
     forwardRef,
     memo,
     useCallback,
+    useEffect,
     useRef,
     useState,
 } from 'react';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import {
+    GridChildComponentProps,
     GridOnScrollProps,
+    ListChildComponentProps,
     VariableSizeGrid,
     VariableSizeList,
 } from 'react-window';
+import { ChevronDown, Search, Selector } from 'tabler-icons-react';
 import { Scrollbars } from 'react-custom-scrollbars';
 import useStyles from './DataGrid.styles';
 
-import { DataGridHeader, DataGridHeaderData } from './DataGridHeader';
-import { DataGridCell, DataGridCellData } from './DataGridCell';
+import { DataTableHeader } from './DataGridHeader';
+import { DataTableCell } from './DataGridCell';
 import { GlobalFilter } from '../GlobalFilter';
 import { DataTableGenerics, DataTableProps, useReactTable } from '../types';
-import { stringFilterFn } from '../ColumnFilter';
 
-export function DataGrid<T>({
-    columns: createColumns,
+export function DataTable<T>({
     data,
+    columns: createColumns,
 }: DataTableProps<T>) {
     const { classes, cx } = useStyles();
     const headerRefs = useRef<VariableSizeList[]>([]);
@@ -56,6 +63,7 @@ export function DataGrid<T>({
     const { current: columns } = useRef(createColumns(table));
 
     const [globalFilter, setGlobalFilter] = useState('');
+
     const instance = useTableInstance(table, {
         data,
         columns,
@@ -99,68 +107,40 @@ export function DataGrid<T>({
     };
 
     return (
-        <AutoSizer>
-            {({ width, height }) => (
-                <div className={classes.table} style={{ width, height }}>
-                    <GlobalFilter
-                        globalFilter={globalFilter}
-                        onGlobalFilterChange={setGlobalFilter}
-                    />
-
-                    {headerGroups.map((group, i) => (
-                        <VariableSizeList<DataGridHeaderData<T>>
-                            ref={(ref) => ref && (headerRefs.current[i] = ref)}
-                            key={group.id}
-                            direction="horizontal"
-                            itemCount={group.headers.length}
-                            itemSize={(i) => group.headers[i].getSize()}
-                            width={width}
-                            height={48}
-                            style={{ overflow: 'hidden' }}
-                            itemData={{
-                                group,
-                                instance,
-                                isLastGroup: headerGroups.length - 1 === i,
-                            }}
-                            children={DataGridHeader}
-                        />
+        <Box>
+            <GlobalFilter
+                globalFilter={globalFilter}
+                onGlobalFilterChange={setGlobalFilter}
+            />
+            <Space h="md" />
+            <MantineTable striped>
+                <thead>
+                    {headerGroups.map((group, groupIndex) => (
+                        <tr key={group.id} className={classes.row}>
+                            {group.headers.map((header, headerIndex) => (
+                                <DataTableHeader<T>
+                                    key={header.column.id}
+                                    index={headerIndex}
+                                    header={header}
+                                    instance={instance}
+                                    isLastGroup={
+                                        headerGroups.length - 1 === groupIndex
+                                    }
+                                />
+                            ))}
+                        </tr>
                     ))}
-
-                    <VariableSizeGrid<DataGridCellData<T>>
-                        ref={bodyRef}
-                        outerElementType={ScrollArea}
-                        columnCount={visible.length}
-                        columnWidth={(index) => visible[index].getSize()}
-                        rowCount={rows.length}
-                        rowHeight={() => 48}
-                        height={height - 36 - 48 * headerGroups.length}
-                        width={width}
-                        onScroll={onScroll}
-                        style={{ overflow: 'hidden' }}
-                        itemData={{
-                            getCell: (col, row) =>
-                                rows[row].getVisibleCells()[col],
-                        }}
-                        children={DataGridCell}
-                    />
-                </div>
-            )}
-        </AutoSizer>
+                </thead>
+                <tbody>
+                    {rows.map((row) => (
+                        <tr key={row.id} className={classes.row}>
+                            {row.getVisibleCells().map((cell) => (
+                                <DataTableCell key={cell.id} cell={cell} />
+                            ))}
+                        </tr>
+                    ))}
+                </tbody>
+            </MantineTable>
+        </Box>
     );
 }
-
-const ScrollArea = forwardRef<any, any>((props, ref) => {
-    const { classes } = useStyles();
-    return (
-        <Scrollbars
-            {...props}
-            ref={ref}
-            renderThumbVertical={(p) => (
-                <div {...p} className={classes.thumb} />
-            )}
-            renderThumbHorizontal={(p) => (
-                <div {...p} className={classes.thumb} />
-            )}
-        />
-    );
-});

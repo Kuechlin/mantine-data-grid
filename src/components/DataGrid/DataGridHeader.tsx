@@ -1,37 +1,40 @@
 import { Button, Group } from '@mantine/core';
-import { HeaderGroup, TableInstance } from '@tanstack/react-table';
+import {
+    Column,
+    Header,
+    HeaderGroup,
+    TableInstance,
+} from '@tanstack/react-table';
 import { ListChildComponentProps } from 'react-window';
-import { ChevronDown, Selector } from 'tabler-icons-react';
-import { canFilter, ColumnFilter } from '../ColumnFilter';
+import { ChevronDown, HeartRateMonitor, Selector } from 'tabler-icons-react';
+import { ColumnFilter } from '../ColumnFilter';
 import { DataTableGenerics } from '../types';
 import useStyles from './DataGrid.styles';
 
-export type DataGridHeaderData<T> = {
+export type DataTableHeaderProps<T> = {
+    index: number;
     instance: TableInstance<DataTableGenerics<T>>;
-    group: HeaderGroup<DataTableGenerics<T>>;
+    header: Header<DataTableGenerics<T>>;
     isLastGroup: boolean;
 };
-export type DataGridHeaderProps<T> = ListChildComponentProps<
-    DataGridHeaderData<T>
->;
 
-export function DataGridHeader<T>({
+export function DataTableHeader<T>({
     index,
-    style,
-    data: { instance, group, isLastGroup },
-}: DataGridHeaderProps<T>) {
+    header,
+    instance,
+    isLastGroup,
+}: DataTableHeaderProps<T>) {
     const { classes, cx } = useStyles();
-    const header = group.headers[index];
     const isSorted = header.column.getIsSorted();
     const canSort = isLastGroup && header.column.getCanSort();
-    const canFitler =
-        isLastGroup &&
-        header.column.getCanFilter() &&
-        canFilter(header.column.filterFn);
+    const canFitler = isLastGroup && header.column.getCanFilter();
 
     return (
-        <div
-            style={style}
+        <th
+            style={{
+                width: header.column.getSize() * header.colSpan,
+            }}
+            colSpan={header.colSpan}
             className={cx(classes.header, classes.cell, {
                 lastGroup: isLastGroup,
                 first: index === 0,
@@ -39,9 +42,9 @@ export function DataGridHeader<T>({
             })}
             onClick={header.column.getToggleSortingHandler()}
         >
-            <div className={classes.slot}>
+            <span className={classes.slot}>
                 {!header.isPlaceholder && header.renderHeader()}
-            </div>
+            </span>
             <Group spacing="xs" noWrap>
                 {canFitler && (
                     <ColumnFilter instance={instance} column={header.column} />
@@ -75,6 +78,6 @@ export function DataGridHeader<T>({
                 onMouseDown={header.getResizeHandler()}
                 onTouchStart={header.getResizeHandler()}
             />
-        </div>
+        </th>
     );
 }

@@ -1,43 +1,34 @@
 import { Button, Group } from '@mantine/core';
-import {
-    Column,
-    Header,
-    HeaderGroup,
-    TableInstance,
-} from '@tanstack/react-table';
+import { HeaderGroup, TableInstance } from '@tanstack/react-table';
 import { ListChildComponentProps } from 'react-window';
-import { ChevronDown, HeartRateMonitor, Selector } from 'tabler-icons-react';
-import { canFilter, ColumnFilter } from '../ColumnFilter';
+import { ChevronDown, Selector } from 'tabler-icons-react';
+import { ColumnFilter } from '../ColumnFilter';
 import { DataTableGenerics } from '../types';
-import useStyles from './DataTable.styles';
+import useStyles from './VirtualizedDataGrid.styles';
 
-export type DataTableHeaderProps<T> = {
-    index: number;
+export type DataGridHeaderData<T> = {
     instance: TableInstance<DataTableGenerics<T>>;
-    header: Header<DataTableGenerics<T>>;
+    group: HeaderGroup<DataTableGenerics<T>>;
     isLastGroup: boolean;
 };
+export type DataGridHeaderProps<T> = ListChildComponentProps<
+    DataGridHeaderData<T>
+>;
 
-export function DataTableHeader<T>({
+export function DataGridHeader<T>({
     index,
-    header,
-    instance,
-    isLastGroup,
-}: DataTableHeaderProps<T>) {
+    style,
+    data: { instance, group, isLastGroup },
+}: DataGridHeaderProps<T>) {
     const { classes, cx } = useStyles();
+    const header = group.headers[index];
     const isSorted = header.column.getIsSorted();
     const canSort = isLastGroup && header.column.getCanSort();
-    const canFitler =
-        isLastGroup &&
-        header.column.getCanFilter() &&
-        canFilter(header.column.filterFn);
+    const canFitler = isLastGroup && header.column.getCanFilter();
 
     return (
-        <th
-            style={{
-                width: header.column.getSize() * header.colSpan,
-            }}
-            colSpan={header.colSpan}
+        <div
+            style={style}
             className={cx(classes.header, classes.cell, {
                 lastGroup: isLastGroup,
                 first: index === 0,
@@ -45,9 +36,9 @@ export function DataTableHeader<T>({
             })}
             onClick={header.column.getToggleSortingHandler()}
         >
-            <span className={classes.slot}>
+            <div className={classes.slot}>
                 {!header.isPlaceholder && header.renderHeader()}
-            </span>
+            </div>
             <Group spacing="xs" noWrap>
                 {canFitler && (
                     <ColumnFilter instance={instance} column={header.column} />
@@ -81,6 +72,6 @@ export function DataTableHeader<T>({
                 onMouseDown={header.getResizeHandler()}
                 onTouchStart={header.getResizeHandler()}
             />
-        </th>
+        </div>
     );
 }
