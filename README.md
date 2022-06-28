@@ -22,7 +22,7 @@ Component is in early development, everything is likely to change.
 -   [ ] Column Filter
     -   [x] string filter
     -   [x] number filter
-    -   [ ] date filter
+    -   [x] date filter
     -   [ ] custom fitler
 -   [x] Column Sizing
 -   [x] Column sorting

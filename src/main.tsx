@@ -64,6 +64,7 @@ const createColumns: DataGridColumnsFactory<Data> = (table) => [
     }),
     table.createDataColumn('date', {
         cell: ({ cell }) => cell.getValue().toLocaleDateString(),
+        filterFn: 'dateFilter',
     }),
 ];
 

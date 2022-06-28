@@ -73,6 +73,7 @@ export const ColumnFilter = ({ column, className }: ColumnFilterProps) => {
             transition="scale-y"
             shadow="xl"
             onClose={close}
+            closeOnClickOutside={false}
             target={
                 <ActionIcon
                     size="xs"

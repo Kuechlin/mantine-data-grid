@@ -58,7 +58,7 @@ function DateFilterElement<T>({
             />
 
             <DatePicker
-                value={new Date(filter.value)}
+                value={filter.value ? new Date(filter.value) : null}
                 onChange={(e) => handleValueChange(e?.toISOString())}
                 placeholder="Filter value"
                 rightSection={<Filter />}
