@@ -1,62 +1,69 @@
-import {
-    Button,
-    DefaultProps,
-    Group,
-    MantineSize,
-    Selectors,
-    Stack,
-} from '@mantine/core';
+import { DefaultProps, MantineSize, Selectors, Stack } from '@mantine/core';
 import {
     ColumnDef,
+    ColumnSizingInfoState,
     createTable,
-    FilterFn,
     getCoreRowModel,
     getFilteredRowModel,
     getSortedRowModel,
     Overwrite,
     ReactTableGenerics,
     Table,
-    TableInstance,
     useTableInstance,
 } from '@tanstack/react-table';
-import { ComponentType, useRef, useState } from 'react';
-import { VariableSizeGrid, VariableSizeList } from 'react-window';
+import { useRef, useState } from 'react';
 import useStyles from './DataGrid.styles';
 
 import { GlobalFilter } from './GlobalFilter';
-import { ChevronDown, Filter, Selector } from 'tabler-icons-react';
 import { ColumnSorter } from './ColumnSorter';
 import {
     ColumnFilter,
     dataGridfilterFns,
     DataGridFilterFns,
 } from './ColumnFilter';
+import { DataGridCustomFilterFns } from './ColumnFilter/ColumnFilter';
 
-export type DataGridGenerics<T> = Overwrite<
+export type DataGridGenerics<
+    TData,
+    TFilters extends DataGridCustomFilterFns<DataGridGenerics<TData, TFilters>>
+> = Overwrite<
     ReactTableGenerics,
     {
-        Row: T;
-        FilterFns: DataGridFilterFns;
+        Row: TData;
+        FilterFns: DataGridFilterFns & TFilters;
     }
 >;
 
-export type DataGridColumnsFactory<T> = (
-    table: Table<DataGridGenerics<T>>
-) => ColumnDef<DataGridGenerics<T>>[];
+export type DataGridColumnsFactory<
+    TData,
+    TFilters extends DataGridCustomFilterFns<DataGridGenerics<TData, TFilters>>
+> = (
+    table: Table<DataGridGenerics<TData, TFilters>>
+) => ColumnDef<DataGridGenerics<TData, TFilters>>[];
 
 export type DataGridStylesNames = Selectors<typeof useStyles>;
 
-export interface DataTableProps<T>
-    extends DefaultProps<DataGridStylesNames>,
+export interface DataTableProps<
+    TData,
+    TFilters extends DataGridCustomFilterFns<
+        DataGridGenerics<TData, TFilters>
+    > = {}
+> extends DefaultProps<DataGridStylesNames>,
         React.ComponentPropsWithoutRef<'div'> {
-    columns: DataGridColumnsFactory<T>;
-    data: T[];
+    columns: DataGridColumnsFactory<TData, TFilters>;
+    data: TData[];
+    filterFns?: TFilters;
     withGlobalFilter?: boolean;
     noEllipsis?: boolean;
     size?: MantineSize;
 }
 
-export function DataGrid<T>({
+export function DataGrid<
+    TData,
+    TFilters extends DataGridCustomFilterFns<
+        DataGridGenerics<TData, TFilters>
+    > = {}
+>({
     data,
     columns: createColumns,
     classNames,
@@ -65,8 +72,9 @@ export function DataGrid<T>({
     size = 'md',
     noEllipsis,
     withGlobalFilter,
+    filterFns: customFilters,
     ...others
-}: DataTableProps<T>) {
+}: DataTableProps<TData, TFilters>) {
     const { classes, cx } = useStyles(
         { size },
         {
@@ -75,17 +83,21 @@ export function DataGrid<T>({
             name: 'DataGrid',
         }
     );
-    const headerRefs = useRef<VariableSizeList[]>([]);
-    const bodyRef = useRef<VariableSizeGrid>(null);
 
+    const { current: filterFns } = useRef({
+        ...dataGridfilterFns,
+        ...customFilters,
+    });
     const { current: table } = useRef(
-        createTable().setRowType<T>().setOptions({
-            filterFns: dataGridfilterFns,
-        }) as Table<DataGridGenerics<T>>
+        createTable().setRowType<TData>().setOptions({
+            filterFns,
+        }) as unknown as Table<DataGridGenerics<TData, TFilters>>
     );
     const { current: columns } = useRef(createColumns(table));
 
     const [globalFilter, setGlobalFilter] = useState('');
+    const [columnSizingInfo, setColumnSizingInfo] =
+        useState<ColumnSizingInfoState>({} as any);
 
     const instance = useTableInstance(table, {
         data,
@@ -95,26 +107,14 @@ export function DataGrid<T>({
         enableColumnResizing: true,
         state: {
             globalFilter,
+            columnSizingInfo,
         },
         onGlobalFilterChange: setGlobalFilter,
+        onColumnSizingInfoChange: setColumnSizingInfo,
 
         getCoreRowModel: getCoreRowModel(),
         getSortedRowModel: getSortedRowModel(),
         getFilteredRowModel: getFilteredRowModel(),
-
-        onColumnSizingInfoChange(updater) {
-            instance.setState((last) => ({
-                ...last,
-                columnSizingInfo:
-                    typeof updater === 'function'
-                        ? updater(last.columnSizingInfo)
-                        : updater,
-            }));
-            bodyRef.current?.resetAfterColumnIndex(0);
-            for (const ref of headerRefs.current) {
-                ref.resetAfterIndex(0);
-            }
-        },
 
         debugTable: true,
         debugHeaders: true,
@@ -142,6 +142,7 @@ export function DataGrid<T>({
                             >
                                 {group.headers.map((header, headerIndex) => (
                                     <div
+                                        key={header.id}
                                         style={{
                                             width: header.getSize(),
                                         }}
@@ -180,6 +181,9 @@ export function DataGrid<T>({
                                                             }
                                                             column={
                                                                 header.column
+                                                            }
+                                                            filterFns={
+                                                                filterFns
                                                             }
                                                         />
                                                     )}

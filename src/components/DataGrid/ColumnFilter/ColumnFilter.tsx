@@ -1,47 +1,42 @@
 import { ActionIcon, Button, Group, Popover, Stack } from '@mantine/core';
-import { Column, FilterFn } from '@tanstack/react-table';
+import { Column, FilterFn, TableGenerics } from '@tanstack/react-table';
 import { ComponentType, useState } from 'react';
 import { Check, Filter, X } from 'tabler-icons-react';
-import { dateFilter } from './dateFilter';
-import { numberFilter } from './numberFilter';
-import { stringFilter } from './stringFilter';
+import { DataGridGenerics } from '../DataGrid';
 
-export const dataGridfilter = {
-    stringFilter,
-    numberFilter,
-    dateFilter,
-};
-export type DataGridFilterFn = keyof typeof dataGridfilter;
-export type DataGridFilterFns = Record<DataGridFilterFn, FilterFn<any>>;
-export const dataGridfilterFns: DataGridFilterFns = {
-    stringFilter: stringFilter.filterFn,
-    numberFilter: numberFilter.filterFn,
-    dateFilter: dateFilter.filterFn,
-};
-
-export type DataGridFitler<T> = {
-    filterFn: FilterFn<any>;
-    element: ComponentType<DataGridFilterProps<T>>;
+export type DataGridFilterFn = FilterFn<any> & {
+    element: ComponentType<DataGridFilterProps>;
     init(): any;
 };
 
-export type DataGridFilterProps<T = any> = {
-    filter: T;
-    onFilterChange(value: T): void;
+export type DataGridCustomFilterFns<TGenerics extends TableGenerics> = Record<
+    string,
+    FilterFn<TGenerics>
+>;
+
+export type DataGridFilterProps = {
+    filter: any;
+    onFilterChange(value: any): void;
 };
 
 export interface ColumnFilterProps {
     column: Column<any>;
     className: string;
+    filterFns: Record<string, DataGridFilterFn>;
 }
 
-export const ColumnFilter = ({ column, className }: ColumnFilterProps) => {
+export const ColumnFilter = ({
+    column,
+    className,
+    filterFns,
+}: ColumnFilterProps) => {
     const [state, setState] = useState(null as null | { value: any });
 
-    const filterFn = column.filterFn.toString() as DataGridFilterFn;
-    if (!dataGridfilterFns[filterFn]) return null;
+    const filterFn = column.filterFn.toString();
 
-    const { element: Element, init } = dataGridfilter[filterFn];
+    if (!(filterFn in filterFns)) return null;
+
+    const { element: Element, init } = filterFns[filterFn];
 
     const open = () =>
         setState({

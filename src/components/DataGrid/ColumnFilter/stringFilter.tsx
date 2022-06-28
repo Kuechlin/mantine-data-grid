@@ -1,7 +1,7 @@
 import { Button, Group, Select, Stack, TextInput } from '@mantine/core';
 import { FilterFn } from '@tanstack/react-table';
 import { Filter, X, Check } from 'tabler-icons-react';
-import { DataGridFilterProps, DataGridFitler } from './ColumnFilter';
+import { DataGridFilterFn, DataGridFilterProps } from './ColumnFilter';
 
 export enum StringFilter {
     Includes = 'in',
@@ -12,7 +12,7 @@ export enum StringFilter {
     EndsWith = 'end',
 }
 
-const stringFilterFn: FilterFn<any> = (row, columnId, filter) => {
+export const stringFilterFn: DataGridFilterFn = (row, columnId, filter) => {
     const rowValue = String(row.getValue(columnId)).toLowerCase();
     const op = filter.op || StringFilter.Includes;
     const filterValue = String(filter.value).toLowerCase();
@@ -34,11 +34,14 @@ const stringFilterFn: FilterFn<any> = (row, columnId, filter) => {
     }
 };
 stringFilterFn.autoRemove = (val) => !val;
-
-function StringFilterElement<T>({
+stringFilterFn.init = () => ({
+    op: StringFilter.Includes,
+    value: '',
+});
+stringFilterFn.element = function ({
     filter,
     onFilterChange,
-}: DataGridFilterProps<{ op: string; value: string }>) {
+}: DataGridFilterProps) {
     const handleValueChange = (value: any) =>
         onFilterChange({ ...filter, value });
 
@@ -64,13 +67,4 @@ function StringFilterElement<T>({
             />
         </>
     );
-}
-
-export const stringFilter: DataGridFitler<any> = {
-    init: () => ({
-        op: StringFilter.Includes,
-        value: '',
-    }),
-    filterFn: stringFilterFn,
-    element: StringFilterElement,
 };

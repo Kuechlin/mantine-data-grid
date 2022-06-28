@@ -19,11 +19,11 @@ Component is in early development, everything is likely to change.
 -   [x] Simple Data Grid
 -   [x] Virualized Data Grid
 -   [x] Global Filter
--   [ ] Column Filter
+-   [x] Column Filter
     -   [x] string filter
     -   [x] number filter
     -   [x] date filter
-    -   [ ] custom fitler
+    -   [x] custom fitler
 -   [x] Column Sizing
 -   [x] Column sorting
 -   [ ] Scrolling

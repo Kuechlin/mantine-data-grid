@@ -15,12 +15,18 @@ import {
     Text,
     Space,
     InputWrapper,
+    Select,
+    MultiSelect,
 } from '@mantine/core';
 import React, { CSSProperties, useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import { faker } from '@faker-js/faker';
 import { BrandGithub } from 'tabler-icons-react';
-import { DataGrid, DataGridColumnsFactory } from './components';
+import {
+    DataGrid,
+    DataGridColumnsFactory,
+    DataGridFilterFn,
+} from './components';
 
 type Data = {
     text: string;
@@ -40,34 +46,6 @@ var data: Data[] = new Array(100).fill({}).map((i) => ({
     date: faker.datatype.datetime(),
 }));
 
-const createColumns: DataGridColumnsFactory<Data> = (table) => [
-    table.createDataColumn('text', {
-        header: () => 'Text that is too long for a Header',
-        filterFn: 'stringFilter',
-    }),
-    table.createGroup({
-        header: 'Animal',
-        columns: [
-            table.createDataColumn('cat', {
-                filterFn: 'stringFilter',
-            }),
-            table.createDataColumn('fish', {
-                filterFn: 'stringFilter',
-            }),
-        ],
-    }),
-    table.createDataColumn('city', {
-        filterFn: 'stringFilter',
-    }),
-    table.createDataColumn('value', {
-        filterFn: 'numberFilter',
-    }),
-    table.createDataColumn('date', {
-        cell: ({ cell }) => cell.getValue().toLocaleDateString(),
-        filterFn: 'dateFilter',
-    }),
-];
-
 const sizeMap = new Map<string | number, string | number>([
     ['xs', 0],
     ['sm', 25],
@@ -80,6 +58,31 @@ const sizeMap = new Map<string | number, string | number>([
     [75, 'lg'],
     [100, 'xl'],
 ]);
+
+const catFilter: DataGridFilterFn = (row, columnId, filter) => {
+    const rowValue = String(row.getValue(columnId));
+    return Array.isArray(filter) ? filter.includes(rowValue) : false;
+};
+catFilter.autoRemove = (val) => !val;
+catFilter.init = () => [];
+catFilter.element = function ({ filter, onFilterChange }) {
+    return (
+        <MultiSelect
+            data={[
+                { value: 'Peterbald', label: 'Peterbald' },
+                { value: 'Chartreux', label: 'Chartreux' },
+                { value: 'Highlander', label: 'Highlander' },
+                { value: 'Savannah', label: 'Savannah' },
+                { value: 'Birman', label: 'Birman' },
+                { value: 'Burmese', label: 'Burmese' },
+                { value: 'Siberian', label: 'Siberian' },
+            ]}
+            value={filter || []}
+            onChange={onFilterChange}
+            placeholder="Filter value"
+        />
+    );
+};
 
 function Demo() {
     const [state, setState] = useState({
@@ -105,9 +108,42 @@ function Demo() {
                 <Paper withBorder>
                     <div style={{ display: 'flex', alignItems: 'stretch' }}>
                         <Box p="md">
-                            <DataGrid<Data>
-                                columns={createColumns}
+                            <DataGrid
                                 data={data}
+                                filterFns={{
+                                    catFilter,
+                                }}
+                                columns={(table) => [
+                                    table.createDataColumn('text', {
+                                        header: () =>
+                                            'Text that is too long for a Header',
+                                        filterFn: 'stringFilterFn',
+                                    }),
+                                    table.createGroup({
+                                        header: 'Animal',
+                                        columns: [
+                                            table.createDataColumn('cat', {
+                                                filterFn: 'catFilter',
+                                            }),
+                                            table.createDataColumn('fish', {
+                                                filterFn: 'stringFilterFn',
+                                            }),
+                                        ],
+                                    }),
+                                    table.createDataColumn('city', {
+                                        filterFn: 'stringFilterFn',
+                                    }),
+                                    table.createDataColumn('value', {
+                                        filterFn: 'numberFilterFn',
+                                    }),
+                                    table.createDataColumn('date', {
+                                        cell: ({ cell }) =>
+                                            cell
+                                                .getValue()
+                                                .toLocaleDateString(),
+                                        filterFn: 'dateFilterFn',
+                                    }),
+                                ]}
                                 size={state.size as any}
                                 noEllipsis={state.ellipsis}
                                 withGlobalFilter={state.withGlobalFilter}

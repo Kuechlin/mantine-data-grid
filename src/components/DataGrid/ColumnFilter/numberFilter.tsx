@@ -1,7 +1,7 @@
 import { Select, TextInput } from '@mantine/core';
 import { FilterFn } from '@tanstack/react-table';
 import { Filter } from 'tabler-icons-react';
-import { DataGridFilterProps, DataGridFitler } from './ColumnFilter';
+import { DataGridFilterFn, DataGridFilterProps } from './ColumnFilter';
 
 export enum NumberFilter {
     Equals = 'eq',
@@ -12,7 +12,7 @@ export enum NumberFilter {
     LowerThanOrEquals = 'lte',
 }
 
-const numberFilterFn: FilterFn<any> = (row, columnId, filter) => {
+export const numberFilterFn: DataGridFilterFn = (row, columnId, filter) => {
     const rowValue = Number(row.getValue(columnId));
     const op = filter.op || NumberFilter.Equals;
     const filterValue = Number(filter.value);
@@ -34,11 +34,14 @@ const numberFilterFn: FilterFn<any> = (row, columnId, filter) => {
     }
 };
 numberFilterFn.autoRemove = (val) => !val;
-
-function NumberFilterElement<T>({
+numberFilterFn.init = () => ({
+    op: NumberFilter.GreaterThan,
+    value: 0,
+});
+numberFilterFn.element = function ({
     filter,
     onFilterChange,
-}: DataGridFilterProps<{ op: string; value: string }>) {
+}: DataGridFilterProps) {
     const handleValueChange = (value: any) =>
         onFilterChange({ ...filter, value });
 
@@ -64,13 +67,4 @@ function NumberFilterElement<T>({
             />
         </>
     );
-}
-
-export const numberFilter: DataGridFitler<any> = {
-    init: () => ({
-        op: NumberFilter.GreaterThan,
-        value: 0,
-    }),
-    filterFn: numberFilterFn,
-    element: NumberFilterElement,
 };
