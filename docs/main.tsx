@@ -22,11 +22,7 @@ import React, { CSSProperties, useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import { faker } from '@faker-js/faker';
 import { BrandGithub } from 'tabler-icons-react';
-import {
-    DataGrid,
-    DataGridColumnsFactory,
-    DataGridFilterFn,
-} from './components';
+import { DataGrid, DataGridFilterFn } from '../src';
 
 type Data = {
     text: string;

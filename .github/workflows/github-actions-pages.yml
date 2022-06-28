@@ -13,9 +13,9 @@ jobs:
               run: |
                   npm i -g pnpm
                   pnpm i
-                  pnpm run build
+                  pnpm run build:docs
             - name: Deploy 🚀
               uses: JamesIves/github-pages-deploy-action@4.1.7
               with:
                   branch: gh-pages
-                  folder: dist
+                  folder: dist-docs
