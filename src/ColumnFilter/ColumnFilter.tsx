@@ -32,7 +32,7 @@ export const ColumnFilter = ({
 }: ColumnFilterProps) => {
     const [state, setState] = useState(null as null | { value: any });
 
-    const filterFn = column.filterFn?.toString();
+    const filterFn = column.columnDef.filterFn.toString();
 
     if (!(filterFn in filterFns)) return null;
 
