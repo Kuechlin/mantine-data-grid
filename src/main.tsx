@@ -1,21 +1,26 @@
 import {
-    Anchor,
     Button,
+    Card,
     Center,
     Divider,
     Grid,
     Group,
     MantineProvider,
-    ScrollArea,
     Stack,
     Title,
+    Switch,
+    Box,
+    Paper,
+    Slider,
+    Text,
+    Space,
+    InputWrapper,
 } from '@mantine/core';
-import React, { CSSProperties } from 'react';
+import React, { CSSProperties, useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import { faker } from '@faker-js/faker';
 import { BrandGithub } from 'tabler-icons-react';
-import { DataGrid, DataTable } from './components';
-import { ColumnsFactory } from './components/types';
+import { DataGrid, DataGridColumnsFactory } from './components';
 
 type Data = {
     text: string;
@@ -35,7 +40,7 @@ var data: Data[] = new Array(100).fill({}).map((i) => ({
     date: faker.datatype.datetime(),
 }));
 
-const createColumns: ColumnsFactory<Data> = (table) => [
+const createColumns: DataGridColumnsFactory<Data> = (table) => [
     table.createDataColumn('text', {
         header: () => 'Text that is too long for a Header',
         filterFn: 'stringFilter',
@@ -62,10 +67,107 @@ const createColumns: ColumnsFactory<Data> = (table) => [
     }),
 ];
 
-const cell: CSSProperties = {
-    height: '500px',
-    //border: '1px solid red',
-};
+const sizeMap = new Map<string | number, string | number>([
+    ['xs', 0],
+    ['sm', 25],
+    ['md', 50],
+    ['lg', 75],
+    ['xl', 100],
+    [0, 'xs'],
+    [25, 'sm'],
+    [50, 'md'],
+    [75, 'lg'],
+    [100, 'xl'],
+]);
+
+function Demo() {
+    const [state, setState] = useState({
+        size: 'sm',
+        ellipsis: false,
+        withGlobalFilter: true,
+    });
+    const update = (next: Partial<typeof state>) =>
+        setState((last) => ({ ...last, ...next }));
+
+    return (
+        <Center p="lg">
+            <Stack align="center">
+                <Title>Mantine Data Grid</Title>
+                <Button
+                    leftIcon={<BrandGithub />}
+                    component="a"
+                    href="https://github.com/Kuechlin/mantine-data-grid"
+                    target="_blank"
+                    color="gray"
+                    children="Github"
+                />
+                <Paper withBorder>
+                    <div style={{ display: 'flex', alignItems: 'stretch' }}>
+                        <Box p="md">
+                            <DataGrid<Data>
+                                columns={createColumns}
+                                data={data}
+                                size={state.size as any}
+                                noEllipsis={state.ellipsis}
+                                withGlobalFilter={state.withGlobalFilter}
+                            />
+                        </Box>
+                        <div>
+                            <Divider orientation="vertical" />
+                        </div>
+                        <Box p="md">
+                            <Stack>
+                                <Title order={2}>Properties</Title>
+                                <div>
+                                    <Text weight="bold">Size</Text>
+                                    <Slider
+                                        step={25}
+                                        label={(value) => sizeMap.get(value)}
+                                        marks={[...sizeMap.entries()]
+                                            .filter(
+                                                (x) => typeof x[0] === 'number'
+                                            )
+                                            .map(([value, label]) => ({
+                                                value: +value,
+                                                label,
+                                            }))}
+                                        value={+(sizeMap.get(state.size) || 0)}
+                                        onChange={(e) =>
+                                            update({
+                                                size: sizeMap
+                                                    .get(e)
+                                                    ?.toString(),
+                                            })
+                                        }
+                                    />
+                                </div>
+                                <Space />
+                                <Switch
+                                    label="No Text ellipsis"
+                                    checked={state.ellipsis}
+                                    onChange={(e) =>
+                                        update({
+                                            ellipsis: e.target.checked,
+                                        })
+                                    }
+                                />
+                                <Switch
+                                    label="With global Filter"
+                                    checked={state.withGlobalFilter}
+                                    onChange={(e) =>
+                                        update({
+                                            withGlobalFilter: e.target.checked,
+                                        })
+                                    }
+                                />
+                            </Stack>
+                        </Box>
+                    </div>
+                </Paper>
+            </Stack>
+        </Center>
+    );
+}
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>
@@ -74,42 +176,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
             withGlobalStyles
             withNormalizeCSS
         >
-            <Stack>
-                <Center>
-                    <Title>Mantine Data Grid</Title>
-                </Center>
-                <Center>
-                    <Button
-                        leftIcon={<BrandGithub />}
-                        component="a"
-                        href="https://github.com/Kuechlin/mantine-data-grid"
-                        target="_blank"
-                        color="gray"
-                        children="Github"
-                    />
-                </Center>
-                <Grid justify="space-around" p="md">
-                    <Grid.Col span={5}>
-                        <Title>Data Table</Title>
-                        <Divider my="md" />
-                    </Grid.Col>
-                    <Grid.Col span={5}>
-                        <Title>Virtualized Data Grid</Title>
-                        <Divider my="md" />
-                    </Grid.Col>
-                    <Grid.Col span={5} style={cell}>
-                        <ScrollArea style={{ width: '100%', height: '100%' }}>
-                            <DataTable<Data>
-                                columns={createColumns}
-                                data={data}
-                            />
-                        </ScrollArea>
-                    </Grid.Col>
-                    <Grid.Col span={5} style={cell}>
-                        <DataGrid<Data> columns={createColumns} data={data} />
-                    </Grid.Col>
-                </Grid>
-            </Stack>
+            <Demo />
         </MantineProvider>
     </React.StrictMode>
 );

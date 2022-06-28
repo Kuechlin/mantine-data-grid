@@ -1,7 +1,7 @@
 import { Button, Group, Select, Stack, TextInput } from '@mantine/core';
 import { FilterFn } from '@tanstack/react-table';
 import { Filter, X, Check } from 'tabler-icons-react';
-import { DataTableFilterProps, DataTableFitler } from '../types';
+import { DataGridFilterProps, DataGridFitler } from './ColumnFilter';
 
 export enum StringFilter {
     Includes = 'in',
@@ -38,7 +38,7 @@ stringFilterFn.autoRemove = (val) => !val;
 function StringFilterElement<T>({
     filter,
     onFilterChange,
-}: DataTableFilterProps<{ op: string; value: string }>) {
+}: DataGridFilterProps<{ op: string; value: string }>) {
     const handleValueChange = (value: any) =>
         onFilterChange({ ...filter, value });
 
@@ -66,7 +66,7 @@ function StringFilterElement<T>({
     );
 }
 
-export const stringFilter: DataTableFitler<any> = {
+export const stringFilter: DataGridFitler<any> = {
     init: () => ({
         op: StringFilter.Includes,
         value: '',

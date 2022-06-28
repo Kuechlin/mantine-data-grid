@@ -1,22 +1,47 @@
-import { Button, Group, Popover, Stack } from '@mantine/core';
-import { Column, TableInstance } from '@tanstack/react-table';
-import { useState } from 'react';
+import { ActionIcon, Button, Group, Popover, Stack } from '@mantine/core';
+import { Column, FilterFn } from '@tanstack/react-table';
+import { ComponentType, useState } from 'react';
 import { Check, Filter, X } from 'tabler-icons-react';
-import { dataGridfilterFns } from '.';
+import { dateFilter } from './dateFilter';
+import { numberFilter } from './numberFilter';
+import { stringFilter } from './stringFilter';
 
-type ColumnFilterProps = {
-    column: Column<any>;
-    instance: TableInstance<any>;
+export const dataGridfilter = {
+    stringFilter,
+    numberFilter,
+    dateFilter,
+};
+export type DataGridFilterFn = keyof typeof dataGridfilter;
+export type DataGridFilterFns = Record<DataGridFilterFn, FilterFn<any>>;
+export const dataGridfilterFns: DataGridFilterFns = {
+    stringFilter: stringFilter.filterFn,
+    numberFilter: numberFilter.filterFn,
+    dateFilter: dateFilter.filterFn,
 };
 
-export const ColumnFilter = ({ column, instance }: ColumnFilterProps) => {
+export type DataGridFitler<T> = {
+    filterFn: FilterFn<any>;
+    element: ComponentType<DataGridFilterProps<T>>;
+    init(): any;
+};
+
+export type DataGridFilterProps<T = any> = {
+    filter: T;
+    onFilterChange(value: T): void;
+};
+
+export interface ColumnFilterProps {
+    column: Column<any>;
+    className: string;
+}
+
+export const ColumnFilter = ({ column, className }: ColumnFilterProps) => {
     const [state, setState] = useState(null as null | { value: any });
 
-    const filterFn =
-        column.filterFn.toString() as keyof typeof dataGridfilterFns;
+    const filterFn = column.filterFn.toString() as DataGridFilterFn;
     if (!dataGridfilterFns[filterFn]) return null;
 
-    const { element: Element, init } = dataGridfilterFns[filterFn];
+    const { element: Element, init } = dataGridfilter[filterFn];
 
     const open = () =>
         setState({
@@ -38,8 +63,6 @@ export const ColumnFilter = ({ column, instance }: ColumnFilterProps) => {
         close();
     };
 
-    const isFiltered = column.getIsFiltered();
-
     return (
         <Popover
             opened={!!state}
@@ -51,20 +74,14 @@ export const ColumnFilter = ({ column, instance }: ColumnFilterProps) => {
             shadow="xl"
             onClose={close}
             target={
-                <Button
-                    children={<Filter size={16} />}
-                    variant={isFiltered ? 'gradient' : 'subtle'}
-                    compact
+                <ActionIcon
                     size="xs"
-                    px={0}
-                    color="gray"
-                    gradient={
-                        isFiltered ? { from: 'teal', to: 'lime' } : undefined
-                    }
+                    children={<Filter size={16} />}
                     onClick={open}
+                    className={className}
+                    color={column.getIsFiltered() ? 'blue' : 'gray'}
                 />
             }
-            onClick={(e) => e.stopPropagation()}
             width="256px"
         >
             {!!state && (

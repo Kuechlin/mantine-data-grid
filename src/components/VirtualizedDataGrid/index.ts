@@ -1,1 +1,0 @@
-export { DataGrid } from './VirtualizedDataGrid';

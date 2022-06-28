@@ -22,14 +22,15 @@ Component is in early development, everything is likely to change.
 -   [ ] Column Filter
     -   [x] string filter
     -   [x] number filter
-    -   [x] date filter
+    -   [ ] date filter
     -   [ ] custom fitler
 -   [x] Column Sizing
 -   [x] Column sorting
 -   [ ] Scrolling
--   [ ] Fixed Header
--   [ ] Column pinning
+    -   [ ] Fixed Header
+    -   [ ] Column pinning
 -   [ ] Column Ordering
 -   [ ] Pagination
 -   [ ] Styles Api
+-   [ ] Overrides Api
 -   [ ] Docs

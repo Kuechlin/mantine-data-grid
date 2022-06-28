@@ -1,7 +1,7 @@
 import { Select, TextInput } from '@mantine/core';
 import { FilterFn } from '@tanstack/react-table';
 import { Filter } from 'tabler-icons-react';
-import { DataTableFilterProps, DataTableFitler } from '../types';
+import { DataGridFilterProps, DataGridFitler } from './ColumnFilter';
 
 export enum NumberFilter {
     Equals = 'eq',
@@ -38,7 +38,7 @@ numberFilterFn.autoRemove = (val) => !val;
 function NumberFilterElement<T>({
     filter,
     onFilterChange,
-}: DataTableFilterProps<{ op: string; value: string }>) {
+}: DataGridFilterProps<{ op: string; value: string }>) {
     const handleValueChange = (value: any) =>
         onFilterChange({ ...filter, value });
 
@@ -66,7 +66,7 @@ function NumberFilterElement<T>({
     );
 }
 
-export const numberFilter: DataTableFitler<any> = {
+export const numberFilter: DataGridFitler<any> = {
     init: () => ({
         op: NumberFilter.GreaterThan,
         value: 0,

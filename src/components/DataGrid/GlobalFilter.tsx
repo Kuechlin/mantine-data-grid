@@ -2,13 +2,17 @@ import { TextInput } from '@mantine/core';
 import React, { useEffect, useState } from 'react';
 import { Search } from 'tabler-icons-react';
 
+type GlobalFilterProps = {
+    globalFilter: string;
+    onGlobalFilterChange(value: string): void;
+    className?: string;
+};
+
 export function GlobalFilter({
     globalFilter,
     onGlobalFilterChange,
-}: {
-    globalFilter: string;
-    onGlobalFilterChange(value: string): void;
-}) {
+    className,
+}: GlobalFilterProps) {
     const [value, setValue] = useState(globalFilter);
 
     useEffect(() => {
@@ -29,6 +33,7 @@ export function GlobalFilter({
             onChange={(e) => setValue(e.target.value)}
             placeholder="Search"
             rightSection={<Search />}
+            className={className}
         />
     );
 }

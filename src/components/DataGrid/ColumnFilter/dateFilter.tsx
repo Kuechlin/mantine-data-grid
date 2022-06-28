@@ -1,7 +1,8 @@
 import { Select, TextInput } from '@mantine/core';
+import { DatePicker } from '@mantine/dates';
 import { FilterFn } from '@tanstack/react-table';
 import { Filter } from 'tabler-icons-react';
-import { DataTableFilterProps, DataTableFitler } from '../types';
+import { DataGridFilterProps, DataGridFitler } from './ColumnFilter';
 
 export enum DateFilter {
     Equals = 'eq',
@@ -38,7 +39,7 @@ dateFilterFn.autoRemove = (val) => !val;
 function DateFilterElement<T>({
     filter,
     onFilterChange,
-}: DataTableFilterProps<{ op: string; value: string }>) {
+}: DataGridFilterProps<{ op: string; value: string }>) {
     const handleValueChange = (value: any) =>
         onFilterChange({ ...filter, value });
 
@@ -56,9 +57,9 @@ function DateFilterElement<T>({
                 onChange={handleOperatorChange}
             />
 
-            <TextInput
-                value={filter.value}
-                onChange={(e) => handleValueChange(e.target.value)}
+            <DatePicker
+                value={new Date(filter.value)}
+                onChange={(e) => handleValueChange(e?.toISOString())}
                 placeholder="Filter value"
                 rightSection={<Filter />}
             />
@@ -66,7 +67,7 @@ function DateFilterElement<T>({
     );
 }
 
-export const dateFilter: DataTableFitler<any> = {
+export const dateFilter: DataGridFitler<any> = {
     init: () => ({
         op: DateFilter.GreaterThan,
         value: '',
