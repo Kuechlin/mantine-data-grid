@@ -32,5 +32,5 @@ Component is in early development, everything is likely to change.
 -   [ ] Column Ordering
 -   [ ] Pagination
 -   [ ] Styles Api
--   [ ] Overrides Api
 -   [ ] Docs
+-   [ ] Create npm package
