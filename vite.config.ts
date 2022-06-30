@@ -23,7 +23,6 @@ export default defineConfig({
                 '@mantine/core',
                 '@mantine/dates',
                 '@mantine/hooks',
-                'tabler-icons-react',
             ],
             output: {
                 // Provide global variables to use in the UMD build

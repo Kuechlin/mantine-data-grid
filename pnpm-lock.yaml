@@ -5,7 +5,7 @@ specifiers:
   '@mantine/core': ^4.2.5
   '@mantine/dates': ^4.2.11
   '@mantine/hooks': ^4.2.5
-  '@tanstack/react-table': ^8.0.0-alpha.87
+  '@tanstack/react-table': ^8.0.13
   '@types/node': ^18.0.0
   '@types/react': ^18.0.0
   '@types/react-dom': ^18.0.0
@@ -23,7 +23,7 @@ dependencies:
   '@mantine/core': 4.2.11_d90e44de24afb37c4742865a6ae244b2
   '@mantine/dates': 4.2.11_feba35cfa42e319e263889458153138a
   '@mantine/hooks': 4.2.11_react@18.2.0
-  '@tanstack/react-table': 8.0.6_react-dom@18.2.0+react@18.2.0
+  '@tanstack/react-table': 8.0.13_react-dom@18.2.0+react@18.2.0
   dayjs: 1.11.3
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
@@ -597,20 +597,20 @@ packages:
       picomatch: 2.3.1
     dev: true
 
-  /@tanstack/react-table/8.0.6_react-dom@18.2.0+react@18.2.0:
-    resolution: {integrity: sha512-c1A64TZI1kD1m4of9dWUCVDb+19fYSEapQ2WkySF/j/jcXojdNkfiZlxXPueSEVU7SK1A10NkHd6cgEzVR2imQ==}
+  /@tanstack/react-table/8.0.13_react-dom@18.2.0+react@18.2.0:
+    resolution: {integrity: sha512-4arYr+cGvpLiGSeAeLSTSlzuIB884pCFGzKI/MAX8/aFz7QZvkdu9AyWt9owCs/CYuPjd9iQoSwjfe3VK4yNPg==}
     engines: {node: '>=12'}
     peerDependencies:
       react: '>=16'
       react-dom: '>=16'
     dependencies:
-      '@tanstack/table-core': 8.0.6
+      '@tanstack/table-core': 8.0.13
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
     dev: false
 
-  /@tanstack/table-core/8.0.6:
-    resolution: {integrity: sha512-SgaCSKgEqFoybfUhGD6TkSEVBXpfB44rF/u4DqQH/hjyXzPuedzOGqcZMYQ+Fa8ec0i/EevgnBWNK9/48+m+tQ==}
+  /@tanstack/table-core/8.0.13:
+    resolution: {integrity: sha512-2G9DVpeIarsCkWNFe4ZPDDQQHK6XEqGr8C+G8eoSiPvM077LRg+oK150get3kRjbNUaHUT6RUEjc0lXNC6V83w==}
     engines: {node: '>=12'}
     dev: false
 
