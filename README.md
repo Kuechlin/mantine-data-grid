@@ -87,3 +87,4 @@ function Demo() {
 -   [x] Styles Api
 -   [x] Docs
 -   [ ] Create npm package
+-   [ ] Add tests
