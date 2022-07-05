@@ -25,7 +25,7 @@ import { DataGridCustomFilterFns } from './ColumnFilter/ColumnFilter';
 
 export type DataGridGenerics<
     TData,
-    TFilters extends DataGridCustomFilterFns<DataGridGenerics<TData, TFilters>>
+    TFilters extends DataGridCustomFilterFns
 > = Overwrite<
     ReactTableGenerics,
     {
@@ -36,18 +36,16 @@ export type DataGridGenerics<
 
 export type DataGridColumnsFactory<
     TData,
-    TFilters extends DataGridCustomFilterFns<DataGridGenerics<TData, TFilters>>
+    TFilters extends DataGridCustomFilterFns
 > = (
     table: Table<DataGridGenerics<TData, TFilters>>
 ) => ColumnDef<DataGridGenerics<TData, TFilters>>[];
 
 export type DataGridStylesNames = Selectors<typeof useStyles>;
 
-export interface DataTableProps<
+export interface DataGridProps<
     TData,
-    TFilters extends DataGridCustomFilterFns<
-        DataGridGenerics<TData, TFilters>
-    > = {}
+    TFilters extends DataGridCustomFilterFns = {}
 > extends DefaultProps<DataGridStylesNames>,
         React.ComponentPropsWithoutRef<'div'> {
     columns: DataGridColumnsFactory<TData, TFilters>;
@@ -55,28 +53,23 @@ export interface DataTableProps<
     filterFns?: TFilters;
     withGlobalFilter?: boolean;
     noEllipsis?: boolean;
-    size?: MantineSize;
+    spacing?: MantineSize;
 }
 
-export function DataGrid<
-    TData,
-    TFilters extends DataGridCustomFilterFns<
-        DataGridGenerics<TData, TFilters>
-    > = {}
->({
+export function DataGrid<TData, TFilters extends DataGridCustomFilterFns = {}>({
     data,
     columns: createColumns,
     classNames,
     styles,
     sx,
-    size = 'md',
+    spacing = 'sm',
     noEllipsis,
     withGlobalFilter,
     filterFns: customFilters,
     ...others
-}: DataTableProps<TData, TFilters>) {
+}: DataGridProps<TData, TFilters>) {
     const { classes, cx } = useStyles(
-        { size },
+        { spacing },
         {
             classNames,
             styles,
@@ -122,7 +115,7 @@ export function DataGrid<
     });
 
     return (
-        <Stack {...others} spacing={size}>
+        <Stack {...others} spacing={spacing}>
             {withGlobalFilter && (
                 <GlobalFilter
                     globalFilter={globalFilter}

@@ -1,3 +1,7 @@
 export { DataGrid } from './DataGrid';
-export type { DataGridColumnsFactory } from './DataGrid';
-export type { DataGridFilterFn } from './ColumnFilter';
+export type {
+    DataGridColumnsFactory,
+    DataGridGenerics,
+    DataGridProps,
+} from './DataGrid';
+export type { DataGridFilterFn, DataGridFilterFns } from './ColumnFilter';

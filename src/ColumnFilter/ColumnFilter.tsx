@@ -1,18 +1,14 @@
 import { ActionIcon, Button, Group, Popover, Stack } from '@mantine/core';
-import { Column, FilterFn, TableGenerics } from '@tanstack/react-table';
+import { Column, FilterFn } from '@tanstack/react-table';
 import { ComponentType, useState } from 'react';
 import { Check, Filter, X } from 'tabler-icons-react';
-import { DataGridGenerics } from '../DataGrid';
 
 export type DataGridFilterFn = FilterFn<any> & {
     element: ComponentType<DataGridFilterProps>;
     init(): any;
 };
 
-export type DataGridCustomFilterFns<TGenerics extends TableGenerics> = Record<
-    string,
-    FilterFn<TGenerics>
->;
+export type DataGridCustomFilterFns = Record<string, DataGridFilterFn>;
 
 export type DataGridFilterProps = {
     filter: any;
