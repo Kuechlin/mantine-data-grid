@@ -83,10 +83,11 @@ function Demo() {
                     borderColor: theme.colors.teal[4],
                 },
             })}            
-            columns={(table) => [
-                table.createDataColumn('text', {
-                    header: () => 'Text',
-                }),
+            columns={[
+                {
+                    accessorKey: 'text'
+                    header: 'Text'
+                }
             ]}
         />
     );

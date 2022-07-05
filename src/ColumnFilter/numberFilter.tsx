@@ -12,7 +12,11 @@ export enum NumberFilter {
     LowerThanOrEquals = 'lte',
 }
 
-export const numberFilterFn: DataGridFilterFn = (row, columnId, filter) => {
+export const numberFilterFn: DataGridFilterFn<any> = (
+    row,
+    columnId,
+    filter
+) => {
     const rowValue = Number(row.getValue(columnId));
     const op = filter.op || NumberFilter.Equals;
     const filterValue = Number(filter.value);

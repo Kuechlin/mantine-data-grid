@@ -12,7 +12,4 @@ export const dataGridfilterFns = {
     dateFilterFn,
 };
 
-export type DataGridFilterFns = Record<
-    keyof typeof dataGridfilterFns,
-    DataGridFilterFn
->;
+export type DataGridFilterFns = keyof typeof dataGridfilterFns;

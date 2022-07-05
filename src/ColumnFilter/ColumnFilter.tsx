@@ -1,14 +1,16 @@
 import { ActionIcon, Button, Group, Popover, Stack } from '@mantine/core';
-import { Column, FilterFn } from '@tanstack/react-table';
+import { Column, FilterFn, RowData } from '@tanstack/react-table';
 import { ComponentType, useState } from 'react';
 import { Check, Filter, X } from 'tabler-icons-react';
+import { dataGridfilterFns } from '.';
 
-export type DataGridFilterFn = FilterFn<any> & {
+export type DataGridFilterFn<TData extends RowData> = FilterFn<TData> & {
     element: ComponentType<DataGridFilterProps>;
     init(): any;
 };
-
-export type DataGridCustomFilterFns = Record<string, DataGridFilterFn>;
+export function isDataGridFilter(val: any): val is DataGridFilterFn<any> {
+    return typeof val === 'function' && 'element' in val && 'init' in val;
+}
 
 export type DataGridFilterProps = {
     filter: any;
@@ -18,21 +20,22 @@ export type DataGridFilterProps = {
 export interface ColumnFilterProps {
     column: Column<any>;
     className: string;
-    filterFns: Record<string, DataGridFilterFn>;
 }
 
-export const ColumnFilter = ({
-    column,
-    className,
-    filterFns,
-}: ColumnFilterProps) => {
+export const ColumnFilter = ({ column, className }: ColumnFilterProps) => {
     const [state, setState] = useState(null as null | { value: any });
 
-    const filterFn = column.columnDef.filterFn?.toString() || '';
+    const filterFn = column.columnDef.filterFn;
 
-    if (!(filterFn in filterFns)) return null;
+    const filter = isDataGridFilter(filterFn)
+        ? filterFn
+        : typeof filterFn === 'string' && filterFn in dataGridfilterFns
+        ? dataGridfilterFns[filterFn as keyof typeof dataGridfilterFns]
+        : null;
 
-    const { element: Element, init } = filterFns[filterFn];
+    if (filter === null) return null;
+
+    const { element: Element, init } = filter;
 
     const open = () =>
         setState({

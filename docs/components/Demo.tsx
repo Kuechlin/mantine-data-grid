@@ -46,7 +46,7 @@ const sizeMap = new Map<string | number, string | number>([
     [100, 'xl'],
 ]);
 
-const catFilter: DataGridFilterFn = (row, columnId, filter) => {
+const catFilter: DataGridFilterFn<any> = (row, columnId, filter) => {
     const rowValue = String(row.getValue(columnId));
     return Array.isArray(filter) ? filter.includes(rowValue) : false;
 };
@@ -85,36 +85,33 @@ export default function Demo() {
             <Box p="md" style={{ flexGrow: 1 }}>
                 <DataGrid
                     data={data}
-                    filterFns={{
-                        catFilter,
-                    }}
-                    columns={(table) => [
-                        table.createDataColumn('text', {
-                            header: () => 'Text that is too long for a Header',
+                    columns={[
+                        {
+                            accessorKey: 'text',
+                            header: 'Text that is too long for a Header',
                             filterFn: 'stringFilterFn',
-                        }),
-                        table.createGroup({
+                        },
+                        {
                             header: 'Animal',
                             columns: [
-                                table.createDataColumn('cat', {
-                                    filterFn: 'catFilter',
-                                }),
-                                table.createDataColumn('fish', {
+                                { accessorKey: 'cat', filterFn: catFilter },
+                                {
+                                    accessorKey: 'fish',
                                     filterFn: 'stringFilterFn',
-                                }),
+                                },
                             ],
-                        }),
-                        table.createDataColumn('city', {
+                        },
+                        {
+                            accessorKey: 'city',
                             filterFn: 'stringFilterFn',
-                        }),
-                        table.createDataColumn('value', {
-                            filterFn: 'numberFilterFn',
-                        }),
-                        table.createDataColumn('date', {
-                            cell: ({ cell }) =>
-                                cell.getValue().toLocaleDateString(),
+                        },
+                        { accessorKey: 'value', filterFn: 'numberFilterFn' },
+                        {
+                            accessorKey: 'date',
+                            cell: (cell) =>
+                                cell.getValue()?.toLocaleDateString(),
                             filterFn: 'dateFilterFn',
-                        }),
+                        },
                     ]}
                     spacing={state.spacing as any}
                     noEllipsis={state.ellipsis}

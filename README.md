@@ -29,32 +29,32 @@ function Demo() {
             data={/* data source */}
             size="md"
             withGlobalFilter
-            columns={(table) => [
-                table.createDataColumn('text', {
-                    header: () => 'Text that is too long for a Header',
+            columns={[
+                {
+                    accessorKey: 'text',
+                    header: 'Text that is too long for a Header',
                     filterFn: 'stringFilterFn',
-                }),
-                table.createGroup({
+                },
+                {
                     header: 'Animal',
                     columns: [
-                        table.createDataColumn('cat', {
+                        { accessorKey: 'cat', filterFn: catFilter },
+                        {
+                            accessorKey: 'fish',
                             filterFn: 'stringFilterFn',
-                        }),
-                        table.createDataColumn('fish', {
-                            filterFn: 'stringFilterFn',
-                        }),
+                        },
                     ],
-                }),
-                table.createDataColumn('city', {
+                },
+                {
+                    accessorKey: 'city',
                     filterFn: 'stringFilterFn',
-                }),
-                table.createDataColumn('value', {
-                    filterFn: 'numberFilterFn',
-                }),
-                table.createDataColumn('date', {
-                    cell: ({ cell }) => cell.getValue().toLocaleDateString(),
+                },
+                { accessorKey: 'value', filterFn: 'numberFilterFn' },
+                {
+                    accessorKey: 'date',
+                    cell: (cell) => cell.getValue()?.toLocaleDateString(),
                     filterFn: 'dateFilterFn',
-                }),
+                },
             ]}
         />
     );

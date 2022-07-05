@@ -1,73 +1,69 @@
 import { DefaultProps, MantineSize, Selectors, Stack } from '@mantine/core';
 import {
     ColumnDef,
+    ColumnDefTemplate,
+    ColumnPinningColumnDef,
+    ColumnSizingColumnDef,
     ColumnSizingInfoState,
+    CoreColumnDef,
+    CoreHeader,
     createTable,
+    flexRender,
     getCoreRowModel,
     getFilteredRowModel,
     getSortedRowModel,
+    GroupingColumnDef,
     Overwrite,
-    ReactTableGenerics,
+    RowData,
+    SortingColumnDef,
     Table,
-    useTableInstance,
+    useReactTable,
+    VisibilityColumnDef,
 } from '@tanstack/react-table';
 import { useRef, useState } from 'react';
 import useStyles from './DataGrid.styles';
 
 import { GlobalFilter } from './GlobalFilter';
 import { ColumnSorter } from './ColumnSorter';
-import {
-    ColumnFilter,
-    dataGridfilterFns,
-    DataGridFilterFns,
-} from './ColumnFilter';
-import { DataGridCustomFilterFns } from './ColumnFilter/ColumnFilter';
-
-export type DataGridGenerics<
-    TData,
-    TFilters extends DataGridCustomFilterFns
-> = Overwrite<
-    ReactTableGenerics,
-    {
-        Row: TData;
-        FilterFns: DataGridFilterFns & TFilters;
-    }
->;
-
-export type DataGridColumnsFactory<
-    TData,
-    TFilters extends DataGridCustomFilterFns
-> = (
-    table: Table<DataGridGenerics<TData, TFilters>>
-) => ColumnDef<DataGridGenerics<TData, TFilters>>[];
+import { ColumnFilter, DataGridFilterFns } from './ColumnFilter';
+import { DataGridFilterFn } from './ColumnFilter/ColumnFilter';
 
 export type DataGridStylesNames = Selectors<typeof useStyles>;
 
-export interface DataGridProps<
-    TData,
-    TFilters extends DataGridCustomFilterFns = {}
-> extends DefaultProps<DataGridStylesNames>,
+export type DataGridFiltersColumnDef<TData extends RowData> = {
+    filterFn?: DataGridFilterFns | DataGridFilterFn<TData>;
+    enableColumnFilter?: boolean;
+    enableGlobalFilter?: boolean;
+};
+export type DataGridColumnDef<TData extends RowData> = CoreColumnDef<TData> &
+    VisibilityColumnDef &
+    ColumnPinningColumnDef &
+    DataGridFiltersColumnDef<TData> &
+    SortingColumnDef<TData> &
+    GroupingColumnDef<TData> &
+    ColumnSizingColumnDef;
+
+export interface DataGridProps<TData extends RowData>
+    extends DefaultProps<DataGridStylesNames>,
         React.ComponentPropsWithoutRef<'div'> {
-    columns: DataGridColumnsFactory<TData, TFilters>;
+    columns: DataGridColumnDef<TData>[];
     data: TData[];
-    filterFns?: TFilters;
     withGlobalFilter?: boolean;
     noEllipsis?: boolean;
     spacing?: MantineSize;
 }
 
-export function DataGrid<TData, TFilters extends DataGridCustomFilterFns = {}>({
+export function DataGrid<TData extends RowData>({
     data,
-    columns: createColumns,
+    columns,
     classNames,
     styles,
     sx,
     spacing = 'sm',
     noEllipsis,
     withGlobalFilter,
-    filterFns: customFilters,
     ...others
-}: DataGridProps<TData, TFilters>) {
+}: DataGridProps<TData>) {
     const { classes, cx } = useStyles(
         { spacing },
         {
@@ -77,24 +73,13 @@ export function DataGrid<TData, TFilters extends DataGridCustomFilterFns = {}>({
         }
     );
 
-    const { current: filterFns } = useRef({
-        ...dataGridfilterFns,
-        ...customFilters,
-    });
-    const { current: table } = useRef(
-        createTable().setRowType<TData>().setOptions({
-            filterFns,
-        }) as unknown as Table<DataGridGenerics<TData, TFilters>>
-    );
-    const { current: columns } = useRef(createColumns(table));
-
     const [globalFilter, setGlobalFilter] = useState('');
     const [columnSizingInfo, setColumnSizingInfo] =
         useState<ColumnSizingInfoState>({} as any);
 
-    const instance = useTableInstance(table, {
+    const table = useReactTable<TData>({
         data,
-        columns,
+        columns: columns as any,
         columnResizeMode: 'onChange',
         enableColumnFilters: true,
         enableColumnResizing: true,
@@ -125,7 +110,7 @@ export function DataGrid<TData, TFilters extends DataGridCustomFilterFns = {}>({
             )}
             <div className={classes.table} role="table">
                 <div className={classes.header} role="rowgroup">
-                    {instance
+                    {table
                         .getHeaderGroups()
                         .map((group, groupIndex, headerGroups) => (
                             <div
@@ -150,7 +135,11 @@ export function DataGrid<TData, TFilters extends DataGridCustomFilterFns = {}>({
                                                             !noEllipsis,
                                                     })}
                                                 >
-                                                    {header.renderHeader()}
+                                                    {flexRender(
+                                                        header.column.columnDef
+                                                            .header,
+                                                        header.getContext()
+                                                    )}
                                                 </div>
                                                 <div
                                                     className={
@@ -175,9 +164,6 @@ export function DataGrid<TData, TFilters extends DataGridCustomFilterFns = {}>({
                                                             column={
                                                                 header.column
                                                             }
-                                                            filterFns={
-                                                                filterFns
-                                                            }
                                                         />
                                                     )}
                                                 </div>
@@ -201,7 +187,7 @@ export function DataGrid<TData, TFilters extends DataGridCustomFilterFns = {}>({
                         ))}
                 </div>
                 <div className={classes.body} role="rowgroup">
-                    {instance.getRowModel().rows.map((row) => (
+                    {table.getRowModel().rows.map((row) => (
                         <div key={row.id} className={classes.row} role="row">
                             {row.getVisibleCells().map((cell) => (
                                 <div
@@ -212,7 +198,10 @@ export function DataGrid<TData, TFilters extends DataGridCustomFilterFns = {}>({
                                     className={cx(classes.dataCell, {
                                         [classes.ellipsis]: !noEllipsis,
                                     })}
-                                    children={cell.renderCell()}
+                                    children={flexRender(
+                                        cell.column.columnDef.cell,
+                                        cell.getContext()
+                                    )}
                                     role="gridcell"
                                 />
                             ))}

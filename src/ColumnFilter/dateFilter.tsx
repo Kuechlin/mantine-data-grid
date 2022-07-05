@@ -13,7 +13,7 @@ export enum DateFilter {
     LowerThanOrEquals = 'lte',
 }
 
-export const dateFilterFn: DataGridFilterFn = (row, columnId, filter) => {
+export const dateFilterFn: DataGridFilterFn<any> = (row, columnId, filter) => {
     const rowValue = new Date(row.getValue(columnId));
     const op = filter.op || DateFilter.Equals;
     const filterValue = new Date(filter.value);

@@ -12,7 +12,11 @@ export enum StringFilter {
     EndsWith = 'end',
 }
 
-export const stringFilterFn: DataGridFilterFn = (row, columnId, filter) => {
+export const stringFilterFn: DataGridFilterFn<any> = (
+    row,
+    columnId,
+    filter
+) => {
     const rowValue = String(row.getValue(columnId)).toLowerCase();
     const op = filter.op || StringFilter.Includes;
     const filterValue = String(filter.value).toLowerCase();
