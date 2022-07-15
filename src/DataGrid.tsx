@@ -251,8 +251,6 @@ export function DataGrid<TData extends RowData>({
             <Pagination
                 table={table}
                 onPageChange={onPageChange}
-                initialPageIndex={pagination?.initialPageIndex}
-                initialPageSize={pagination?.initialPageSize}
             />
         </Stack>
     );

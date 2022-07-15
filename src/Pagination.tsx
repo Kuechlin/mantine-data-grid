@@ -7,18 +7,7 @@ export const DEFAULT_PAGE_OPTIONS = ["10", "25", "50", "100"];
 export const DEFAULT_INITIAL_PAGE = 0;
 export const DEFAULT_INITIAL_SIZE = 10;
 
-export function Pagination({ table, onPageChange, initialPageIndex = DEFAULT_INITIAL_PAGE, initialPageSize = DEFAULT_INITIAL_SIZE }) {
-
-  useEffect(() => {
-    if (initialPageIndex !== DEFAULT_INITIAL_PAGE) {
-      table.setPageIndex(Number(initialPageIndex) - 1);
-    }
-
-    if (initialPageSize !== DEFAULT_INITIAL_SIZE) {
-      table.setPageSize(Number(initialPageSize));
-    }
-  }, []);
-
+export function Pagination({ table, onPageChange }) {
   const handlePageSizeChange = (value: string) => {
     table.setPageSize(Number(value));
     const pageCount = table.getPageCount();
@@ -47,13 +36,13 @@ export function Pagination({ table, onPageChange, initialPageIndex = DEFAULT_INI
   const getPageRecordInfo = () => {
     const pageIndex = table.getState().pagination.pageIndex;
     const pageSize = table.getState().pagination.pageSize;
-    const pageCount = table.getPageCount();
+    const { rows: allRows } = table.getCoreRowModel();
 
     const firstRowNum = pageIndex * pageSize + 1;
 
     const currLastRowNum = (pageIndex + 1) * pageSize;
-    const lastRowNum = currLastRowNum < pageCount ? currLastRowNum : pageCount;
-    return `${firstRowNum} - ${lastRowNum} of ${pageCount}`;
+    const lastRowNum = currLastRowNum < allRows.length ? currLastRowNum : allRows.length;
+    return `${firstRowNum} - ${lastRowNum} of ${allRows.length}`;
   };
 
   return (

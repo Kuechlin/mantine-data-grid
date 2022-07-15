@@ -71,10 +71,6 @@ catFilter.element = function ({ filter, onFilterChange }) {
 };
 
 export default function Demo() {
-    // const searchParam = new URLSearchParams(location.search);
-    // const initialPageIndex = searchParam.get("page") ? parseInt(searchParam.get("page") || "0", 10) : 0;
-    // const initialPageSize = searchParam.get("size")  ? parseInt(searchParam.get("size") || "0", 10) : 10 ;
-
     const initialPageIndex = 0;
     const initialPageSize = 10 ;
     const [state, setState] = useState({
@@ -84,8 +80,7 @@ export default function Demo() {
     });
 
     const onPageChange = (e: PaginationArg) => {
-        console.log(`[onPageChange] -> pageIndex: ${e.pageIndex}, pageSize: ${e.pageSize}, pageCount: ${e.pageCount}`);
-        // location.assign(`?page=${e.pageIndex + 1}&size=${e.pageSize}`)
+        console.log(`pageIndex: ${e.pageIndex}, pageSize: ${e.pageSize}, pageCount: ${e.pageCount}`);
     }
 
     const update = (next: Partial<typeof state>) =>
