@@ -14,6 +14,9 @@ import {
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrandGithub } from 'tabler-icons-react';
+
+import { QueryClient, QueryClientProvider } from 'react-query'
+
 import Demo from './components/Demo';
 import Code from './components/Code';
 import Documentation from './components/Documentation';
@@ -78,6 +81,8 @@ function Main() {
     );
 }
 
+const queryClient = new QueryClient()
+
 ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>
         <MantineProvider
@@ -85,7 +90,10 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
             withGlobalStyles
             withNormalizeCSS
         >
-            <Main />
+            <QueryClientProvider client={queryClient}>
+
+                <Main />
+            </QueryClientProvider>
         </MantineProvider>
     </React.StrictMode>
 );

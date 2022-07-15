@@ -1,3 +1,4 @@
+import React from 'react';
 import { DefaultProps, MantineSize, Selectors, Stack } from '@mantine/core';
 import {
     ColumnDef,
@@ -11,22 +12,25 @@ import {
     flexRender,
     getCoreRowModel,
     getFilteredRowModel,
+    getPaginationRowModel,
     getSortedRowModel,
     GroupingColumnDef,
     Overwrite,
+    PaginationState,
     RowData,
     SortingColumnDef,
     Table,
     useReactTable,
     VisibilityColumnDef,
 } from '@tanstack/react-table';
-import { useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import useStyles from './DataGrid.styles';
 
 import { GlobalFilter } from './GlobalFilter';
 import { ColumnSorter } from './ColumnSorter';
 import { ColumnFilter, DataGridFilterFns } from './ColumnFilter';
 import { DataGridFilterFn } from './ColumnFilter/ColumnFilter';
+import { Pagination } from './Pagination';
 
 export type DataGridStylesNames = Selectors<typeof useStyles>;
 
@@ -43,14 +47,22 @@ export type DataGridColumnDef<TData extends RowData> = CoreColumnDef<TData> &
     GroupingColumnDef<TData> &
     ColumnSizingColumnDef;
 
+export type PaginationArg = {
+    pageIndex: number;
+    pageSize: number;
+    pageCount: number;
+};
+
 export interface DataGridProps<TData extends RowData>
     extends DefaultProps<DataGridStylesNames>,
-        React.ComponentPropsWithoutRef<'div'> {
+    React.ComponentPropsWithoutRef<'div'> {
     columns: DataGridColumnDef<TData>[];
     data: TData[];
     withGlobalFilter?: boolean;
     noEllipsis?: boolean;
     spacing?: MantineSize;
+    pagination: PaginationArg;
+    onPageChange?: ({ pageIndex, pageSize }: PaginationArg) => void;
 }
 
 export function DataGrid<TData extends RowData>({
@@ -62,6 +74,8 @@ export function DataGrid<TData extends RowData>({
     spacing = 'sm',
     noEllipsis,
     withGlobalFilter,
+    pagination,
+    onPageChange,
     ...others
 }: DataGridProps<TData>) {
     const { classes, cx } = useStyles(
@@ -86,10 +100,17 @@ export function DataGrid<TData extends RowData>({
         state: {
             globalFilter,
             columnSizingInfo,
+            pagination: {
+                pageIndex: pagination.pageIndex,
+                pageSize: pagination.pageSize,
+            }
         },
         onGlobalFilterChange: setGlobalFilter,
         onColumnSizingInfoChange: setColumnSizingInfo,
 
+        pageCount: pagination.pageCount ?? -1,
+        // onPaginationChange: setPagination,
+        manualPagination: true,
         getCoreRowModel: getCoreRowModel(),
         getSortedRowModel: getSortedRowModel(),
         getFilteredRowModel: getFilteredRowModel(),
@@ -209,6 +230,7 @@ export function DataGrid<TData extends RowData>({
                     ))}
                 </div>
             </div>
+            <Pagination table={table} onPageChange={onPageChange}/>
         </Stack>
     );
 }

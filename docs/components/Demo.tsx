@@ -13,25 +13,11 @@ import {
 } from '@mantine/core';
 import { useHash } from '@mantine/hooks';
 import { useState } from 'react';
-import { DataGrid, DataGridFilterFn } from '../../src';
+import { useQuery } from 'react-query'
 
-type Data = {
-    text: string;
-    cat: string;
-    fish: string;
-    city: string;
-    value: number;
-    date: Date;
-};
-
-var data: Data[] = new Array(100).fill({}).map((i) => ({
-    text: faker.lorem.lines(),
-    cat: faker.animal.cat(),
-    fish: faker.animal.fish(),
-    city: faker.address.city(),
-    value: faker.datatype.number(),
-    date: faker.datatype.datetime(),
-}));
+import { DataGrid, DataGridFilterFn, PaginationArg } from '../../src';
+import { fetchDataFaker } from './fetchDataFaker'
+import { PaginationState } from '@tanstack/react-table';
 
 const sizeMap = new Map<string | number, string | number>([
     ['xs', 0],
@@ -76,7 +62,32 @@ export default function Demo() {
         spacing: 'sm',
         ellipsis: false,
         withGlobalFilter: true,
+        pagination: {
+            pageIndex: 0,
+            pageSize: 10,
+        }
     });
+
+    const fetchDataOptions = {
+        pageIndex: state.pagination.pageIndex,
+        pageSize: state.pagination.pageSize,
+    };
+
+    const onPageChange = (e: PaginationArg) => {
+        console.log(`[onPageChange] -> pageIndex: ${e.pageIndex}, pageSize: ${e.pageSize}, pageCount: ${e.pageCount}`);
+
+        setState((last) => ({ ...last, pagination: {
+            pageIndex: e.pageIndex,
+            pageSize: e.pageSize,
+        } }));
+    }
+
+    const dataQuery = useQuery(
+        ['data', fetchDataOptions],
+        () => fetchDataFaker(fetchDataOptions),
+        { keepPreviousData: true }
+    );
+
     const update = (next: Partial<typeof state>) =>
         setState((last) => ({ ...last, ...next }));
 
@@ -84,12 +95,15 @@ export default function Demo() {
         <div style={{ display: 'flex', alignItems: 'stretch' }}>
             <Box p="md" style={{ flexGrow: 1 }}>
                 <DataGrid
-                    data={data}
+                    data={dataQuery.data?.rows ?? []}
+                    pagination={{...state.pagination, pageCount: dataQuery.data?.pageCount ?? -1}}
+                    onPageChange={onPageChange}
                     columns={[
                         {
                             accessorKey: 'text',
                             header: 'Text that is too long for a Header',
                             filterFn: 'stringFilterFn',
+                            minSize: 300,
                         },
                         {
                             header: 'Animal',
