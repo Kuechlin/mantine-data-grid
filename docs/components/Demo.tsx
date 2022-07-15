@@ -3,7 +3,6 @@ import {
     Box,
     Divider,
     MultiSelect,
-    Paper,
     Slider,
     Space,
     Stack,
@@ -11,13 +10,27 @@ import {
     Text,
     Title,
 } from '@mantine/core';
-import { useHash } from '@mantine/hooks';
 import { useState } from 'react';
-import { useQuery } from 'react-query'
 
 import { DataGrid, DataGridFilterFn, PaginationArg } from '../../src';
-import { fetchDataFaker } from './fetchDataFaker'
-import { PaginationState } from '@tanstack/react-table';
+
+type Data = {
+    text: string;
+    cat: string;
+    fish: string;
+    city: string;
+    value: number;
+    date: Date;
+};
+
+var data: Data[] = new Array(1000).fill({}).map((i) => ({
+    text: faker.lorem.lines(),
+    cat: faker.animal.cat(),
+    fish: faker.animal.fish(),
+    city: faker.address.city(),
+    value: faker.datatype.number(),
+    date: faker.datatype.datetime(),
+}));
 
 const sizeMap = new Map<string | number, string | number>([
     ['xs', 0],
@@ -58,35 +71,22 @@ catFilter.element = function ({ filter, onFilterChange }) {
 };
 
 export default function Demo() {
+    // const searchParam = new URLSearchParams(location.search);
+    // const initialPageIndex = searchParam.get("page") ? parseInt(searchParam.get("page") || "0", 10) : 0;
+    // const initialPageSize = searchParam.get("size")  ? parseInt(searchParam.get("size") || "0", 10) : 10 ;
+
+    const initialPageIndex = 0;
+    const initialPageSize = 10 ;
     const [state, setState] = useState({
         spacing: 'sm',
         ellipsis: false,
         withGlobalFilter: true,
-        pagination: {
-            pageIndex: 0,
-            pageSize: 10,
-        }
     });
-
-    const fetchDataOptions = {
-        pageIndex: state.pagination.pageIndex,
-        pageSize: state.pagination.pageSize,
-    };
 
     const onPageChange = (e: PaginationArg) => {
         console.log(`[onPageChange] -> pageIndex: ${e.pageIndex}, pageSize: ${e.pageSize}, pageCount: ${e.pageCount}`);
-
-        setState((last) => ({ ...last, pagination: {
-            pageIndex: e.pageIndex,
-            pageSize: e.pageSize,
-        } }));
+        // location.assign(`?page=${e.pageIndex + 1}&size=${e.pageSize}`)
     }
-
-    const dataQuery = useQuery(
-        ['data', fetchDataOptions],
-        () => fetchDataFaker(fetchDataOptions),
-        { keepPreviousData: true }
-    );
 
     const update = (next: Partial<typeof state>) =>
         setState((last) => ({ ...last, ...next }));
@@ -95,8 +95,11 @@ export default function Demo() {
         <div style={{ display: 'flex', alignItems: 'stretch' }}>
             <Box p="md" style={{ flexGrow: 1 }}>
                 <DataGrid
-                    data={dataQuery.data?.rows ?? []}
-                    pagination={{...state.pagination, pageCount: dataQuery.data?.pageCount ?? -1}}
+                    data={data}
+                    pagination={{
+                        initialPageIndex,
+                        initialPageSize,
+                     }}
                     onPageChange={onPageChange}
                     columns={[
                         {

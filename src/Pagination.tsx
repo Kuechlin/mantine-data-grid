@@ -1,26 +1,34 @@
 import { Divider, Group, Select, Text,
-  Pagination as MantinePagination } from "@mantine/core";
+  Pagination as MantinePagination,
+  Stack} from "@mantine/core";
 import { useEffect } from "react";
 
-const DEFAULT_PAGE_OPTIONS = ["10", "25", "50", "100"];
+export const DEFAULT_PAGE_OPTIONS = ["10", "25", "50", "100"];
+export const DEFAULT_INITIAL_PAGE = 0;
+export const DEFAULT_INITIAL_SIZE = 10;
 
-export function Pagination({ table, onPageChange, initialPageIndex, initialPageSize }) {
+export function Pagination({ table, onPageChange, initialPageIndex = DEFAULT_INITIAL_PAGE, initialPageSize = DEFAULT_INITIAL_SIZE }) {
 
   useEffect(() => {
-    if (initialPageIndex) {
+    if (initialPageIndex !== DEFAULT_INITIAL_PAGE) {
       table.setPageIndex(Number(initialPageIndex) - 1);
     }
-    if (initialPageSize) {
+
+    if (initialPageSize !== DEFAULT_INITIAL_SIZE) {
       table.setPageSize(Number(initialPageSize));
     }
   }, []);
 
   const handlePageSizeChange = (value: string) => {
-    table.setPageSize(Number(value))
+    table.setPageSize(Number(value));
     const pageCount = table.getPageCount();
 
     if (onPageChange) {
-      onPageChange({ pageIndex: table.getState().pagination.pageIndex, pageSize: Number(value), pageCount })
+      onPageChange({
+        pageIndex: table.getState().pagination.pageIndex,
+        pageSize: Number(value),
+        pageCount
+      })
     }
   }
 
@@ -28,7 +36,11 @@ export function Pagination({ table, onPageChange, initialPageIndex, initialPageS
     table.setPageIndex(Number(pageNum) - 1);
     const pageCount = table.getPageCount();
     if (onPageChange) {
-      onPageChange({ pageIndex: Number(pageNum) - 1, pageSize: table.getState().pagination.pageSize, pageCount })
+      onPageChange({
+        pageIndex: Number(pageNum) - 1,
+        pageSize: table.getState().pagination.pageSize,
+        pageCount
+      })
     }
   };
 
@@ -45,8 +57,7 @@ export function Pagination({ table, onPageChange, initialPageIndex, initialPageS
   };
 
   return (
-    <>
-      <Divider mb="md" variant="dotted" />
+    <Stack>
       <Group position="right">
         <Text size="sm">Rows per page: </Text>
         <Select
@@ -67,6 +78,6 @@ export function Pagination({ table, onPageChange, initialPageIndex, initialPageS
           onChange={handlePageChange}
         />
       </Group>
-    </>
+    </Stack>
   )
 }
