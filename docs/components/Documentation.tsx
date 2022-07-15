@@ -1,4 +1,4 @@
-import { Code, Stack, Text, Title } from '@mantine/core';
+import { Stack, Text, Title } from '@mantine/core';
 import { Prism } from '@mantine/prism';
 
 export default function Docs() {

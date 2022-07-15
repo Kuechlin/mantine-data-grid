@@ -1,4 +1,4 @@
-import { Stack, Table, Title, Text } from '@mantine/core';
+import { Stack, Table, Title, Text, Code } from '@mantine/core';
 
 const Required = () => (
     <Text style={{ display: 'inline' }} color="red" children="*" />
@@ -33,7 +33,7 @@ export default function Properties() {
                         </td>
                         <td>
                             <Text
-                                color="orange"
+                                size="sm" color="orange"
                                 children="(table: Table) => ColumnDef[]"
                             />
                         </td>
@@ -45,14 +45,14 @@ export default function Properties() {
                             <Required />
                         </td>
                         <td>
-                            <Text color="orange" children="Array<T>" />
+                            <Text  size="sm"color="orange" children="Array<T>" />
                         </td>
                         <td>Grid data</td>
                     </tr>
                     <tr>
                         <td>filterFns</td>
                         <td>
-                            <Text
+                            <Text size="sm"
                                 color="orange"
                                 children="Record<string, DataGridFilterFn>"
                             />
@@ -62,26 +62,55 @@ export default function Properties() {
                     <tr>
                         <td>withGlobalFilter</td>
                         <td>
-                            <Text color="orange" children="boolean" />
+                            <Text size="sm" color="orange" children="boolean" />
                         </td>
                         <td>Show global filter</td>
                     </tr>
                     <tr>
                         <td>noEllipsis</td>
                         <td>
-                            <Text color="orange" children="boolean" />
+                            <Text size="sm" color="orange" children="boolean" />
                         </td>
                         <td>Disable text ellipsis</td>
                     </tr>
                     <tr>
                         <td>spacing</td>
                         <td>
-                            <Text
+                            <Text size="sm"
                                 color="orange"
                                 children='number | "xs" | "sm" | "md" | "lg" | "xl"'
                             />
                         </td>
                         <td>Space between elements</td>
+                    </tr>
+                    <tr>
+                        <td>withPagination</td>
+                        <td>
+                            <Text size="sm" color="orange" children="boolean" />
+                        </td>
+                        <td>Enable pagination feature</td>
+                    </tr>
+                    <tr>
+                        <td>onPageChange</td>
+                        <td>
+                            <Text size="sm" color="orange" children="({ pageIndex, pageSize, pageCount }) => void;" />
+                        </td>
+                        <td>
+                            Callback function on pagination data changed.
+                            <br />
+                            Need <Code>withPagination</Code> set to true
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>pagination</td>
+                        <td>
+                            <Text size="sm" color="orange" children="{ initialPageIndex: number; initialPageSize: number; }" />
+                        </td>
+                        <td>
+                            Callback function on pagination data changed.
+                            <br />
+                            Need <Code>withPagination</Code> set to true
+                        </td>
                     </tr>
                 </tbody>
             </Table>

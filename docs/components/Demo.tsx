@@ -10,7 +10,7 @@ import {
     Text,
     Title,
 } from '@mantine/core';
-import { useReducer, useState } from 'react';
+import { useState } from 'react';
 
 import { DataGrid, DataGridFilterFn, PaginationArg } from '../../src';
 
