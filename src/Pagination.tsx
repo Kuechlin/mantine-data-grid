@@ -1,13 +1,13 @@
 import { Divider, Group, Select, Text,
   Pagination as MantinePagination,
   Stack} from "@mantine/core";
-import { useEffect } from "react";
+import { OnPageChangeCallback } from "./types";
 
 export const DEFAULT_PAGE_OPTIONS = ["10", "25", "50", "100"];
 export const DEFAULT_INITIAL_PAGE = 0;
 export const DEFAULT_INITIAL_SIZE = 10;
 
-export function Pagination({ table, onPageChange }) {
+export function Pagination({ table, onPageChange }: { table: any, onPageChange: OnPageChangeCallback }) {
   const handlePageSizeChange = (value: string) => {
     table.setPageSize(Number(value));
     const pageCount = table.getPageCount();
