@@ -44,7 +44,7 @@ function Main() {
                 </Center>
             </Grid.Col>
             <Grid.Col md={12} lg={10}>
-                <Paper withBorder>
+                <Paper>
                     <Tabs
                         active={hash ? tabs.findIndex((x) => x === hash) : 0}
                         onTabChange={(i) => setHash(tabs[i])}

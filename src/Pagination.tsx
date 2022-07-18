@@ -1,13 +1,24 @@
 import { Divider, Group, Select, Text,
   Pagination as MantinePagination,
-  Stack} from "@mantine/core";
+  Stack,
+  Box} from "@mantine/core";
 import { OnPageChangeCallback } from "./types";
 
 export const DEFAULT_PAGE_OPTIONS = ["10", "25", "50", "100"];
 export const DEFAULT_INITIAL_PAGE = 0;
 export const DEFAULT_INITIAL_SIZE = 10;
 
-export function Pagination({ table, onPageChange }: { table: any, onPageChange: OnPageChangeCallback }) {
+export function Pagination({ table, onPageChange, className = 'pagination' }: { table: any, onPageChange: OnPageChangeCallback, className: string }) {
+
+  const { rows: allRows } = table.getCoreRowModel();
+  const pageIndex = table.getState().pagination.pageIndex;
+  const pageSize = table.getState().pagination.pageSize;
+
+  const firstRowNum = pageIndex * pageSize + 1;
+
+  const currLastRowNum = (pageIndex + 1) * pageSize;
+  const lastRowNum = currLastRowNum < allRows.length ? currLastRowNum : allRows.length;
+
   const handlePageSizeChange = (value: string) => {
     table.setPageSize(Number(value));
     const pageCount = table.getPageCount();
@@ -33,39 +44,30 @@ export function Pagination({ table, onPageChange }: { table: any, onPageChange: 
     }
   };
 
-  const getPageRecordInfo = () => {
-    const pageIndex = table.getState().pagination.pageIndex;
-    const pageSize = table.getState().pagination.pageSize;
-    const { rows: allRows } = table.getCoreRowModel();
-
-    const firstRowNum = pageIndex * pageSize + 1;
-
-    const currLastRowNum = (pageIndex + 1) * pageSize;
-    const lastRowNum = currLastRowNum < allRows.length ? currLastRowNum : allRows.length;
-    return `${firstRowNum} - ${lastRowNum} of ${allRows.length}`;
-  };
-
   return (
-    <Stack>
-      <Group position="right">
-        <Text size="sm">Rows per page: </Text>
-        <Select
-          style={{ width: "72px" }}
-          variant="filled"
-          data={DEFAULT_PAGE_OPTIONS}
-          value={`${table.getState().pagination.pageSize}`}
-          onChange={handlePageSizeChange}
-        />
-        <Divider orientation="vertical" />
-
-        <Text size="sm">{getPageRecordInfo()}</Text>
-        <Divider orientation="vertical" />
-
-        <MantinePagination
-          page={table.getState().pagination.pageIndex + 1}
-          total={table.getPageCount()}
-          onChange={handlePageChange}
-        />
+    <Stack className={className}>
+      <Group position="apart">
+          <Text size="sm" className={`${className}-info`}>
+            Showing <b>{firstRowNum}</b> - <b>{lastRowNum}</b> of <b>{allRows.length}</b> result
+          </Text>
+        <Group >
+          <Text size="sm">Rows per page: </Text>
+          <Select
+            style={{ width: "72px" }}
+            variant="filled"
+            data={DEFAULT_PAGE_OPTIONS}
+            value={`${table.getState().pagination.pageSize}`}
+            onChange={handlePageSizeChange}
+            className={`${className}-size`}
+          />
+          <Divider orientation="vertical" />
+          <MantinePagination
+            page={table.getState().pagination.pageIndex + 1}
+            total={table.getPageCount()}
+            onChange={handlePageChange}
+            className={`${className}-page`}
+          />
+        </Group>
       </Group>
     </Stack>
   )
