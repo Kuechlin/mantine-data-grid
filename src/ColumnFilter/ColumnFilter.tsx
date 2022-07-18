@@ -63,7 +63,6 @@ export const ColumnFilter = ({ column, className }: ColumnFilterProps) => {
             position="bottom"
             placement="center"
             withArrow
-            withCloseButton
             transition="scale-y"
             shadow="xl"
             onClose={close}
