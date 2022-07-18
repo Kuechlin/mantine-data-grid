@@ -76,6 +76,7 @@ function Demo() {
     -   [x] string filter
     -   [x] number filter
     -   [x] date filter
+    -   [x] boolean filter
     -   [x] custom fitler
 -   [x] Column Sizing
 -   [x] Column sorting
