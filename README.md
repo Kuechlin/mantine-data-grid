@@ -83,7 +83,7 @@ function Demo() {
     -   [ ] Fixed Header
     -   [ ] Column pinning
 -   [ ] Column Ordering
--   [ ] Pagination
+-   [x] Pagination
 -   [x] Styles Api
 -   [x] Docs
 -   [ ] Create npm package
