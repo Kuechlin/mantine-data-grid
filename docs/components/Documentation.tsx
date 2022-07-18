@@ -47,7 +47,7 @@ var data: Data[] = new Array(100).fill({}).map((i) => ({
 `;
 
 const grid_usage = `
-import { DataGrid } from 'mantine-data-grid';
+import { DataGrid, highlightFilterValue } from 'mantine-data-grid';
 
 function Demo() {
     return (
@@ -60,6 +60,8 @@ function Demo() {
                     accessorKey: 'text',
                     header: 'Text that is too long for a Header',
                     filterFn: 'stringFilterFn',
+                    size: 300,
+                    cell: highlightFilterValue,
                 },
                 {
                     header: 'Animal',
@@ -81,6 +83,10 @@ function Demo() {
                     cell: (cell) =>
                         cell.getValue()?.toLocaleDateString(),
                     filterFn: 'dateFilterFn',
+                },
+                {
+                    accessorKey: 'bool',
+                    filterFn: 'booleanFilterFn',
                 },
             ]}
         />

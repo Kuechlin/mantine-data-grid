@@ -4,6 +4,7 @@ import { booleanFilterFn } from './booleanFilter';
 import { dateFilterFn } from './dateFilter';
 import { numberFilterFn } from './numberFilter';
 import { stringFilterFn } from './stringFilter';
+export { highlightFilterValue } from './stringFilter';
 
 export { ColumnFilter } from './ColumnFilter';
 export type { DataGridFilterFn } from './ColumnFilter';

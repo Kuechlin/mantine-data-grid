@@ -2,6 +2,8 @@ import faker from '@faker-js/faker';
 import {
     Box,
     Divider,
+    Highlight,
+    Mark,
     MultiSelect,
     Slider,
     Space,
@@ -13,6 +15,7 @@ import {
 import { useState } from 'react';
 
 import { DataGrid, DataGridFilterFn, PaginationArg } from '../../src';
+import { highlightFilterValue } from '../../src/ColumnFilter/stringFilter';
 
 type Data = {
     text: string;
@@ -117,7 +120,8 @@ export default function Demo() {
                             accessorKey: 'text',
                             header: 'Text that is too long for a Header',
                             filterFn: 'stringFilterFn',
-                            minSize: 300,
+                            size: 300,
+                            cell: highlightFilterValue,
                         },
                         {
                             header: 'Animal',
