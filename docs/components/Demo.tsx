@@ -3,7 +3,6 @@ import {
     Box,
     Divider,
     MultiSelect,
-    Paper,
     Slider,
     Space,
     Stack,
@@ -11,9 +10,9 @@ import {
     Text,
     Title,
 } from '@mantine/core';
-import { useHash } from '@mantine/hooks';
 import { useState } from 'react';
-import { DataGrid, DataGridFilterFn } from '../../src';
+
+import { DataGrid, DataGridFilterFn, PaginationArg } from '../../src';
 
 type Data = {
     text: string;
@@ -25,6 +24,15 @@ type Data = {
 };
 
 var data: Data[] = new Array(100).fill({}).map((i) => ({
+    text: faker.lorem.lines(),
+    cat: faker.animal.cat(),
+    fish: faker.animal.fish(),
+    city: faker.address.city(),
+    value: faker.datatype.number(),
+    date: faker.datatype.datetime(),
+}));
+
+var dataForPagination: Data[] = new Array(1000).fill({}).map((i) => ({
     text: faker.lorem.lines(),
     cat: faker.animal.cat(),
     fish: faker.animal.fish(),
@@ -72,24 +80,41 @@ catFilter.element = function ({ filter, onFilterChange }) {
 };
 
 export default function Demo() {
+    const initialPageIndex = 0;
+    const initialPageSize = 10 ;
+
     const [state, setState] = useState({
         spacing: 'sm',
         ellipsis: false,
         withGlobalFilter: true,
+        usePagination: false,
     });
-    const update = (next: Partial<typeof state>) =>
+
+    const onPageChange = (e: PaginationArg) => {
+        console.log(`pageIndex: ${e.pageIndex}, pageSize: ${e.pageSize}, pageCount: ${e.pageCount}`);
+    }
+
+    const update = (next: Partial<typeof state>) => {
         setState((last) => ({ ...last, ...next }));
+    }
 
     return (
         <div style={{ display: 'flex', alignItems: 'stretch' }}>
             <Box p="md" style={{ flexGrow: 1 }}>
                 <DataGrid
-                    data={data}
+                    data={state.usePagination ? dataForPagination : data}
+                    withPagination={state.usePagination}
+                    pagination={{
+                        initialPageIndex,
+                        initialPageSize,
+                    }}
+                    onPageChange={onPageChange}
                     columns={[
                         {
                             accessorKey: 'text',
                             header: 'Text that is too long for a Header',
                             filterFn: 'stringFilterFn',
+                            minSize: 300,
                         },
                         {
                             header: 'Animal',
@@ -159,6 +184,15 @@ export default function Demo() {
                         onChange={(e) =>
                             update({
                                 withGlobalFilter: e.target.checked,
+                            })
+                        }
+                    />
+                    <Switch
+                        label="Show pagination"
+                        checked={state.usePagination}
+                        onChange={(e) =>
+                            update({
+                                usePagination: e.target.checked,
                             })
                         }
                     />

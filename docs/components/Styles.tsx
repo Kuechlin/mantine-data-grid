@@ -1,4 +1,4 @@
-import { Stack, Table, Title, Text } from '@mantine/core';
+import { Stack, Table, Title } from '@mantine/core';
 import { Prism } from '@mantine/prism';
 
 export default function Styles() {
@@ -82,7 +82,7 @@ function Demo() {
                 header: {
                     borderColor: theme.colors.teal[4],
                 },
-            })}            
+            })}
             columns={[
                 {
                     accessorKey: 'text'
