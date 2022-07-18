@@ -1,5 +1,12 @@
-import { Button, Group, Select, Stack, TextInput } from '@mantine/core';
-import { FilterFn } from '@tanstack/react-table';
+import {
+    Button,
+    Group,
+    Highlight,
+    Select,
+    Stack,
+    TextInput,
+} from '@mantine/core';
+import { Column, FilterFn, Table } from '@tanstack/react-table';
 import { Filter, X, Check } from 'tabler-icons-react';
 import { DataGridFilterFn, DataGridFilterProps } from './ColumnFilter';
 
@@ -70,5 +77,21 @@ stringFilterFn.element = function ({
                 rightSection={<Filter />}
             />
         </>
+    );
+};
+
+export const highlightFilterValue = ({
+    renderValue,
+    column,
+}: {
+    column: Column<any>;
+    renderValue(): any;
+}) => {
+    const filter = column.getFilterValue() as any;
+    return (
+        <Highlight
+            highlight={filter && filter.value ? [filter.value] : []}
+            children={renderValue()}
+        />
     );
 };
