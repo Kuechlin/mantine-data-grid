@@ -1,7 +1,9 @@
 import { useEffect, useMemo } from 'react';
 import { Stack } from '@mantine/core';
 import {
+    ColumnDef,
     ColumnSizingInfoState,
+    FilterFn,
     flexRender,
     getCoreRowModel,
     getFilteredRowModel,
@@ -16,8 +18,12 @@ import useStyles from './DataGrid.styles';
 
 import { GlobalFilter } from './GlobalFilter';
 import { ColumnSorter } from './ColumnSorter';
-import { ColumnFilter } from './ColumnFilter';
-import { Pagination, DEFAULT_INITIAL_PAGE, DEFAULT_INITIAL_SIZE } from './Pagination';
+import { ColumnFilter, injectFilterFn } from './ColumnFilter';
+import {
+    Pagination,
+    DEFAULT_INITIAL_PAGE,
+    DEFAULT_INITIAL_SIZE,
+} from './Pagination';
 import { DataGridProps } from './types';
 
 export function DataGrid<TData extends RowData>({
@@ -43,49 +49,45 @@ export function DataGrid<TData extends RowData>({
         }
     );
 
+    const tableColumns = useMemo(() => columns.map(injectFilterFn), [columns]);
+
     const [globalFilter, setGlobalFilter] = useState('');
     const [columnSizingInfo, setColumnSizingInfo] =
         useState<ColumnSizingInfoState>({} as any);
 
-    const initialPageIndex = pagination?.initialPageIndex || DEFAULT_INITIAL_PAGE;
+    const initialPageIndex =
+        pagination?.initialPageIndex || DEFAULT_INITIAL_PAGE;
     const initiaPageSize = pagination?.initialPageSize || DEFAULT_INITIAL_SIZE;
 
-    const [{ pageIndex, pageSize }, setPagination] =
-        useState<PaginationState>({
-            pageIndex: initialPageIndex,
-            pageSize: initiaPageSize,
-        });
+    const [{ pageIndex, pageSize }, setPagination] = useState<PaginationState>({
+        pageIndex: initialPageIndex,
+        pageSize: initiaPageSize,
+    });
 
-    const paginationMemo = useMemo(
-        () => {
-            if (withPagination) {
-                return {
-                    pageIndex,
-                    pageSize,
-                }
-            }
-
+    const paginationMemo = useMemo(() => {
+        if (withPagination) {
             return {
-                pageIndex: 0,
-                pageSize: data.length,
-            }
-        },
-        [withPagination, data, pageIndex, pageSize]
-    )
+                pageIndex,
+                pageSize,
+            };
+        }
 
-    const pageCount = useMemo(
-        () => {
-            if (withPagination && pageSize) {
-                return Math.floor(data.length / pageSize) ?? -1
-            }
-            return data.length
-        },
-        [data, pageSize, withPagination]
-    )
+        return {
+            pageIndex: 0,
+            pageSize: data.length,
+        };
+    }, [withPagination, data, pageIndex, pageSize]);
+
+    const pageCount = useMemo(() => {
+        if (withPagination && pageSize) {
+            return Math.floor(data.length / pageSize) ?? -1;
+        }
+        return data.length;
+    }, [data, pageSize, withPagination]);
 
     const table = useReactTable<TData>({
         data: data,
-        columns: columns as any,
+        columns: tableColumns,
         columnResizeMode: 'onChange',
         enableColumnFilters: true,
         enableColumnResizing: true,
@@ -94,17 +96,19 @@ export function DataGrid<TData extends RowData>({
             columnSizingInfo,
 
             // For pagination
-           ...(withPagination ? { pagination: paginationMemo }: {})
+            ...(withPagination ? { pagination: paginationMemo } : {}),
         },
         onGlobalFilterChange: setGlobalFilter,
         onColumnSizingInfoChange: setColumnSizingInfo,
 
         // Pagination feature
-        ...(withPagination ? {
-            getPaginationRowModel: getPaginationRowModel(),
-            pageCount: pageCount,
-            onPaginationChange: setPagination,
-         }: {}),
+        ...(withPagination
+            ? {
+                  getPaginationRowModel: getPaginationRowModel(),
+                  pageCount: pageCount,
+                  onPaginationChange: setPagination,
+              }
+            : {}),
 
         getCoreRowModel: getCoreRowModel(),
         getSortedRowModel: getSortedRowModel(),
@@ -116,10 +120,10 @@ export function DataGrid<TData extends RowData>({
     });
 
     useEffect(() => {
-        if (!withPagination){
+        if (!withPagination) {
             table.setPageSize(data.length);
         }
-    }, [])
+    }, []);
 
     return (
         <Stack {...others} spacing={spacing}>
@@ -233,12 +237,8 @@ export function DataGrid<TData extends RowData>({
             </div>
 
             {withPagination ? (
-                <Pagination
-                    table={table}
-                    onPageChange={onPageChange}
-                />
-            ) : null }
-
+                <Pagination table={table} onPageChange={onPageChange} />
+            ) : null}
         </Stack>
     );
 }

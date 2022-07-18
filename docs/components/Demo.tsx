@@ -30,6 +30,7 @@ var data: Data[] = new Array(100).fill({}).map((i) => ({
     city: faker.address.city(),
     value: faker.datatype.number(),
     date: faker.datatype.datetime(),
+    bool: faker.datatype.boolean(),
 }));
 
 var dataForPagination: Data[] = new Array(1000).fill({}).map((i) => ({
@@ -81,7 +82,7 @@ catFilter.element = function ({ filter, onFilterChange }) {
 
 export default function Demo() {
     const initialPageIndex = 0;
-    const initialPageSize = 10 ;
+    const initialPageSize = 10;
 
     const [state, setState] = useState({
         spacing: 'sm',
@@ -91,12 +92,14 @@ export default function Demo() {
     });
 
     const onPageChange = (e: PaginationArg) => {
-        console.log(`pageIndex: ${e.pageIndex}, pageSize: ${e.pageSize}, pageCount: ${e.pageCount}`);
-    }
+        console.log(
+            `pageIndex: ${e.pageIndex}, pageSize: ${e.pageSize}, pageCount: ${e.pageCount}`
+        );
+    };
 
     const update = (next: Partial<typeof state>) => {
         setState((last) => ({ ...last, ...next }));
-    }
+    };
 
     return (
         <div style={{ display: 'flex', alignItems: 'stretch' }}>
@@ -136,6 +139,10 @@ export default function Demo() {
                             cell: (cell) =>
                                 cell.getValue()?.toLocaleDateString(),
                             filterFn: 'dateFilterFn',
+                        },
+                        {
+                            accessorKey: 'bool',
+                            filterFn: 'booleanFilterFn',
                         },
                     ]}
                     spacing={state.spacing as any}
