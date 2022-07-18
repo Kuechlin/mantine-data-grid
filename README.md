@@ -1,5 +1,7 @@
 # Mantine Data Grid
 
+![Version](https://img.shields.io/npm/v/mantine-data-grid?style=flat-square)
+
 Data Grid component with [Mantine UI](https://mantine.dev/) and [react-table v8](https://tanstack.com/table/v8/).
 
 Component is in alpha stage, there might be bugs and component api could change.
