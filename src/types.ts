@@ -1,5 +1,10 @@
 import React from 'react';
-import { DefaultProps, MantineSize, Selectors } from '@mantine/core';
+import {
+    DefaultProps,
+    MantineNumberSize,
+    MantineSize,
+    Selectors,
+} from '@mantine/core';
 import {
     ColumnPinningColumnDef,
     ColumnSizingColumnDef,
@@ -40,12 +45,28 @@ export type OnPageChangeCallback = (arg0: PaginationArg) => void;
 
 export interface DataGridProps<TData extends RowData>
     extends DefaultProps<DataGridStylesNames>,
-    React.ComponentPropsWithoutRef<'div'> {
+        React.ComponentPropsWithoutRef<'div'> {
+    /** Gird column definitions */
     columns: DataGridColumnDef<TData>[];
+    /** Grid Data */
     data: TData[];
+    /** Enable global search filter */
     withGlobalFilter?: boolean;
+    /** Text overflow ellipsis is disabled*/
     noEllipsis?: boolean;
-    spacing?: MantineSize;
+    /** If true react-table debug log is enabled */
+    debug?: boolean;
+    /** If true every odd row of table will have gray background color */
+    striped?: boolean;
+    /** If true row will have hover color */
+    highlightOnHover?: boolean;
+    /** Horizontal cells spacing from theme.spacing or number to set value in px */
+    horizontalSpacing?: MantineNumberSize;
+    /** Vertical cells spacing from theme.spacing or number to set value in px */
+    verticalSpacing?: MantineNumberSize;
+    /** Sets font size of all text inside table */
+    fontSize?: MantineNumberSize;
+    /** Enables pagination */
     withPagination?: boolean;
     pagination?: {
         initialPageIndex: number;

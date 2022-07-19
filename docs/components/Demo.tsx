@@ -4,6 +4,7 @@ import {
     Box,
     Divider,
     Highlight,
+    MantineSize,
     Mark,
     MultiSelect,
     Slider,
@@ -28,7 +29,7 @@ type Data = {
     bool: boolean;
 };
 
-function genFakerData () {
+function genFakerData() {
     return {
         text: faker.lorem.lines(),
         cat: faker.animal.cat(),
@@ -37,12 +38,12 @@ function genFakerData () {
         value: faker.datatype.number(),
         date: faker.datatype.datetime(),
         bool: faker.datatype.boolean(),
-    }
+    };
 }
 
-var data: Data[] = new Array(100).fill({}).map((i) => genFakerData());
+const data: Data[] = new Array(100).fill({}).map(genFakerData);
 
-var dataForPagination: Data[] = new Array(1000).fill({}).map((i) => genFakerData());
+const dataForPagination: Data[] = new Array(1000).fill({}).map(genFakerData);
 
 const sizeMap = new Map<string | number, string | number>([
     ['xs', 0],
@@ -87,10 +88,14 @@ export default function Demo() {
     const initialPageSize = 10;
 
     const [state, setState] = useState({
-        spacing: 'sm',
+        horizontalSpacing: 'xs' as MantineSize,
+        verticalSpacing: 'xs' as MantineSize,
+        fontSize: 'md' as MantineSize,
         ellipsis: false,
         withGlobalFilter: true,
         usePagination: false,
+        striped: true,
+        highlightOnHover: true,
     });
 
     const onPageChange = (e: PaginationArg) => {
@@ -107,6 +112,14 @@ export default function Demo() {
         <div style={{ display: 'flex', alignItems: 'stretch' }}>
             <Box p="md" style={{ flexGrow: 1 }}>
                 <DataGrid
+                    debug
+                    striped={state.striped}
+                    highlightOnHover={state.highlightOnHover}
+                    noEllipsis={state.ellipsis}
+                    withGlobalFilter={state.withGlobalFilter}
+                    horizontalSpacing={state.horizontalSpacing}
+                    verticalSpacing={state.verticalSpacing}
+                    fontSize={state.fontSize}
                     data={state.usePagination ? dataForPagination : data}
                     withPagination={state.usePagination}
                     pagination={{
@@ -147,16 +160,13 @@ export default function Demo() {
                             accessorKey: 'bool',
                             cell: (cell) => {
                                 if (cell.getValue()) {
-                                    return <Badge color="teal">true</Badge>
+                                    return <Badge color="teal">true</Badge>;
                                 }
-                                return <Badge color="red">false</Badge>
+                                return <Badge color="red">false</Badge>;
                             },
                             filterFn: 'booleanFilterFn',
                         },
                     ]}
-                    spacing={state.spacing as any}
-                    noEllipsis={state.ellipsis}
-                    withGlobalFilter={state.withGlobalFilter}
                 />
             </Box>
             <div>
@@ -165,26 +175,7 @@ export default function Demo() {
             <Box p="md">
                 <Stack>
                     <Title order={2}>Properties</Title>
-                    <div>
-                        <Text weight="bold">Spacing</Text>
-                        <Slider
-                            step={25}
-                            label={(value) => sizeMap.get(value)}
-                            marks={[...sizeMap.entries()]
-                                .filter((x) => typeof x[0] === 'number')
-                                .map(([value, label]) => ({
-                                    value: +value,
-                                    label,
-                                }))}
-                            value={+(sizeMap.get(state.spacing) || 0)}
-                            onChange={(e) =>
-                                update({
-                                    spacing: sizeMap.get(e)?.toString(),
-                                })
-                            }
-                        />
-                    </div>
-                    <Space />
+
                     <Switch
                         label="No Text ellipsis"
                         checked={state.ellipsis}
@@ -212,6 +203,89 @@ export default function Demo() {
                             })
                         }
                     />
+                    <Switch
+                        label="Striped"
+                        checked={state.striped}
+                        onChange={(e) =>
+                            update({
+                                striped: e.target.checked,
+                            })
+                        }
+                    />
+                    <Switch
+                        label="Highlight on hover"
+                        checked={state.highlightOnHover}
+                        onChange={(e) =>
+                            update({
+                                highlightOnHover: e.target.checked,
+                            })
+                        }
+                    />
+                    <div>
+                        <Text weight="bold">Font Size</Text>
+                        <Slider
+                            step={25}
+                            label={(value) => sizeMap.get(value)}
+                            marks={[...sizeMap.entries()]
+                                .filter((x) => typeof x[0] === 'number')
+                                .map(([value, label]) => ({
+                                    value: +value,
+                                    label,
+                                }))}
+                            value={+(sizeMap.get(state.fontSize) || 0)}
+                            onChange={(e) =>
+                                update({
+                                    fontSize: sizeMap
+                                        .get(e)
+                                        ?.toString() as MantineSize,
+                                })
+                            }
+                        />
+                    </div>
+                    <Space />
+                    <div>
+                        <Text weight="bold">Vertical Spacing</Text>
+                        <Slider
+                            step={25}
+                            label={(value) => sizeMap.get(value)}
+                            marks={[...sizeMap.entries()]
+                                .filter((x) => typeof x[0] === 'number')
+                                .map(([value, label]) => ({
+                                    value: +value,
+                                    label,
+                                }))}
+                            value={+(sizeMap.get(state.verticalSpacing) || 0)}
+                            onChange={(e) =>
+                                update({
+                                    verticalSpacing: sizeMap
+                                        .get(e)
+                                        ?.toString() as MantineSize,
+                                })
+                            }
+                        />
+                    </div>
+                    <Space />
+                    <div>
+                        <Text weight="bold">Horizontal Spacing</Text>
+                        <Slider
+                            step={25}
+                            label={(value) => sizeMap.get(value)}
+                            marks={[...sizeMap.entries()]
+                                .filter((x) => typeof x[0] === 'number')
+                                .map(([value, label]) => ({
+                                    value: +value,
+                                    label,
+                                }))}
+                            value={+(sizeMap.get(state.horizontalSpacing) || 0)}
+                            onChange={(e) =>
+                                update({
+                                    horizontalSpacing: sizeMap
+                                        .get(e)
+                                        ?.toString() as MantineSize,
+                                })
+                            }
+                        />
+                    </div>
                 </Stack>
             </Box>
         </div>

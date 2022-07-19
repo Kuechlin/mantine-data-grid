@@ -55,6 +55,8 @@ function Demo() {
             data={data}
             spacing="md"
             withGlobalFilter
+            striped
+            highlightOnHover
             columns={[
                 {
                     accessorKey: 'text',
