@@ -88,10 +88,12 @@ export const highlightFilterValue = ({
     renderValue(): any;
 }) => {
     const filter = column.getFilterValue() as any;
+
     return (
         <Highlight
-            highlight={filter && filter.value ? [filter.value] : []}
+            highlight={filter && filter.value ? filter.value : []}
             children={renderValue()}
+            style={{ display: 'inline', fontSize: 'inherit' }}
         />
     );
 };

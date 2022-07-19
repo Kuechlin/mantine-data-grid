@@ -1,6 +1,5 @@
 import { useEffect, useMemo } from 'react';
-import { ScrollArea, Stack,
-    Table as MantineTable, } from '@mantine/core';
+import { ScrollArea, Stack, Table as MantineTable } from '@mantine/core';
 import {
     ColumnDef,
     ColumnSizingInfoState,
@@ -33,16 +32,21 @@ export function DataGrid<TData extends RowData>({
     classNames,
     styles,
     sx,
-    spacing = 'sm',
     noEllipsis,
     withGlobalFilter,
     withPagination,
     pagination,
+    debug = false,
     onPageChange = () => {},
+    striped,
+    highlightOnHover,
+    horizontalSpacing,
+    verticalSpacing = 'xs',
+    fontSize,
     ...others
 }: DataGridProps<TData>) {
     const { classes, cx } = useStyles(
-        { spacing },
+        {},
         {
             classNames,
             styles,
@@ -115,9 +119,9 @@ export function DataGrid<TData extends RowData>({
         getSortedRowModel: getSortedRowModel(),
         getFilteredRowModel: getFilteredRowModel(),
 
-        debugTable: true,
-        debugHeaders: true,
-        debugColumns: true,
+        debugTable: debug,
+        debugHeaders: debug,
+        debugColumns: debug,
     });
 
     useEffect(() => {
@@ -127,7 +131,7 @@ export function DataGrid<TData extends RowData>({
     }, []);
 
     return (
-        <Stack {...others} spacing={spacing}>
+        <Stack {...others} spacing={verticalSpacing}>
             {withGlobalFilter && (
                 <GlobalFilter
                     globalFilter={globalFilter}
@@ -135,8 +139,14 @@ export function DataGrid<TData extends RowData>({
                     className={classes.globalFilter}
                 />
             )}
-
-            <MantineTable striped highlightOnHover className={classes.table} role="table">
+            <MantineTable
+                striped={striped}
+                highlightOnHover={highlightOnHover}
+                horizontalSpacing={horizontalSpacing}
+                verticalSpacing={verticalSpacing}
+                fontSize={fontSize}
+                className={classes.table}
+            >
                 <thead className={classes.header} role="rowgroup">
                     {table
                         .getHeaderGroups()
@@ -147,7 +157,7 @@ export function DataGrid<TData extends RowData>({
                                 role="row"
                             >
                                 {group.headers.map((header, headerIndex) => (
-                                    <div
+                                    <th
                                         key={header.id}
                                         style={{
                                             width: header.getSize(),
@@ -209,7 +219,7 @@ export function DataGrid<TData extends RowData>({
                                                 )}
                                             </>
                                         )}
-                                    </div>
+                                    </th>
                                 ))}
                             </tr>
                         ))}
@@ -218,7 +228,7 @@ export function DataGrid<TData extends RowData>({
                     {table.getRowModel().rows.map((row) => (
                         <tr key={row.id} className={classes.row} role="row">
                             {row.getVisibleCells().map((cell) => (
-                                <div
+                                <td
                                     key={cell.id}
                                     style={{
                                         width: cell.column.getSize(),
@@ -230,17 +240,20 @@ export function DataGrid<TData extends RowData>({
                                         cell.column.columnDef.cell,
                                         cell.getContext()
                                     )}
-                                    role="gridcell"
+                                    role="cell"
                                 />
                             ))}
                         </tr>
                     ))}
                 </tbody>
             </MantineTable>
-
-            {withPagination ? (
-                <Pagination table={table} onPageChange={onPageChange} className={classes.pagination} />
-            ) : null}
+            {withPagination && (
+                <Pagination
+                    table={table}
+                    onPageChange={onPageChange}
+                    className={classes.pagination}
+                />
+            )}
         </Stack>
     );
 }
