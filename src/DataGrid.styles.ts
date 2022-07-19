@@ -45,5 +45,6 @@ export default createStyles(
         sorter: {},
         filter: {},
         globalFilter: {},
+        pagination: {},
     })
 );

@@ -1,5 +1,6 @@
 import { useEffect, useMemo } from 'react';
-import { Stack } from '@mantine/core';
+import { ScrollArea, Stack,
+    Table as MantineTable, } from '@mantine/core';
 import {
     ColumnDef,
     ColumnSizingInfoState,
@@ -134,12 +135,13 @@ export function DataGrid<TData extends RowData>({
                     className={classes.globalFilter}
                 />
             )}
-            <div className={classes.table} role="table">
-                <div className={classes.header} role="rowgroup">
+
+            <MantineTable striped highlightOnHover className={classes.table} role="table">
+                <thead className={classes.header} role="rowgroup">
                     {table
                         .getHeaderGroups()
                         .map((group, groupIndex, headerGroups) => (
-                            <div
+                            <tr
                                 key={group.id}
                                 className={classes.row}
                                 role="row"
@@ -209,12 +211,12 @@ export function DataGrid<TData extends RowData>({
                                         )}
                                     </div>
                                 ))}
-                            </div>
+                            </tr>
                         ))}
-                </div>
-                <div className={classes.body} role="rowgroup">
+                </thead>
+                <tbody className={classes.body} role="rowgroup">
                     {table.getRowModel().rows.map((row) => (
-                        <div key={row.id} className={classes.row} role="row">
+                        <tr key={row.id} className={classes.row} role="row">
                             {row.getVisibleCells().map((cell) => (
                                 <div
                                     key={cell.id}
@@ -231,13 +233,13 @@ export function DataGrid<TData extends RowData>({
                                     role="gridcell"
                                 />
                             ))}
-                        </div>
+                        </tr>
                     ))}
-                </div>
-            </div>
+                </tbody>
+            </MantineTable>
 
             {withPagination ? (
-                <Pagination table={table} onPageChange={onPageChange} />
+                <Pagination table={table} onPageChange={onPageChange} className={classes.pagination} />
             ) : null}
         </Stack>
     );

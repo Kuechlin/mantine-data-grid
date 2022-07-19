@@ -1,5 +1,6 @@
 import faker from '@faker-js/faker';
 import {
+    Badge,
     Box,
     Divider,
     Highlight,
@@ -24,26 +25,24 @@ type Data = {
     city: string;
     value: number;
     date: Date;
+    bool: boolean;
 };
 
-var data: Data[] = new Array(100).fill({}).map((i) => ({
-    text: faker.lorem.lines(),
-    cat: faker.animal.cat(),
-    fish: faker.animal.fish(),
-    city: faker.address.city(),
-    value: faker.datatype.number(),
-    date: faker.datatype.datetime(),
-    bool: faker.datatype.boolean(),
-}));
+function genFakerData () {
+    return {
+        text: faker.lorem.lines(),
+        cat: faker.animal.cat(),
+        fish: faker.animal.fish(),
+        city: faker.address.city(),
+        value: faker.datatype.number(),
+        date: faker.datatype.datetime(),
+        bool: faker.datatype.boolean(),
+    }
+}
 
-var dataForPagination: Data[] = new Array(1000).fill({}).map((i) => ({
-    text: faker.lorem.lines(),
-    cat: faker.animal.cat(),
-    fish: faker.animal.fish(),
-    city: faker.address.city(),
-    value: faker.datatype.number(),
-    date: faker.datatype.datetime(),
-}));
+var data: Data[] = new Array(100).fill({}).map((i) => genFakerData());
+
+var dataForPagination: Data[] = new Array(1000).fill({}).map((i) => genFakerData());
 
 const sizeMap = new Map<string | number, string | number>([
     ['xs', 0],
@@ -146,6 +145,12 @@ export default function Demo() {
                         },
                         {
                             accessorKey: 'bool',
+                            cell: (cell) => {
+                                if (cell.getValue()) {
+                                    return <Badge color="teal">true</Badge>
+                                }
+                                return <Badge color="red">false</Badge>
+                            },
                             filterFn: 'booleanFilterFn',
                         },
                     ]}
