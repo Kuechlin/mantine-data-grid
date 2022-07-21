@@ -1,9 +1,9 @@
 export { DataGrid } from './DataGrid';
-export { highlightFilterValue } from './ColumnFilter';
+export * from './filters';
 export type {
     DataGridProps,
-    DataGridColumnDef,
     PaginationArg,
     OnPageChangeCallback,
+    DataGridFilterFn,
+    DataGridFilterProps,
 } from './types';
-export type { DataGridFilterFn, DataGridFilterFns } from './ColumnFilter';

@@ -8,7 +8,7 @@ import {
 } from '@mantine/core';
 import { Column, FilterFn, Table } from '@tanstack/react-table';
 import { Filter, X, Check } from 'tabler-icons-react';
-import { DataGridFilterFn, DataGridFilterProps } from './ColumnFilter';
+import { DataGridFilterFn, DataGridFilterProps } from '../types';
 
 export enum StringFilter {
     Includes = 'in',

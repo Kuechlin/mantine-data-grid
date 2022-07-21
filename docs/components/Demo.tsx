@@ -14,8 +14,16 @@ import {
 } from '@mantine/core';
 import { useState } from 'react';
 
-import { DataGrid, DataGridFilterFn, PaginationArg } from '../../src';
-import { highlightFilterValue } from '../../src/ColumnFilter/stringFilter';
+import {
+    booleanFilterFn,
+    DataGrid,
+    DataGridFilterFn,
+    dateFilterFn,
+    highlightFilterValue,
+    numberFilterFn,
+    PaginationArg,
+    stringFilterFn,
+} from '../../src';
 
 type Data = {
     text: string;
@@ -86,12 +94,12 @@ const useStyles = createStyles((theme) => ({
     gridWrapper: {
         display: 'flex',
         alignItems: 'stretch',
-        width: "100%",
-        marginTop: theme.spacing.lg
+        width: '100%',
+        marginTop: theme.spacing.lg,
     },
     gridProps: {
         borderLeftWidth: 1,
-        borderLeftStyle: "solid",
+        borderLeftStyle: 'solid',
         borderLeftColor: theme.colors.gray[6],
     },
 }));
@@ -151,7 +159,7 @@ export default function Demo() {
                         {
                             accessorKey: 'text',
                             header: 'Text that is too long for a Header',
-                            filterFn: 'stringFilterFn',
+                            filterFn: stringFilterFn,
                             size: 300,
                             cell: highlightFilterValue,
                         },
@@ -161,20 +169,20 @@ export default function Demo() {
                                 { accessorKey: 'cat', filterFn: catFilter },
                                 {
                                     accessorKey: 'fish',
-                                    filterFn: 'stringFilterFn',
+                                    filterFn: stringFilterFn,
                                 },
                             ],
                         },
                         {
                             accessorKey: 'city',
-                            filterFn: 'stringFilterFn',
+                            filterFn: stringFilterFn,
                         },
-                        { accessorKey: 'value', filterFn: 'numberFilterFn' },
+                        { accessorKey: 'value', filterFn: numberFilterFn },
                         {
                             accessorKey: 'date',
                             cell: (cell) =>
                                 cell.getValue()?.toLocaleDateString(),
-                            filterFn: 'dateFilterFn',
+                            filterFn: dateFilterFn,
                         },
                         {
                             accessorKey: 'bool',
@@ -184,7 +192,7 @@ export default function Demo() {
                                 }
                                 return <Badge color="red">false</Badge>;
                             },
-                            filterFn: 'booleanFilterFn',
+                            filterFn: booleanFilterFn,
                         },
                     ]}
                 />

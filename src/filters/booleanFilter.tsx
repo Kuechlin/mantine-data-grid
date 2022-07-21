@@ -1,15 +1,5 @@
-import {
-    Group,
-    Radio,
-    RadioGroup,
-    Select,
-    Switch,
-    TextInput,
-} from '@mantine/core';
-import { DatePicker } from '@mantine/dates';
-import { FilterFn } from '@tanstack/react-table';
-import { Filter } from 'tabler-icons-react';
-import { DataGridFilterFn, DataGridFilterProps } from './ColumnFilter';
+import { Radio, RadioGroup } from '@mantine/core';
+import { DataGridFilterFn, DataGridFilterProps } from '../types';
 
 export enum BooleanFilter {
     Equals = 'eq',
