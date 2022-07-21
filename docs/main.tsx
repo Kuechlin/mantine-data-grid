@@ -2,13 +2,10 @@ import {
     Button,
     Center,
     MantineProvider,
-    Stack,
     Title,
     Paper,
     Tabs,
-    Container,
     Grid,
-    Space,
     Group,
 } from '@mantine/core';
 import React from 'react';
