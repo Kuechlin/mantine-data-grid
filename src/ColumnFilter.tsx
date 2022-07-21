@@ -2,20 +2,7 @@ import { ActionIcon, Button, Group, Popover, Stack } from '@mantine/core';
 import { Column, FilterFn, RowData } from '@tanstack/react-table';
 import { ComponentType, useState } from 'react';
 import { Check, Filter, X } from 'tabler-icons-react';
-import { dataGridfilterFns } from '.';
-
-export type DataGridFilterFn<TData extends RowData> = FilterFn<TData> & {
-    element: ComponentType<DataGridFilterProps>;
-    init(): any;
-};
-export function isDataGridFilter(val: any): val is DataGridFilterFn<any> {
-    return typeof val === 'function' && 'element' in val && 'init' in val;
-}
-
-export type DataGridFilterProps = {
-    filter: any;
-    onFilterChange(value: any): void;
-};
+import { isDataGridFilter } from './types';
 
 export interface ColumnFilterProps {
     column: Column<any>;
@@ -27,15 +14,9 @@ export const ColumnFilter = ({ column, className }: ColumnFilterProps) => {
 
     const filterFn = column.columnDef.filterFn;
 
-    const filter = isDataGridFilter(filterFn)
-        ? filterFn
-        : typeof filterFn === 'string' && filterFn in dataGridfilterFns
-        ? dataGridfilterFns[filterFn as keyof typeof dataGridfilterFns]
-        : null;
+    if (!isDataGridFilter(filterFn)) return null;
 
-    if (filter === null) return null;
-
-    const { element: Element, init } = filter;
+    const { element: Element, init } = filterFn;
 
     const open = () =>
         setState({

@@ -1,39 +1,9 @@
-import React from 'react';
-import {
-    DefaultProps,
-    MantineNumberSize,
-    MantineSize,
-    Selectors,
-} from '@mantine/core';
-import {
-    ColumnPinningColumnDef,
-    ColumnSizingColumnDef,
-    CoreColumnDef,
-    GroupingColumnDef,
-    RowData,
-    SortingColumnDef,
-    VisibilityColumnDef,
-} from '@tanstack/react-table';
+import React, { ComponentType } from 'react';
+import { DefaultProps, MantineNumberSize, Selectors } from '@mantine/core';
+import { ColumnDef, FilterFn, RowData } from '@tanstack/react-table';
 import useStyles from './DataGrid.styles';
 
-import { DataGridFilterFns } from './ColumnFilter';
-import { DataGridFilterFn } from './ColumnFilter/ColumnFilter';
-
 export type DataGridStylesNames = Selectors<typeof useStyles>;
-
-export type DataGridFiltersColumnDef<TData extends RowData> = {
-    filterFn?: DataGridFilterFns | DataGridFilterFn<TData>;
-    enableColumnFilter?: boolean;
-    enableGlobalFilter?: boolean;
-};
-
-export type DataGridColumnDef<TData extends RowData> = CoreColumnDef<TData> &
-    VisibilityColumnDef &
-    ColumnPinningColumnDef &
-    DataGridFiltersColumnDef<TData> &
-    SortingColumnDef<TData> &
-    GroupingColumnDef<TData> &
-    ColumnSizingColumnDef;
 
 export type PaginationArg = {
     pageIndex: number;
@@ -47,7 +17,7 @@ export interface DataGridProps<TData extends RowData>
     extends DefaultProps<DataGridStylesNames>,
         React.ComponentPropsWithoutRef<'div'> {
     /** Gird column definitions */
-    columns: DataGridColumnDef<TData>[];
+    columns: ColumnDef<TData>[];
     /** Grid Data */
     data: TData[];
     /** Enable global search filter */
@@ -89,3 +59,17 @@ export interface DataGridProps<TData extends RowData>
      * */
     onPageChange?: OnPageChangeCallback;
 }
+
+export type DataGridFilterFn<TData extends RowData> = FilterFn<TData> & {
+    element: ComponentType<DataGridFilterProps>;
+    init(): any;
+};
+
+export function isDataGridFilter(val: any): val is DataGridFilterFn<any> {
+    return typeof val === 'function' && 'element' in val && 'init' in val;
+}
+
+export type DataGridFilterProps = {
+    filter: any;
+    onFilterChange(value: any): void;
+};

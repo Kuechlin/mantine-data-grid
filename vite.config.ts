@@ -7,7 +7,6 @@ import { visualizer } from 'rollup-plugin-visualizer';
 export default defineConfig({
     plugins: [react(), visualizer()],
     build: {
-        emptyOutDir: false,
         lib: {
             entry: resolve(__dirname, 'src', 'index.ts'),
             name: 'mantine-data-grid',

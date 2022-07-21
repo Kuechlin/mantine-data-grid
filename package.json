@@ -22,7 +22,7 @@
     },
     "scripts": {
         "dev": "vite -c vite.config.docs.ts",
-        "build": "tsc && vite build",
+        "build": "vite build && tsc --emitDeclarationOnly",
         "build:docs": "vite build -c vite.config.docs.ts"
     },
     "peerDependencies": {

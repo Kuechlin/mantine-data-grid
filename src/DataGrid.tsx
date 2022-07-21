@@ -16,7 +16,7 @@ import useStyles from './DataGrid.styles';
 
 import { GlobalFilter } from './GlobalFilter';
 import { ColumnSorter } from './ColumnSorter';
-import { ColumnFilter, injectFilterFn } from './ColumnFilter';
+import { ColumnFilter } from './ColumnFilter';
 import {
     Pagination,
     DEFAULT_INITIAL_PAGE,
@@ -51,8 +51,6 @@ export function DataGrid<TData extends RowData>({
             name: 'DataGrid',
         }
     );
-
-    const tableColumns = useMemo(() => columns.map(injectFilterFn), [columns]);
 
     const [globalFilter, setGlobalFilter] = useState('');
     const [columnSizingInfo, setColumnSizingInfo] =
@@ -89,11 +87,12 @@ export function DataGrid<TData extends RowData>({
     }, [data, pageSize, withPagination]);
 
     const table = useReactTable<TData>({
-        data: data,
-        columns: tableColumns,
+        data,
+        columns,
         columnResizeMode: 'onChange',
         enableColumnFilters: true,
         enableColumnResizing: true,
+        enableGlobalFilter: withGlobalFilter,
         state: {
             globalFilter,
             columnSizingInfo,
@@ -155,71 +154,76 @@ export function DataGrid<TData extends RowData>({
                                     className={classes.row}
                                     role="row"
                                 >
-                                    {group.headers.map((header, headerIndex) => (
-                                        <th
-                                            key={header.id}
-                                            style={{
-                                                width: header.getSize(),
-                                            }}
-                                            className={cx(classes.headerCell)}
-                                            role="columnheader"
-                                        >
-                                            {!header.isPlaceholder && (
-                                                <>
-                                                    <div
-                                                        className={cx({
-                                                            [classes.ellipsis]:
-                                                                !noEllipsis,
-                                                        })}
-                                                    >
-                                                        {flexRender(
-                                                            header.column.columnDef
-                                                                .header,
-                                                            header.getContext()
-                                                        )}
-                                                    </div>
-                                                    <div
-                                                        className={
-                                                            classes.headerCellButtons
-                                                        }
-                                                    >
-                                                        {header.column.getCanSort() && (
-                                                            <ColumnSorter
-                                                                className={
-                                                                    classes.sorter
-                                                                }
-                                                                column={
-                                                                    header.column
-                                                                }
-                                                            />
-                                                        )}
-                                                        {header.column.getCanFilter() && (
-                                                            <ColumnFilter
-                                                                className={
-                                                                    classes.filter
-                                                                }
-                                                                column={
-                                                                    header.column
-                                                                }
-                                                            />
-                                                        )}
-                                                    </div>
-                                                    {header.column.getCanResize() && (
+                                    {group.headers.map(
+                                        (header, headerIndex) => (
+                                            <th
+                                                key={header.id}
+                                                style={{
+                                                    width: header.getSize(),
+                                                }}
+                                                className={cx(
+                                                    classes.headerCell
+                                                )}
+                                                role="columnheader"
+                                            >
+                                                {!header.isPlaceholder && (
+                                                    <>
+                                                        <div
+                                                            className={cx({
+                                                                [classes.ellipsis]:
+                                                                    !noEllipsis,
+                                                            })}
+                                                        >
+                                                            {flexRender(
+                                                                header.column
+                                                                    .columnDef
+                                                                    .header,
+                                                                header.getContext()
+                                                            )}
+                                                        </div>
                                                         <div
                                                             className={
-                                                                classes.resizer
+                                                                classes.headerCellButtons
                                                             }
-                                                            onClick={(e) =>
-                                                                e.stopPropagation()
-                                                            }
-                                                            onMouseDown={header.getResizeHandler()}
-                                                            onTouchStart={header.getResizeHandler()}
-                                                        />
-                                                    )}
-                                                </>
-                                            )}
-                                        </th>
-                                    ))}
+                                                        >
+                                                            {header.column.getCanSort() && (
+                                                                <ColumnSorter
+                                                                    className={
+                                                                        classes.sorter
+                                                                    }
+                                                                    column={
+                                                                        header.column
+                                                                    }
+                                                                />
+                                                            )}
+                                                            {header.column.getCanFilter() && (
+                                                                <ColumnFilter
+                                                                    className={
+                                                                        classes.filter
+                                                                    }
+                                                                    column={
+                                                                        header.column
+                                                                    }
+                                                                />
+                                                            )}
+                                                        </div>
+                                                        {header.column.getCanResize() && (
+                                                            <div
+                                                                className={
+                                                                    classes.resizer
+                                                                }
+                                                                onClick={(e) =>
+                                                                    e.stopPropagation()
+                                                                }
+                                                                onMouseDown={header.getResizeHandler()}
+                                                                onTouchStart={header.getResizeHandler()}
+                                                            />
+                                                        )}
+                                                    </>
+                                                )}
+                                            </th>
+                                        )
+                                    )}
                                 </tr>
                             ))}
                     </thead>

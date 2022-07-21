@@ -1,8 +1,7 @@
-import { Select, TextInput } from '@mantine/core';
+import { Select } from '@mantine/core';
 import { DatePicker } from '@mantine/dates';
-import { FilterFn } from '@tanstack/react-table';
 import { Filter } from 'tabler-icons-react';
-import { DataGridFilterFn, DataGridFilterProps } from './ColumnFilter';
+import { DataGridFilterFn, DataGridFilterProps } from '../types';
 
 export enum DateFilter {
     Equals = 'eq',

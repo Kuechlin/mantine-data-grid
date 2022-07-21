@@ -47,7 +47,14 @@ var data: Data[] = new Array(100).fill({}).map((i) => ({
 `;
 
 const grid_usage = `
-import { DataGrid, highlightFilterValue } from 'mantine-data-grid';
+import { 
+    DataGrid, 
+    highlightFilterValue, 
+    stringFilterFn, 
+    numberFilterFn, 
+    dateFilterFn, 
+    booleanFilterFn 
+} from 'mantine-data-grid';
 
 function Demo() {
     return (
@@ -61,7 +68,7 @@ function Demo() {
                 {
                     accessorKey: 'text',
                     header: 'Text that is too long for a Header',
-                    filterFn: 'stringFilterFn',
+                    filterFn: stringFilterFn,
                     size: 300,
                     cell: highlightFilterValue,
                 },
@@ -71,7 +78,7 @@ function Demo() {
                         { accessorKey: 'cat', filterFn: catFilter },
                         {
                             accessorKey: 'fish',
-                            filterFn: 'stringFilterFn',
+                            filterFn: stringFilterFn,
                         },
                     ],
                 },
@@ -79,16 +86,16 @@ function Demo() {
                     accessorKey: 'city',
                     filterFn: 'stringFilterFn',
                 },
-                { accessorKey: 'value', filterFn: 'numberFilterFn' },
+                { accessorKey: 'value', filterFn: numberFilterFn },
                 {
                     accessorKey: 'date',
                     cell: (cell) =>
                         cell.getValue()?.toLocaleDateString(),
-                    filterFn: 'dateFilterFn',
+                    filterFn: dateFilterFn,
                 },
                 {
                     accessorKey: 'bool',
-                    filterFn: 'booleanFilterFn',
+                    filterFn: booleanFilterFn,
                 },
             ]}
         />
@@ -129,7 +136,7 @@ catFilter.element = function ({ filter, onFilterChange }) {
 function Demo() {
     return (
         <DataGrid
-            data={/* data source */}
+            data={data}
             columns={[
                 {
                     accessorKey: 'cat',
