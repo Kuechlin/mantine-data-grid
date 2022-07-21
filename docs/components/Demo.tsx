@@ -1,11 +1,9 @@
 import faker from '@faker-js/faker';
 import {
     Badge,
-    Box,
-    Divider,
-    Highlight,
+    createStyles,
+    Grid,
     MantineSize,
-    Mark,
     MultiSelect,
     Slider,
     Space,
@@ -29,8 +27,9 @@ type Data = {
     bool: boolean;
 };
 
-function genFakerData() {
+function genFakerData(_: any, i: number) {
     return {
+        id: i + 1,
         text: faker.lorem.lines(),
         cat: faker.animal.cat(),
         fish: faker.animal.fish(),
@@ -83,7 +82,23 @@ catFilter.element = function ({ filter, onFilterChange }) {
     );
 };
 
+const useStyles = createStyles((theme) => ({
+    gridWrapper: {
+        display: 'flex',
+        alignItems: 'stretch',
+        width: "100%",
+        marginTop: theme.spacing.lg
+    },
+    gridProps: {
+        borderLeftWidth: 1,
+        borderLeftStyle: "solid",
+        borderLeftColor: theme.colors.gray[6],
+    },
+}));
+
 export default function Demo() {
+    const { classes } = useStyles();
+
     const initialPageIndex = 0;
     const initialPageSize = 10;
 
@@ -109,8 +124,8 @@ export default function Demo() {
     };
 
     return (
-        <div style={{ display: 'flex', alignItems: 'stretch' }}>
-            <Box p="md" style={{ flexGrow: 1 }}>
+        <Grid className={classes.gridWrapper}>
+            <Grid.Col span={10} p="md">
                 <DataGrid
                     debug
                     striped={state.striped}
@@ -128,6 +143,11 @@ export default function Demo() {
                     }}
                     onPageChange={onPageChange}
                     columns={[
+                        {
+                            accessorKey: 'id',
+                            header: 'No',
+                            size: 60,
+                        },
                         {
                             accessorKey: 'text',
                             header: 'Text that is too long for a Header',
@@ -168,11 +188,8 @@ export default function Demo() {
                         },
                     ]}
                 />
-            </Box>
-            <div>
-                <Divider orientation="vertical" />
-            </div>
-            <Box p="md">
+            </Grid.Col>
+            <Grid.Col span={2} p="md" className={classes.gridProps}>
                 <Stack>
                     <Title order={2}>Properties</Title>
 
@@ -287,7 +304,7 @@ export default function Demo() {
                         />
                     </div>
                 </Stack>
-            </Box>
-        </div>
+            </Grid.Col>
+        </Grid>
     );
 }

@@ -68,9 +68,24 @@ export interface DataGridProps<TData extends RowData>
     fontSize?: MantineNumberSize;
     /** Enables pagination */
     withPagination?: boolean;
+    /** Pagination additional setup */
     pagination?: {
-        initialPageIndex: number;
-        initialPageSize: number;
+        /**
+         * An initial current page index.
+         * Default is `0` */
+        initialPageIndex?: number;
+        /**
+         * An initial current page size (rows per page).
+         * Default is `10`  */
+        initialPageSize?: number;
+        /**
+         * Sets of string for page size (rows per page) selections.
+         * Default is `["10", "25", "50", "100"]`
+         * */
+        pageSizes?: string[];
     };
+    /**
+     * Callback when page index or page size changed
+     * */
     onPageChange?: OnPageChangeCallback;
 }

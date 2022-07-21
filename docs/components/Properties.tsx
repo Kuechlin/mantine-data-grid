@@ -118,7 +118,7 @@ export default function Properties() {
                             <Text
                                 size="sm"
                                 color="orange"
-                                children="{ initialPageIndex: number; initialPageSize: number; }"
+                                children="{ initialPageIndex?: number; initialPageSize?: number; pageSizes?: string[]; }"
                             />
                         </td>
                         <td>

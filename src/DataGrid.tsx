@@ -1,9 +1,7 @@
 import { useEffect, useMemo } from 'react';
 import { ScrollArea, Stack, Table as MantineTable } from '@mantine/core';
 import {
-    ColumnDef,
     ColumnSizingInfoState,
-    FilterFn,
     flexRender,
     getCoreRowModel,
     getFilteredRowModel,
@@ -139,118 +137,121 @@ export function DataGrid<TData extends RowData>({
                     className={classes.globalFilter}
                 />
             )}
-            <MantineTable
-                striped={striped}
-                highlightOnHover={highlightOnHover}
-                horizontalSpacing={horizontalSpacing}
-                verticalSpacing={verticalSpacing}
-                fontSize={fontSize}
-                className={classes.table}
-            >
-                <thead className={classes.header} role="rowgroup">
-                    {table
-                        .getHeaderGroups()
-                        .map((group, groupIndex, headerGroups) => (
-                            <tr
-                                key={group.id}
-                                className={classes.row}
-                                role="row"
-                            >
-                                {group.headers.map((header, headerIndex) => (
-                                    <th
-                                        key={header.id}
-                                        style={{
-                                            width: header.getSize(),
-                                        }}
-                                        className={cx(classes.headerCell)}
-                                        role="columnheader"
-                                    >
-                                        {!header.isPlaceholder && (
-                                            <>
-                                                <div
-                                                    className={cx({
-                                                        [classes.ellipsis]:
-                                                            !noEllipsis,
-                                                    })}
-                                                >
-                                                    {flexRender(
-                                                        header.column.columnDef
-                                                            .header,
-                                                        header.getContext()
-                                                    )}
-                                                </div>
-                                                <div
-                                                    className={
-                                                        classes.headerCellButtons
-                                                    }
-                                                >
-                                                    {header.column.getCanSort() && (
-                                                        <ColumnSorter
-                                                            className={
-                                                                classes.sorter
-                                                            }
-                                                            column={
-                                                                header.column
-                                                            }
-                                                        />
-                                                    )}
-                                                    {header.column.getCanFilter() && (
-                                                        <ColumnFilter
-                                                            className={
-                                                                classes.filter
-                                                            }
-                                                            column={
-                                                                header.column
-                                                            }
-                                                        />
-                                                    )}
-                                                </div>
-                                                {header.column.getCanResize() && (
+            <ScrollArea>
+                <MantineTable
+                    striped={striped}
+                    highlightOnHover={highlightOnHover}
+                    horizontalSpacing={horizontalSpacing}
+                    verticalSpacing={verticalSpacing}
+                    fontSize={fontSize}
+                    className={classes.table}
+                >
+                    <thead className={classes.header} role="rowgroup">
+                        {table
+                            .getHeaderGroups()
+                            .map((group, groupIndex, headerGroups) => (
+                                <tr
+                                    key={group.id}
+                                    className={classes.row}
+                                    role="row"
+                                >
+                                    {group.headers.map((header, headerIndex) => (
+                                        <th
+                                            key={header.id}
+                                            style={{
+                                                width: header.getSize(),
+                                            }}
+                                            className={cx(classes.headerCell)}
+                                            role="columnheader"
+                                        >
+                                            {!header.isPlaceholder && (
+                                                <>
+                                                    <div
+                                                        className={cx({
+                                                            [classes.ellipsis]:
+                                                                !noEllipsis,
+                                                        })}
+                                                    >
+                                                        {flexRender(
+                                                            header.column.columnDef
+                                                                .header,
+                                                            header.getContext()
+                                                        )}
+                                                    </div>
                                                     <div
                                                         className={
-                                                            classes.resizer
+                                                            classes.headerCellButtons
                                                         }
-                                                        onClick={(e) =>
-                                                            e.stopPropagation()
-                                                        }
-                                                        onMouseDown={header.getResizeHandler()}
-                                                        onTouchStart={header.getResizeHandler()}
-                                                    />
-                                                )}
-                                            </>
+                                                    >
+                                                        {header.column.getCanSort() && (
+                                                            <ColumnSorter
+                                                                className={
+                                                                    classes.sorter
+                                                                }
+                                                                column={
+                                                                    header.column
+                                                                }
+                                                            />
+                                                        )}
+                                                        {header.column.getCanFilter() && (
+                                                            <ColumnFilter
+                                                                className={
+                                                                    classes.filter
+                                                                }
+                                                                column={
+                                                                    header.column
+                                                                }
+                                                            />
+                                                        )}
+                                                    </div>
+                                                    {header.column.getCanResize() && (
+                                                        <div
+                                                            className={
+                                                                classes.resizer
+                                                            }
+                                                            onClick={(e) =>
+                                                                e.stopPropagation()
+                                                            }
+                                                            onMouseDown={header.getResizeHandler()}
+                                                            onTouchStart={header.getResizeHandler()}
+                                                        />
+                                                    )}
+                                                </>
+                                            )}
+                                        </th>
+                                    ))}
+                                </tr>
+                            ))}
+                    </thead>
+                    <tbody className={classes.body} role="rowgroup">
+                        {table.getRowModel().rows.map((row) => (
+                            <tr key={row.id} className={classes.row} role="row">
+                                {row.getVisibleCells().map((cell) => (
+                                    <td
+                                        key={cell.id}
+                                        style={{
+                                            width: cell.column.getSize(),
+                                        }}
+                                        className={cx(classes.dataCell, {
+                                            [classes.ellipsis]: !noEllipsis,
+                                        })}
+                                        children={flexRender(
+                                            cell.column.columnDef.cell,
+                                            cell.getContext()
                                         )}
-                                    </th>
+                                        role="cell"
+                                    />
                                 ))}
                             </tr>
                         ))}
-                </thead>
-                <tbody className={classes.body} role="rowgroup">
-                    {table.getRowModel().rows.map((row) => (
-                        <tr key={row.id} className={classes.row} role="row">
-                            {row.getVisibleCells().map((cell) => (
-                                <td
-                                    key={cell.id}
-                                    style={{
-                                        width: cell.column.getSize(),
-                                    }}
-                                    className={cx(classes.dataCell, {
-                                        [classes.ellipsis]: !noEllipsis,
-                                    })}
-                                    children={flexRender(
-                                        cell.column.columnDef.cell,
-                                        cell.getContext()
-                                    )}
-                                    role="cell"
-                                />
-                            ))}
-                        </tr>
-                    ))}
-                </tbody>
-            </MantineTable>
+                    </tbody>
+                </MantineTable>
+            </ScrollArea>
             {withPagination && (
                 <Pagination
                     table={table}
                     onPageChange={onPageChange}
+                    pageSizes={pagination?.pageSizes}
                     className={classes.pagination}
                 />
             )}

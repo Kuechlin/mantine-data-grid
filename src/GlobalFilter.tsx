@@ -31,7 +31,7 @@ export function GlobalFilter({
         <TextInput
             value={value}
             onChange={(e) => setValue(e.target.value)}
-            placeholder="Search"
+            placeholder="Search..."
             rightSection={<Search />}
             className={className}
         />
