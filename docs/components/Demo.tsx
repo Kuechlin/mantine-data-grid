@@ -18,10 +18,12 @@ import {
     booleanFilterFn,
     DataGrid,
     DataGridFilterFn,
+    DataGridFiltersState,
+    DataGridPaginationState,
+    DataGridSortingState,
     dateFilterFn,
     highlightFilterValue,
     numberFilterFn,
-    PaginationArg,
     stringFilterFn,
 } from '../../src';
 
@@ -117,15 +119,25 @@ export default function Demo() {
         fontSize: 'md' as MantineSize,
         ellipsis: false,
         withGlobalFilter: true,
-        usePagination: false,
+        withPagination: true,
         striped: true,
         highlightOnHover: true,
     });
 
-    const onPageChange = (e: PaginationArg) => {
-        console.log(
-            `pageIndex: ${e.pageIndex}, pageSize: ${e.pageSize}, pageCount: ${e.pageCount}`
-        );
+    const onPageChange = (e: DataGridPaginationState) => {
+        console.log(`pageIndex: ${e.pageIndex}, pageSize: ${e.pageSize}`);
+    };
+
+    const onFilter = (e: DataGridFiltersState) => {
+        console.group('filter');
+        console.log(e);
+        console.groupEnd();
+    };
+    const onSearch = (e: string) => {
+        console.log(`search: ${e}`);
+    };
+    const onSort = (e: DataGridSortingState) => {
+        console.log(e ? `sorting: ${e?.id} ${e?.desc}` : 'no sorting');
     };
 
     const update = (next: Partial<typeof state>) => {
@@ -144,13 +156,16 @@ export default function Demo() {
                     horizontalSpacing={state.horizontalSpacing}
                     verticalSpacing={state.verticalSpacing}
                     fontSize={state.fontSize}
-                    data={state.usePagination ? dataForPagination : data}
-                    withPagination={state.usePagination}
+                    data={state.withPagination ? dataForPagination : data}
+                    withPagination={state.withPagination}
                     pagination={{
                         initialPageIndex,
                         initialPageSize,
                     }}
                     onPageChange={onPageChange}
+                    onSort={onSort}
+                    onFilter={onFilter}
+                    onSearch={onSearch}
                     columns={[
                         {
                             accessorKey: 'id',
@@ -222,10 +237,10 @@ export default function Demo() {
                     />
                     <Switch
                         label="Show pagination"
-                        checked={state.usePagination}
+                        checked={state.withPagination}
                         onChange={(e) =>
                             update({
-                                usePagination: e.target.checked,
+                                withPagination: e.target.checked,
                             })
                         }
                     />

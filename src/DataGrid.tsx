@@ -1,14 +1,18 @@
-import { useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { ScrollArea, Stack, Table as MantineTable } from '@mantine/core';
 import {
+    ColumnFiltersState,
     ColumnSizingInfoState,
     flexRender,
+    functionalUpdate,
     getCoreRowModel,
     getFilteredRowModel,
     getPaginationRowModel,
     getSortedRowModel,
+    OnChangeFn,
     PaginationState,
     RowData,
+    SortingState,
     useReactTable,
 } from '@tanstack/react-table';
 import { useState } from 'react';
@@ -35,7 +39,10 @@ export function DataGrid<TData extends RowData>({
     withPagination,
     pagination,
     debug = false,
-    onPageChange = () => {},
+    onPageChange,
+    onSearch,
+    onFilter,
+    onSort,
     striped,
     highlightOnHover,
     horizontalSpacing,
@@ -51,19 +58,73 @@ export function DataGrid<TData extends RowData>({
             name: 'DataGrid',
         }
     );
-
     const [globalFilter, setGlobalFilter] = useState('');
+    const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+    const [sorting, setSorting] = useState<SortingState>([]);
     const [columnSizingInfo, setColumnSizingInfo] =
         useState<ColumnSizingInfoState>({} as any);
 
-    const initialPageIndex =
-        pagination?.initialPageIndex || DEFAULT_INITIAL_PAGE;
-    const initiaPageSize = pagination?.initialPageSize || DEFAULT_INITIAL_SIZE;
-
     const [{ pageIndex, pageSize }, setPagination] = useState<PaginationState>({
-        pageIndex: initialPageIndex,
-        pageSize: initiaPageSize,
+        pageIndex: pagination?.initialPageIndex || DEFAULT_INITIAL_PAGE,
+        pageSize: pagination?.initialPageSize || DEFAULT_INITIAL_SIZE,
     });
+
+    const handleGlobalFilterChange: OnChangeFn<string> = useCallback(
+        (arg0) => {
+            setGlobalFilter((state) => {
+                const next = functionalUpdate(arg0, state);
+                if (onSearch) {
+                    onSearch(next);
+                }
+                return next;
+            });
+        },
+        [onSearch]
+    );
+
+    const handleSortingChange: OnChangeFn<SortingState> = useCallback(
+        (arg0) => {
+            setSorting((state) => {
+                const next = functionalUpdate(arg0, state);
+                if (onSort) {
+                    onSort(next.length ? next[0] : null);
+                }
+                return next;
+            });
+        },
+        [onSort]
+    );
+
+    const handleColumnFiltersChange: OnChangeFn<ColumnFiltersState> =
+        useCallback(
+            (arg0) => {
+                setColumnFilters((state) => {
+                    const next = functionalUpdate(arg0, state);
+                    if (onFilter) {
+                        onFilter(next);
+                    }
+                    return next;
+                });
+            },
+            [onFilter]
+        );
+
+    const handlePaginationChange: OnChangeFn<PaginationState> = useCallback(
+        (arg0) => {
+            setPagination((state) => {
+                const next = functionalUpdate(arg0, state);
+                if (
+                    (next.pageIndex !== state.pageIndex ||
+                        next.pageSize !== state.pageSize) &&
+                    onPageChange
+                ) {
+                    onPageChange(next);
+                }
+                return next;
+            });
+        },
+        [onPageChange]
+    );
 
     const paginationMemo = useMemo(() => {
         if (withPagination) {
@@ -93,22 +154,27 @@ export function DataGrid<TData extends RowData>({
         enableColumnFilters: true,
         enableColumnResizing: true,
         enableGlobalFilter: withGlobalFilter,
+
         state: {
             globalFilter,
             columnSizingInfo,
+            columnFilters,
+            sorting,
 
             // For pagination
             ...(withPagination ? { pagination: paginationMemo } : {}),
         },
-        onGlobalFilterChange: setGlobalFilter,
         onColumnSizingInfoChange: setColumnSizingInfo,
+        onGlobalFilterChange: handleGlobalFilterChange,
+        onColumnFiltersChange: handleColumnFiltersChange,
+        onSortingChange: handleSortingChange,
 
         // Pagination feature
         ...(withPagination
             ? {
-                  getPaginationRowModel: getPaginationRowModel(),
                   pageCount: pageCount,
-                  onPaginationChange: setPagination,
+                  getPaginationRowModel: getPaginationRowModel(),
+                  onPaginationChange: handlePaginationChange,
               }
             : {}),
 
@@ -131,8 +197,8 @@ export function DataGrid<TData extends RowData>({
         <Stack {...others} spacing={verticalSpacing}>
             {withGlobalFilter && (
                 <GlobalFilter
+                    table={table}
                     globalFilter={globalFilter}
-                    onGlobalFilterChange={setGlobalFilter}
                     className={classes.globalFilter}
                 />
             )}
@@ -254,7 +320,7 @@ export function DataGrid<TData extends RowData>({
             {withPagination && (
                 <Pagination
                     table={table}
-                    onPageChange={onPageChange}
+                    total={pagination?.total}
                     pageSizes={pagination?.pageSizes}
                     className={classes.pagination}
                 />

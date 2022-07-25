@@ -1,17 +1,23 @@
 import React, { ComponentType } from 'react';
 import { DefaultProps, MantineNumberSize, Selectors } from '@mantine/core';
-import { ColumnDef, FilterFn, RowData } from '@tanstack/react-table';
+import {
+    ColumnDef,
+    ColumnFiltersState,
+    ColumnSort,
+    FilterFn,
+    OnChangeFn,
+    PaginationState,
+    RowData,
+} from '@tanstack/react-table';
 import useStyles from './DataGrid.styles';
 
 export type DataGridStylesNames = Selectors<typeof useStyles>;
 
-export type PaginationArg = {
-    pageIndex: number;
-    pageSize: number;
-    pageCount: number;
-};
+export type OnChangeCallback<T> = (arg0: T) => void;
 
-export type OnPageChangeCallback = (arg0: PaginationArg) => void;
+export type DataGridSortingState = ColumnSort | null;
+export type DataGridPaginationState = PaginationState;
+export type DataGridFiltersState = ColumnFiltersState;
 
 export interface DataGridProps<TData extends RowData>
     extends DefaultProps<DataGridStylesNames>,
@@ -53,11 +59,27 @@ export interface DataGridProps<TData extends RowData>
          * Default is `["10", "25", "50", "100"]`
          * */
         pageSizes?: string[];
+        /**
+         * Sets the total count for external data
+         */
+        total?: number;
     };
     /**
      * Callback when page index or page size changed
      * */
-    onPageChange?: OnPageChangeCallback;
+    onPageChange?: OnChangeCallback<DataGridPaginationState>;
+    /**
+     * Callback when global filter changed
+     */
+    onSearch?: OnChangeCallback<string>;
+    /**
+     * Callback when column filter changed
+     */
+    onFilter?: OnChangeCallback<DataGridFiltersState>;
+    /**
+     * Callback when sorting changed
+     */
+    onSort?: OnChangeCallback<DataGridSortingState>;
 }
 
 export type DataGridFilterFn<TData extends RowData> = FilterFn<TData> & {

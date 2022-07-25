@@ -91,6 +91,39 @@ export default function Properties() {
                         <td>Space between elements</td>
                     </tr>
                     <tr>
+                        <td>onSearch</td>
+                        <td>
+                            <Text
+                                size="sm"
+                                color="orange"
+                                children="(arg: string) => void;"
+                            />
+                        </td>
+                        <td>Callback when global filter changed</td>
+                    </tr>
+                    <tr>
+                        <td>onFilter</td>
+                        <td>
+                            <Text
+                                size="sm"
+                                color="orange"
+                                children="(arg: DataGridFiltersState) => void;"
+                            />
+                        </td>
+                        <td>Callback when column filter changed</td>
+                    </tr>
+                    <tr>
+                        <td>onSort</td>
+                        <td>
+                            <Text
+                                size="sm"
+                                color="orange"
+                                children="(arg: DataGridSortingState) => void;"
+                            />
+                        </td>
+                        <td>Callback when sorting changed</td>
+                    </tr>
+                    <tr>
                         <td>withPagination</td>
                         <td>
                             <Text size="sm" color="orange" children="boolean" />
@@ -103,7 +136,7 @@ export default function Properties() {
                             <Text
                                 size="sm"
                                 color="orange"
-                                children="({ pageIndex, pageSize, pageCount }) => void;"
+                                children="({ pageIndex, pageSize }) => void;"
                             />
                         </td>
                         <td>
@@ -113,19 +146,30 @@ export default function Properties() {
                         </td>
                     </tr>
                     <tr>
-                        <td>pagination</td>
+                        <td>pagination.initialPageIndex</td>
+                        <td>number</td>
                         <td>
-                            <Text
-                                size="sm"
-                                color="orange"
-                                children="{ initialPageIndex?: number; initialPageSize?: number; pageSizes?: string[]; }"
-                            />
+                            An initial current page size (rows per page).
+                            Default is `10`
                         </td>
+                    </tr>
+                    <tr>
+                        <td>pagination.initialPageSize</td>
+                        <td>number</td>
+                        <td>An initial current page index. Default is `0`</td>
+                    </tr>
+                    <tr>
+                        <td>pagination.pageSizes</td>
+                        <td>string[]</td>
                         <td>
-                            Callback function on pagination data changed.
-                            <br />
-                            Need <Code>withPagination</Code> set to true
+                            Sets of string for page size (rows per page)
+                            selections. Default is ["10", "25", "50", "100"]
                         </td>
+                    </tr>
+                    <tr>
+                        <td>pagination.total</td>
+                        <td>number</td>
+                        <td>Sets the total count for external data</td>
                     </tr>
                     <tr>
                         <td colSpan={3}>
