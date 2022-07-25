@@ -1,4 +1,4 @@
-import faker from '@faker-js/faker';
+import { faker } from '@faker-js/faker';
 import {
     Badge,
     createStyles,
@@ -26,6 +26,7 @@ import {
 } from '../../src';
 
 type Data = {
+    id: number;
     text: string;
     cat: string;
     fish: string;
@@ -134,7 +135,7 @@ export default function Demo() {
     return (
         <Grid className={classes.gridWrapper}>
             <Grid.Col span={10} p="md">
-                <DataGrid
+                <DataGrid<Data>
                     debug
                     striped={state.striped}
                     highlightOnHover={state.highlightOnHover}

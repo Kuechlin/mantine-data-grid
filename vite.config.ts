@@ -10,7 +10,7 @@ export default defineConfig({
         lib: {
             entry: resolve(__dirname, 'src', 'index.ts'),
             name: 'mantine-data-grid',
-            fileName: (format) => `mantine-data-grid.${format}.js`,
+            fileName: 'mantine-data-grid',
         },
         rollupOptions: {
             // make sure to externalize deps that shouldn't be bundled

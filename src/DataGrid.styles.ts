@@ -1,4 +1,4 @@
-import { createStyles, MantineNumberSize } from '@mantine/core';
+import { createStyles } from '@mantine/core';
 
 export default createStyles((theme, _: {}) => ({
     table: {},

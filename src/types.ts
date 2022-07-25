@@ -17,7 +17,7 @@ export interface DataGridProps<TData extends RowData>
     extends DefaultProps<DataGridStylesNames>,
         React.ComponentPropsWithoutRef<'div'> {
     /** Gird column definitions */
-    columns: ColumnDef<TData>[];
+    columns: ColumnDef<TData, any>[];
     /** Grid Data */
     data: TData[];
     /** Enable global search filter */

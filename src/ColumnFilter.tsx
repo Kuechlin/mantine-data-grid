@@ -5,7 +5,7 @@ import { Check, Filter, X } from 'tabler-icons-react';
 import { isDataGridFilter } from './types';
 
 export interface ColumnFilterProps {
-    column: Column<any>;
+    column: Column<any, any>;
     className: string;
 }
 
