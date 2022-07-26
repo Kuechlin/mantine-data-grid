@@ -1,13 +1,13 @@
-import React, { ComponentType } from 'react';
+import React, { ComponentType, Ref } from 'react';
 import { DefaultProps, MantineNumberSize, Selectors } from '@mantine/core';
 import {
     ColumnDef,
     ColumnFiltersState,
-    ColumnSort,
     FilterFn,
-    OnChangeFn,
     PaginationState,
     RowData,
+    SortingState,
+    Table,
 } from '@tanstack/react-table';
 import useStyles from './DataGrid.styles';
 
@@ -15,19 +15,25 @@ export type DataGridStylesNames = Selectors<typeof useStyles>;
 
 export type OnChangeCallback<T> = (arg0: T) => void;
 
-export type DataGridSortingState = ColumnSort | null;
+export type DataGridSortingState = SortingState;
 export type DataGridPaginationState = PaginationState;
 export type DataGridFiltersState = ColumnFiltersState;
 
 export interface DataGridProps<TData extends RowData>
-    extends DefaultProps<DataGridStylesNames>,
+    extends DefaultProps<DataGridStylesNames, {}>,
         React.ComponentPropsWithoutRef<'div'> {
     /** Gird column definitions */
     columns: ColumnDef<TData, any>[];
     /** Grid Data */
     data: TData[];
-    /** Enable global search filter */
-    withGlobalFilter?: boolean;
+    /**
+     * Total number of items for external data
+     */
+    total?: number;
+    /** Table instance reference */
+    tableRef?: Ref<Table<TData>>;
+
+    // Styles
     /** Text overflow ellipsis is disabled*/
     noEllipsis?: boolean;
     /** If true react-table debug log is enabled */
@@ -42,40 +48,46 @@ export interface DataGridProps<TData extends RowData>
     verticalSpacing?: MantineNumberSize;
     /** Sets font size of all text inside table */
     fontSize?: MantineNumberSize;
+    /** Show loading overlay */
+    loading?: boolean;
+
+    // Pagination
     /** Enables pagination */
     withPagination?: boolean;
-    /** Pagination additional setup */
-    pagination?: {
-        /**
-         * An initial current page index.
-         * Default is `0` */
-        initialPageIndex?: number;
-        /**
-         * An initial current page size (rows per page).
-         * Default is `10`  */
-        initialPageSize?: number;
-        /**
-         * Sets of string for page size (rows per page) selections.
-         * Default is `["10", "25", "50", "100"]`
-         * */
-        pageSizes?: string[];
-        /**
-         * Sets the total count for external data
-         */
-        total?: number;
-    };
+    /**
+     * Sets of string for page size (rows per page) selections.
+     * Default is `["10", "25", "50", "100"]`
+     * */
+    pageSizes?: string[];
+    /**
+     * An initial current page index.
+     * Default is `0` */
+    initialPageIndex?: number;
+    /**
+     * An initial current page size (rows per page).
+     * Default is `10`  */
+    initialPageSize?: number;
     /**
      * Callback when page index or page size changed
      * */
     onPageChange?: OnChangeCallback<DataGridPaginationState>;
+
+    /** Enable global search filter */
+    withGlobalFilter?: boolean;
     /**
      * Callback when global filter changed
      */
     onSearch?: OnChangeCallback<string>;
+
+    /** Enables column filters */
+    withColumnFilters?: boolean;
     /**
      * Callback when column filter changed
      */
     onFilter?: OnChangeCallback<DataGridFiltersState>;
+
+    /** Enables sorting */
+    withSorting?: boolean;
     /**
      * Callback when sorting changed
      */

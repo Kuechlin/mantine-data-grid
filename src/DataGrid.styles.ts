@@ -5,7 +5,10 @@ export default createStyles((theme, _: {}) => ({
     header: {
         borderBottom: `2px solid ${theme.colors.dark[4]}`,
     },
-    body: {},
+    body: {
+        display: 'block',
+        minHeight: '160px',
+    },
     row: {
         display: 'flex',
     },

@@ -26,34 +26,7 @@ import {
     numberFilterFn,
     stringFilterFn,
 } from '../../src';
-
-type Data = {
-    id: number;
-    text: string;
-    cat: string;
-    fish: string;
-    city: string;
-    value: number;
-    date: Date;
-    bool: boolean;
-};
-
-function genFakerData(_: any, i: number) {
-    return {
-        id: i + 1,
-        text: faker.lorem.lines(),
-        cat: faker.animal.cat(),
-        fish: faker.animal.fish(),
-        city: faker.address.city(),
-        value: faker.datatype.number(),
-        date: faker.datatype.datetime(),
-        bool: faker.datatype.boolean(),
-    };
-}
-
-const data: Data[] = new Array(100).fill({}).map(genFakerData);
-
-const dataForPagination: Data[] = new Array(1000).fill({}).map(genFakerData);
+import { Data, demoData } from '../demoData';
 
 const sizeMap = new Map<string | number, string | number>([
     ['xs', 0],
@@ -117,11 +90,14 @@ export default function Demo() {
         horizontalSpacing: 'xs' as MantineSize,
         verticalSpacing: 'xs' as MantineSize,
         fontSize: 'md' as MantineSize,
-        ellipsis: false,
+        noEllipsis: false,
         withGlobalFilter: true,
         withPagination: true,
+        withColumnFilters: true,
+        withSorting: true,
         striped: true,
         highlightOnHover: true,
+        loading: false,
     });
 
     const onPageChange = (e: DataGridPaginationState) => {
@@ -137,7 +113,9 @@ export default function Demo() {
         console.log(`search: ${e}`);
     };
     const onSort = (e: DataGridSortingState) => {
-        console.log(e ? `sorting: ${e?.id} ${e?.desc}` : 'no sorting');
+        console.log(
+            e.length ? `sorting: ${e[0].id} ${e[0].desc}` : 'no sorting'
+        );
     };
 
     const update = (next: Partial<typeof state>) => {
@@ -148,20 +126,15 @@ export default function Demo() {
         <Grid className={classes.gridWrapper}>
             <Grid.Col span={10} p="md">
                 <DataGrid<Data>
+                    {...state}
                     debug
-                    striped={state.striped}
-                    highlightOnHover={state.highlightOnHover}
-                    noEllipsis={state.ellipsis}
-                    withGlobalFilter={state.withGlobalFilter}
-                    horizontalSpacing={state.horizontalSpacing}
-                    verticalSpacing={state.verticalSpacing}
-                    fontSize={state.fontSize}
-                    data={state.withPagination ? dataForPagination : data}
-                    withPagination={state.withPagination}
-                    pagination={{
-                        initialPageIndex,
-                        initialPageSize,
-                    }}
+                    data={
+                        state.withPagination
+                            ? demoData
+                            : demoData.filter((x) => x.id < 25)
+                    }
+                    initialPageIndex={initialPageIndex}
+                    initialPageSize={initialPageSize}
                     onPageChange={onPageChange}
                     onSort={onSort}
                     onFilter={onFilter}
@@ -216,18 +189,9 @@ export default function Demo() {
             <Grid.Col span={2} p="md" className={classes.gridProps}>
                 <Stack>
                     <Title order={2}>Properties</Title>
-
+                    <Text color="dimmed">Features</Text>
                     <Switch
-                        label="No Text ellipsis"
-                        checked={state.ellipsis}
-                        onChange={(e) =>
-                            update({
-                                ellipsis: e.target.checked,
-                            })
-                        }
-                    />
-                    <Switch
-                        label="With global Filter"
+                        label="With global filter"
                         checked={state.withGlobalFilter}
                         onChange={(e) =>
                             update({
@@ -236,11 +200,39 @@ export default function Demo() {
                         }
                     />
                     <Switch
-                        label="Show pagination"
+                        label="With column filters"
+                        checked={state.withColumnFilters}
+                        onChange={(e) =>
+                            update({
+                                withColumnFilters: e.target.checked,
+                            })
+                        }
+                    />
+                    <Switch
+                        label="With sorting"
+                        checked={state.withSorting}
+                        onChange={(e) =>
+                            update({
+                                withSorting: e.target.checked,
+                            })
+                        }
+                    />
+                    <Switch
+                        label="With pagination"
                         checked={state.withPagination}
                         onChange={(e) =>
                             update({
                                 withPagination: e.target.checked,
+                            })
+                        }
+                    />
+                    <Text color="dimmed">Styles</Text>
+                    <Switch
+                        label="No Text ellipsis"
+                        checked={state.noEllipsis}
+                        onChange={(e) =>
+                            update({
+                                noEllipsis: e.target.checked,
                             })
                         }
                     />
@@ -259,6 +251,15 @@ export default function Demo() {
                         onChange={(e) =>
                             update({
                                 highlightOnHover: e.target.checked,
+                            })
+                        }
+                    />
+                    <Switch
+                        label="Loading"
+                        checked={state.loading}
+                        onChange={(e) =>
+                            update({
+                                loading: e.target.checked,
                             })
                         }
                     />

@@ -1,4 +1,4 @@
-import { Radio, RadioGroup } from '@mantine/core';
+import { Button, Group, Radio } from '@mantine/core';
 import { DataGridFilterFn, DataGridFilterProps } from '../types';
 
 export enum BooleanFilter {
@@ -31,18 +31,20 @@ booleanFilterFn.element = function ({
     filter,
     onFilterChange,
 }: DataGridFilterProps) {
-    const handleValueChange = (value: any) =>
-        onFilterChange({ ...filter, value: value === 'true' ? true : false });
+    const handleValueChange = (value: boolean) => () =>
+        onFilterChange({ ...filter, value });
 
     return (
-        <>
-            <RadioGroup
-                value={filter.value ? 'true' : 'false'}
-                onChange={handleValueChange}
-            >
-                <Radio value="true" label="true" />
-                <Radio value="false" label="false" />
-            </RadioGroup>
-        </>
+        <Button.Group>
+            {[true, false].map((value) => (
+                <Button
+                    key={String(value)}
+                    color={filter.value === value ? 'blue' : 'gray'}
+                    style={{ flexGrow: 1 }}
+                    children={String(value)}
+                    onClick={handleValueChange(value)}
+                />
+            ))}
+        </Button.Group>
     );
 };

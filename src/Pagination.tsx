@@ -16,22 +16,20 @@ export function Pagination({
     table,
     className = 'pagination',
     pageSizes = DEFAULT_PAGE_SIZES,
-    total,
 }: {
     table: Table<any>;
     className: string;
     pageSizes?: string[];
-    total?: number;
 }) {
-    const { rows: allRows } = table.getCoreRowModel();
     const pageIndex = table.getState().pagination.pageIndex;
     const pageSize = table.getState().pagination.pageSize;
+
+    const allRows = table.getPageCount() * pageSize;
 
     const firstRowNum = pageIndex * pageSize + 1;
 
     const currLastRowNum = (pageIndex + 1) * pageSize;
-    const lastRowNum =
-        currLastRowNum < allRows.length ? currLastRowNum : allRows.length;
+    const lastRowNum = currLastRowNum < allRows ? currLastRowNum : allRows;
 
     const handlePageSizeChange = (value: string) => {
         table.setPageSize(Number(value));
@@ -46,7 +44,7 @@ export function Pagination({
             <Group position="apart">
                 <Text size="sm" className={`${className}-info`}>
                     Showing <b>{firstRowNum}</b> - <b>{lastRowNum}</b> of{' '}
-                    <b>{allRows.length}</b> result
+                    <b>{allRows}</b> result
                 </Text>
                 <Group>
                     <Text size="sm">Rows per page: </Text>
@@ -61,7 +59,7 @@ export function Pagination({
                     <Divider orientation="vertical" />
                     <MantinePagination
                         page={table.getState().pagination.pageIndex + 1}
-                        total={total || table.getPageCount()}
+                        total={table.getPageCount()}
                         onChange={handlePageChange}
                         className={`${className}-page`}
                     />

@@ -1,6 +1,6 @@
 import { TextInput } from '@mantine/core';
-import { Table } from '@tanstack/react-table';
-import React, { useEffect, useState } from 'react';
+import { FilterFn, Table } from '@tanstack/react-table';
+import { useEffect, useState } from 'react';
 import { Search } from 'tabler-icons-react';
 
 type GlobalFilterProps = {
@@ -38,3 +38,16 @@ export function GlobalFilter({
         />
     );
 }
+
+export const globalFilterFn: FilterFn<any> = (
+    row,
+    columnId: string,
+    filterValue: string
+) => {
+    const value = row.getValue<string>(columnId);
+    if (!value) return false;
+    return value
+        .toString()
+        .toLowerCase()
+        .includes(filterValue.toString().toLowerCase());
+};
