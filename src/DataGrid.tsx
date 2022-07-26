@@ -1,46 +1,65 @@
-import { useEffect, useMemo } from 'react';
-import { ScrollArea, Stack, Table as MantineTable } from '@mantine/core';
+import { useCallback, useEffect, useImperativeHandle } from 'react';
 import {
-    ColumnSizingInfoState,
+    LoadingOverlay,
+    ScrollArea,
+    Stack,
+    Table as MantineTable,
+} from '@mantine/core';
+import {
+    ColumnFiltersState,
     flexRender,
+    functionalUpdate,
     getCoreRowModel,
     getFilteredRowModel,
     getPaginationRowModel,
     getSortedRowModel,
+    OnChangeFn,
     PaginationState,
-    RowData,
+    SortingState,
     useReactTable,
+    RowData,
 } from '@tanstack/react-table';
-import { useState } from 'react';
 import useStyles from './DataGrid.styles';
 
-import { GlobalFilter } from './GlobalFilter';
+import { GlobalFilter, globalFilterFn } from './GlobalFilter';
 import { ColumnSorter } from './ColumnSorter';
 import { ColumnFilter } from './ColumnFilter';
-import {
-    Pagination,
-    DEFAULT_INITIAL_PAGE,
-    DEFAULT_INITIAL_SIZE,
-} from './Pagination';
+import { DEFAULT_INITIAL_SIZE, Pagination } from './Pagination';
 import { DataGridProps } from './types';
 
 export function DataGrid<TData extends RowData>({
-    data,
+    // data
     columns,
+    data,
+    total,
+    // styles
     classNames,
     styles,
     sx,
     noEllipsis,
-    withGlobalFilter,
-    withPagination,
-    pagination,
-    debug = false,
-    onPageChange = () => {},
     striped,
     highlightOnHover,
     horizontalSpacing,
     verticalSpacing = 'xs',
     fontSize,
+    loading,
+    // features
+    withGlobalFilter,
+    withColumnFilters,
+    withSorting,
+    withPagination,
+    pageSizes,
+    initialPageIndex,
+    initialPageSize,
+    debug = false,
+    // callbacks
+    onPageChange,
+    onSearch,
+    onFilter,
+    onSort,
+    // table ref
+    tableRef,
+    // common props
     ...others
 }: DataGridProps<TData>) {
     const { classes, cx } = useStyles(
@@ -52,67 +71,19 @@ export function DataGrid<TData extends RowData>({
         }
     );
 
-    const [globalFilter, setGlobalFilter] = useState('');
-    const [columnSizingInfo, setColumnSizingInfo] =
-        useState<ColumnSizingInfoState>({} as any);
-
-    const initialPageIndex =
-        pagination?.initialPageIndex || DEFAULT_INITIAL_PAGE;
-    const initiaPageSize = pagination?.initialPageSize || DEFAULT_INITIAL_SIZE;
-
-    const [{ pageIndex, pageSize }, setPagination] = useState<PaginationState>({
-        pageIndex: initialPageIndex,
-        pageSize: initiaPageSize,
-    });
-
-    const paginationMemo = useMemo(() => {
-        if (withPagination) {
-            return {
-                pageIndex,
-                pageSize,
-            };
-        }
-
-        return {
-            pageIndex: 0,
-            pageSize: data.length,
-        };
-    }, [withPagination, data, pageIndex, pageSize]);
-
-    const pageCount = useMemo(() => {
-        if (withPagination && pageSize) {
-            return Math.floor(data.length / pageSize) ?? -1;
-        }
-        return data.length;
-    }, [data, pageSize, withPagination]);
-
     const table = useReactTable<TData>({
         data,
         columns,
-        columnResizeMode: 'onChange',
-        enableColumnFilters: true,
+        enableGlobalFilter: !!withGlobalFilter,
+        globalFilterFn,
+        enableColumnFilters: !!withColumnFilters,
+        enableSorting: !!withSorting,
         enableColumnResizing: true,
-        enableGlobalFilter: withGlobalFilter,
-        state: {
-            globalFilter,
-            columnSizingInfo,
-
-            // For pagination
-            ...(withPagination ? { pagination: paginationMemo } : {}),
-        },
-        onGlobalFilterChange: setGlobalFilter,
-        onColumnSizingInfoChange: setColumnSizingInfo,
-
-        // Pagination feature
-        ...(withPagination
-            ? {
-                  getPaginationRowModel: getPaginationRowModel(),
-                  pageCount: pageCount,
-                  onPaginationChange: setPagination,
-              }
-            : {}),
+        columnResizeMode: 'onChange',
+        manualPagination: !!total, // when external data, handle pagination manually
 
         getCoreRowModel: getCoreRowModel(),
+        getPaginationRowModel: getPaginationRowModel(),
         getSortedRowModel: getSortedRowModel(),
         getFilteredRowModel: getFilteredRowModel(),
 
@@ -121,22 +92,106 @@ export function DataGrid<TData extends RowData>({
         debugColumns: debug,
     });
 
+    useImperativeHandle(tableRef, () => table);
+
+    const handleGlobalFilterChange: OnChangeFn<string> = useCallback(
+        (arg0) =>
+            table.setState((state) => {
+                const next = functionalUpdate(arg0, state.globalFilter || '');
+                onSearch && onSearch(next);
+                return {
+                    ...state,
+                    globalFilter: next,
+                };
+            }),
+        [onSearch]
+    );
+
+    const handleSortingChange: OnChangeFn<SortingState> = useCallback(
+        (arg0) =>
+            table.setState((state) => {
+                const next = functionalUpdate(arg0, state.sorting);
+                onSort && onSort(next);
+                return {
+                    ...state,
+                    sorting: next,
+                };
+            }),
+        [onSort]
+    );
+
+    const handleColumnFiltersChange: OnChangeFn<ColumnFiltersState> =
+        useCallback(
+            (arg0) =>
+                table.setState((state) => {
+                    const next = functionalUpdate(arg0, state.columnFilters);
+                    onFilter && onFilter(next);
+                    return {
+                        ...state,
+                        columnFilters: next,
+                    };
+                }),
+            [onFilter]
+        );
+
+    const handlePaginationChange: OnChangeFn<PaginationState> = useCallback(
+        (arg0) => {
+            const pagination = table.getState().pagination;
+            const next = functionalUpdate(arg0, pagination);
+            if (
+                next.pageIndex !== pagination.pageIndex ||
+                next.pageSize !== pagination.pageSize
+            ) {
+                onPageChange && onPageChange(next);
+                table.setState((state) => ({
+                    ...state,
+                    pagination: next,
+                }));
+            }
+        },
+        [onPageChange]
+    );
+
+    const pageCount = withPagination
+        ? total
+            ? Math.floor(total / table.getState().pagination.pageSize)
+            : Math.floor(data.length / table.getState().pagination.pageSize)
+        : -1;
+
+    table.setOptions((prev) => ({
+        ...prev,
+        pageCount,
+        state: {
+            ...prev.state,
+        },
+        onGlobalFilterChange: handleGlobalFilterChange,
+        onColumnFiltersChange: handleColumnFiltersChange,
+        onSortingChange: handleSortingChange,
+        onPaginationChange: handlePaginationChange,
+    }));
+
     useEffect(() => {
-        if (!withPagination) {
+        if (withPagination) {
+            table.setPageSize(initialPageSize || DEFAULT_INITIAL_SIZE);
+        } else {
             table.setPageSize(data.length);
         }
-    }, []);
+    }, [withPagination]);
 
     return (
         <Stack {...others} spacing={verticalSpacing}>
             {withGlobalFilter && (
                 <GlobalFilter
-                    globalFilter={globalFilter}
-                    onGlobalFilterChange={setGlobalFilter}
+                    table={table}
+                    globalFilter={table.getState().globalFilter}
                     className={classes.globalFilter}
                 />
             )}
-            <ScrollArea>
+            <ScrollArea style={{ position: 'relative' }}>
+                <LoadingOverlay
+                    visible={loading || false}
+                    overlayOpacity={0.8}
+                />
                 <MantineTable
                     striped={striped}
                     highlightOnHover={highlightOnHover}
@@ -254,8 +309,7 @@ export function DataGrid<TData extends RowData>({
             {withPagination && (
                 <Pagination
                     table={table}
-                    onPageChange={onPageChange}
-                    pageSizes={pagination?.pageSizes}
+                    pageSizes={pageSizes}
                     className={classes.pagination}
                 />
             )}

@@ -84,7 +84,7 @@ export const highlightFilterValue = ({
     renderValue,
     column,
 }: {
-    column: Column<any>;
+    column: Column<any, any>;
     renderValue(): any;
 }) => {
     const filter = column.getFilterValue() as any;

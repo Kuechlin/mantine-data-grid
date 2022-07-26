@@ -23,7 +23,12 @@ With pnpm
 ## Usage
 
 ```typescript
-import { DataGrid } from 'mantine-data-grid';
+import {
+    DataGrid,
+    stringFilterFn,
+    numberFilterFn,
+    dateFilterFn,
+} from 'mantine-data-grid';
 
 function Demo() {
     return (
@@ -35,27 +40,27 @@ function Demo() {
                 {
                     accessorKey: 'text',
                     header: 'Text that is too long for a Header',
-                    filterFn: 'stringFilterFn',
+                    filterFn: stringFilterFn,
                 },
                 {
                     header: 'Animal',
                     columns: [
-                        { accessorKey: 'cat', filterFn: catFilter },
+                        { accessorKey: 'cat', filterFn: stringFilterFn },
                         {
                             accessorKey: 'fish',
-                            filterFn: 'stringFilterFn',
+                            filterFn: stringFilterFn,
                         },
                     ],
                 },
                 {
                     accessorKey: 'city',
-                    filterFn: 'stringFilterFn',
+                    filterFn: stringFilterFn,
                 },
-                { accessorKey: 'value', filterFn: 'numberFilterFn' },
+                { accessorKey: 'value', filterFn: numberFilterFn },
                 {
                     accessorKey: 'date',
                     cell: (cell) => cell.getValue()?.toLocaleDateString(),
-                    filterFn: 'dateFilterFn',
+                    filterFn: dateFilterFn,
                 },
             ]}
         />
@@ -89,5 +94,5 @@ function Demo() {
 -   [x] Pagination
 -   [x] Styles Api
 -   [x] Docs
--   [ ] Create npm package
+-   [x] Create npm package
 -   [ ] Add tests

@@ -1,16 +1,17 @@
 import { TextInput } from '@mantine/core';
-import React, { useEffect, useState } from 'react';
+import { FilterFn, Table } from '@tanstack/react-table';
+import { useEffect, useState } from 'react';
 import { Search } from 'tabler-icons-react';
 
 type GlobalFilterProps = {
+    table: Table<any>;
     globalFilter: string;
-    onGlobalFilterChange(value: string): void;
     className?: string;
 };
 
 export function GlobalFilter({
     globalFilter,
-    onGlobalFilterChange,
+    table,
     className,
 }: GlobalFilterProps) {
     const [value, setValue] = useState(globalFilter);
@@ -21,8 +22,8 @@ export function GlobalFilter({
 
     useEffect(() => {
         const timeout = setTimeout(() => {
-            onGlobalFilterChange(value);
-        }, 300);
+            table.setGlobalFilter(value);
+        }, 200);
 
         return () => clearTimeout(timeout);
     }, [value]);
@@ -37,3 +38,16 @@ export function GlobalFilter({
         />
     );
 }
+
+export const globalFilterFn: FilterFn<any> = (
+    row,
+    columnId: string,
+    filterValue: string
+) => {
+    const value = row.getValue<string>(columnId);
+    if (!value) return false;
+    return value
+        .toString()
+        .toLowerCase()
+        .includes(filterValue.toString().toLowerCase());
+};

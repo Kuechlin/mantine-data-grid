@@ -1,11 +1,11 @@
-import { ActionIcon, Button, Group, Popover, Stack } from '@mantine/core';
+import { ActionIcon, Button, Group, Menu, Popover, Stack } from '@mantine/core';
 import { Column, FilterFn, RowData } from '@tanstack/react-table';
 import { ComponentType, useState } from 'react';
 import { Check, Filter, X } from 'tabler-icons-react';
 import { isDataGridFilter } from './types';
 
 export interface ColumnFilterProps {
-    column: Column<any>;
+    column: Column<any, any>;
     className: string;
 }
 
@@ -39,16 +39,17 @@ export const ColumnFilter = ({ column, className }: ColumnFilterProps) => {
     };
 
     return (
-        <Popover
+        <Menu
             opened={!!state}
             position="bottom"
-            placement="center"
             withArrow
             transition="scale-y"
             shadow="xl"
             onClose={close}
             closeOnClickOutside={false}
-            target={
+            width="256px"
+        >
+            <Menu.Target>
                 <ActionIcon
                     size="xs"
                     children={<Filter size={16} />}
@@ -56,29 +57,29 @@ export const ColumnFilter = ({ column, className }: ColumnFilterProps) => {
                     className={className}
                     color={column.getIsFiltered() ? 'blue' : 'gray'}
                 />
-            }
-            width="256px"
-        >
-            {!!state && (
-                <Stack>
-                    <Element filter={state.value} onFilterChange={change} />
+            </Menu.Target>
+            <Menu.Dropdown>
+                {!!state && (
+                    <Stack p="xs">
+                        <Element filter={state.value} onFilterChange={change} />
 
-                    <Group position="apart">
-                        <Button
-                            children={<X />}
-                            color="gray"
-                            onClick={clear}
-                            compact
-                        />
-                        <Button
-                            children={<Check />}
-                            onClick={save}
-                            compact
-                            variant="outline"
-                        />
-                    </Group>
-                </Stack>
-            )}
-        </Popover>
+                        <Group position="apart">
+                            <Button
+                                children={<X />}
+                                color="gray"
+                                onClick={clear}
+                                compact
+                            />
+                            <Button
+                                children={<Check />}
+                                onClick={save}
+                                compact
+                                variant="outline"
+                            />
+                        </Group>
+                    </Stack>
+                )}
+            </Menu.Dropdown>
+        </Menu>
     );
 };
