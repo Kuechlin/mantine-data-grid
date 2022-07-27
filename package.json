@@ -32,18 +32,18 @@
         "@mantine/dates": "^4.2.11",
         "@mantine/hooks": "^4.2.5",
         "dayjs": "^1.11.3",
-        "react": "^18.0.0",
-        "react-dom": "^18.0.0"
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0"
     },
     "dependencies": {
         "@emotion/react": "^11.9.3",
         "@mantine/core": "^5.0.0",
         "@mantine/dates": "^5.0.0",
         "@mantine/hooks": "^5.0.0",
-        "@tanstack/react-table": "^8.3.3",
+        "@tanstack/react-table": "^8.5.0",
         "dayjs": "^1.11.4",
-        "react": "^18.0.0",
-        "react-dom": "^18.0.0",
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0",
         "remove": "^0.1.5",
         "tabler-icons-react": "^1.54.0"
     },
@@ -57,9 +57,9 @@
         "react-markdown": "^8.0.3",
         "react-router-dom": "^6.3.0",
         "remark-gfm": "^3.0.1",
-        "rollup": "^2.77.1",
+        "rollup": "^2.77.2",
         "rollup-plugin-visualizer": "^5.7.1",
-        "typescript": "^4.6.3",
+        "typescript": "^4.7.4",
         "vite": "^3.0.3"
     }
 }

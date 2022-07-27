@@ -36,6 +36,8 @@ export function DataGrid<TData extends RowData>({
     classNames,
     styles,
     sx,
+    height,
+    headerFixed,
     noEllipsis,
     striped,
     highlightOnHover,
@@ -187,7 +189,12 @@ export function DataGrid<TData extends RowData>({
                     className={classes.globalFilter}
                 />
             )}
-            <ScrollArea style={{ position: 'relative' }}>
+            <ScrollArea
+                style={{
+                    position: 'relative',
+                    height: height ? height + 'px' : '',
+                }}
+            >
                 <LoadingOverlay
                     visible={loading || false}
                     overlayOpacity={0.8}
@@ -200,7 +207,12 @@ export function DataGrid<TData extends RowData>({
                     fontSize={fontSize}
                     className={classes.table}
                 >
-                    <thead className={classes.header} role="rowgroup">
+                    <thead
+                        className={cx(classes.header, {
+                            [classes.headerFixed]: headerFixed === true,
+                        })}
+                        role="rowgroup"
+                    >
                         {table
                             .getHeaderGroups()
                             .map((group, groupIndex, headerGroups) => (

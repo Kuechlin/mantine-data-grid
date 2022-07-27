@@ -5,6 +5,13 @@ export default createStyles((theme, _: {}) => ({
     header: {
         borderBottom: `2px solid ${theme.colors.dark[4]}`,
     },
+    headerFixed: {
+        position: 'sticky',
+        top: 0,
+        backgroundColor:
+            theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
+        transition: 'box-shadow 150ms ease',
+    },
     body: {
         display: 'block',
         minHeight: '160px',

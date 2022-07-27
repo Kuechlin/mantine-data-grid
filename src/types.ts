@@ -34,12 +34,15 @@ export interface DataGridProps<TData extends RowData>
     tableRef?: Ref<Table<TData>>;
 
     // Styles
+    height?: number;
     /** Text overflow ellipsis is disabled*/
     noEllipsis?: boolean;
     /** If true react-table debug log is enabled */
     debug?: boolean;
     /** If true every odd row of table will have gray background color */
     striped?: boolean;
+    /** If true every odd row of table will have gray background color */
+    headerFixed?: boolean;
     /** If true row will have hover color */
     highlightOnHover?: boolean;
     /** Horizontal cells spacing from theme.spacing or number to set value in px */

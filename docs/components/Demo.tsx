@@ -136,6 +136,8 @@ export default function Demo() {
                     initialPageIndex={initialPageIndex}
                     initialPageSize={initialPageSize}
                     onPageChange={onPageChange}
+                    headerFixed={true}
+                    height={300}
                     onSort={onSort}
                     onFilter={onFilter}
                     onSearch={onSearch}
