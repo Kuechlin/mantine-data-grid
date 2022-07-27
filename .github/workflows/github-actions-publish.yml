@@ -1,30 +1,29 @@
 name: Build and Publish to npm
 
 on:
-    release:
-        types: [published]
+  release:
+    types: [published]
 
 jobs:
-    build-and-publish:
-        runs-on: ubuntu-latest
-        strategy:
-            matrix:
-                node-version: [15]
-        steps:
-            - uses: actions/checkout@v2
-            - name: use pnpm
-              uses: pnpm/action-setup@v2.2.2
-              with:
-                  version: 7
-            - name: use node.js ${{ matrix.node-version }}
-              uses: actions/setup-node@v2
-              with:
-                  node-version: ${{ matrix.node-version }}
-                  cache: 'pnpm'
-            - name: install and build
-              run: |
-                  npm i -g pnpm
-                  pnpm i
-                  pnpm run build
-            - name: publish
-              run: pnpm publish --no-git-checks --access public
+  build:
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        node-version: [15]
+    steps:
+    - uses: actions/checkout@v2
+    - uses: pnpm/action-setup@v2.2.2
+      with:
+        version: 7
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v2
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'pnpm'
+    - name: install and build
+      run: |
+          npm i -g pnpm
+          pnpm i
+          pnpm run build
+    - name: publish
+      run: pnpm publish --no-git-checks --access public
