@@ -1,10 +1,10 @@
 import {
-    Divider,
     Group,
     Select,
     Text,
     Pagination as MantinePagination,
-    Stack,
+    Box,
+    MantineNumberSize,
 } from '@mantine/core';
 import { Table } from '@tanstack/react-table';
 
@@ -14,12 +14,14 @@ export const DEFAULT_INITIAL_SIZE = 10;
 
 export function Pagination({
     table,
-    className = 'pagination',
+    classes,
+    fontSize = "md",
     pageSizes = DEFAULT_PAGE_SIZES,
 }: {
     table: Table<any>;
-    className: string;
+    classes: string[];
     pageSizes?: string[];
+    fontSize: MantineNumberSize;
 }) {
     const pageIndex = table.getState().pagination.pageIndex;
     const pageSize = table.getState().pagination.pageSize;
@@ -40,31 +42,34 @@ export function Pagination({
     };
 
     return (
-        <Stack className={className}>
-            <Group position="apart">
-                <Text size="sm" className={`${className}-info`}>
-                    Showing <b>{firstRowNum}</b> - <b>{lastRowNum}</b> of{' '}
-                    <b>{allRows}</b> result
-                </Text>
-                <Group>
-                    <Text size="sm">Rows per page: </Text>
+        <Box className={classes[0]}>
+
+            <Text size={fontSize} className={classes[1]}>
+                Showing <b>{firstRowNum}</b> - <b>{lastRowNum}</b> of{' '}
+                <b>{allRows}</b> result
+            </Text>
+
+            <Group>
+                <Box className={classes[2]}>
+                    <Text size={fontSize}>Rows per page: </Text>
                     <Select
-                        style={{ width: '72px' }}
-                        variant="filled"
                         data={pageSizes}
                         value={`${table.getState().pagination.pageSize}`}
                         onChange={handlePageSizeChange}
-                        className={`${className}-size`}
+                        sx={(_theme) => ({
+                            width: '72px',
+                        })}
                     />
-                    <Divider orientation="vertical" />
-                    <MantinePagination
-                        page={table.getState().pagination.pageIndex + 1}
-                        total={table.getPageCount()}
-                        onChange={handlePageChange}
-                        className={`${className}-page`}
-                    />
-                </Group>
+                </Box>
+                <MantinePagination
+                    size={fontSize}
+                    page={table.getState().pagination.pageIndex + 1}
+                    total={table.getPageCount()}
+                    onChange={handlePageChange}
+                    className={classes[3]}
+                    siblings={1}
+                />
             </Group>
-        </Stack>
+        </Box>
     );
 }
