@@ -9,14 +9,26 @@ jobs:
     build-and-deploy:
         runs-on: ubuntu-latest
         steps:
-            - name: Checkout 🛎️
-              uses: actions/checkout@v2.3.1
-            - name: Install and Build 🔧
+        strategy:
+            matrix:
+                node-version: [15]
+        steps:
+            - uses: actions/checkout@v2
+            - name: Use pnpm
+              uses: pnpm/action-setup@v2.2.2
+              with:
+                  version: 7
+            - name: use node.js ${{ matrix.node-version }}
+              uses: actions/setup-node@v2
+              with:
+                  node-version: ${{ matrix.node-version }}
+                  cache: 'pnpm'
+            - name: install and build
               run: |
                   npm i -g pnpm
                   pnpm i
                   pnpm run build:docs
-            - name: Deploy 🚀
+            - name: deploy pages
               uses: JamesIves/github-pages-deploy-action@4.1.7
               with:
                   branch: gh-pages
