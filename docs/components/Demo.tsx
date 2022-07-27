@@ -5,6 +5,7 @@ import {
     Grid,
     MantineSize,
     MultiSelect,
+    NumberInput,
     Slider,
     Space,
     Stack,
@@ -90,6 +91,8 @@ export default function Demo() {
         horizontalSpacing: 'xs' as MantineSize,
         verticalSpacing: 'xs' as MantineSize,
         fontSize: 'md' as MantineSize,
+        height: 0,
+        headerFixed: false,
         noEllipsis: false,
         withGlobalFilter: true,
         withPagination: true,
@@ -136,8 +139,8 @@ export default function Demo() {
                     initialPageIndex={initialPageIndex}
                     initialPageSize={initialPageSize}
                     onPageChange={onPageChange}
-                    headerFixed={true}
-                    height={300}
+                    headerFixed={state.headerFixed}
+                    height={state.height && state.height}
                     onSort={onSort}
                     onFilter={onFilter}
                     onSearch={onSearch}
@@ -229,6 +232,24 @@ export default function Demo() {
                         }
                     />
                     <Text color="dimmed">Styles</Text>
+                    <NumberInput
+                        label="Table Height"
+                        value={state.height}
+                        onChange={(val) =>
+                            update({
+                                height: val,
+                            })
+                        }
+                    />
+                    <Switch
+                        label="Header Fixed"
+                        checked={state.headerFixed}
+                        onChange={(e) =>
+                            update({
+                                headerFixed: e.target.checked,
+                            })
+                        }
+                    />
                     <Switch
                         label="No Text ellipsis"
                         checked={state.noEllipsis}
