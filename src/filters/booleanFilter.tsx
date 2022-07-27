@@ -1,4 +1,4 @@
-import { Button, Group, Radio } from '@mantine/core';
+import { SegmentedControl } from '@mantine/core';
 import { DataGridFilterFn, DataGridFilterProps } from '../types';
 
 export enum BooleanFilter {
@@ -31,20 +31,24 @@ booleanFilterFn.element = function ({
     filter,
     onFilterChange,
 }: DataGridFilterProps) {
-    const handleValueChange = (value: boolean) => () =>
-        onFilterChange({ ...filter, value });
+    const handleValueChange = (value: string) =>
+        onFilterChange({ ...filter, value: value === 'true' ? true : false });
 
     return (
-        <Button.Group>
-            {[true, false].map((value) => (
-                <Button
-                    key={String(value)}
-                    color={filter.value === value ? 'blue' : 'gray'}
-                    style={{ flexGrow: 1 }}
-                    children={String(value)}
-                    onClick={handleValueChange(value)}
-                />
-            ))}
-        </Button.Group>
+        <SegmentedControl
+            value={filter.value ? 'true' : 'false'}
+            onChange={handleValueChange}
+            data={[
+                { label: 'true', value: 'true' },
+                { label: 'false', value: 'false' },
+            ]}
+            fullWidth
+            styles={{
+                active: {
+                    // fix visual bug when opening filter dropdown
+                    height: 'calc(100% - 8px) !important',
+                },
+            }}
+        />
     );
 };
