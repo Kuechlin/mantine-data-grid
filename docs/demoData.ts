@@ -11,7 +11,7 @@ export type Data = {
   bool: boolean;
 };
 
-function genFakerData(_: any, i: number) {
+function genFakerData(_: unknown, i: number) {
   return {
     id: i + 1,
     text: faker.lorem.lines(),

@@ -1,4 +1,3 @@
-import { faker } from '@faker-js/faker';
 import {
   Badge,
   createStyles,
@@ -41,7 +40,7 @@ const sizeMap = new Map<string | number, string | number>([
   [100, 'xl'],
 ]);
 
-const catFilter: DataGridFilterFn<any> = (row, columnId, filter) => {
+const catFilter: DataGridFilterFn<Data, string[]> = (row, columnId, filter) => {
   const rowValue = String(row.getValue(columnId));
   return Array.isArray(filter) ? filter.includes(rowValue) : false;
 };
@@ -163,7 +162,7 @@ export default function Demo() {
             { accessorKey: 'value', filterFn: numberFilterFn },
             {
               accessorKey: 'date',
-              cell: (cell) => cell.getValue()?.toLocaleDateString(),
+              cell: (cell) => cell.getValue<Date>()?.toLocaleDateString(),
               filterFn: dateFilterFn,
             },
             {

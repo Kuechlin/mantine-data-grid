@@ -1,29 +1,22 @@
-import {
-  Group,
-  Select,
-  Text,
-  Pagination as MantinePagination,
-  Box,
-  MantineNumberSize,
-} from '@mantine/core';
+import { Group, Select, Text, Pagination as MantinePagination, Box, MantineNumberSize } from '@mantine/core';
 import { Table } from '@tanstack/react-table';
 
 export const DEFAULT_PAGE_SIZES = ['10', '25', '50', '100'];
 export const DEFAULT_INITIAL_PAGE = 0;
 export const DEFAULT_INITIAL_SIZE = 10;
 
-export function Pagination({
+export function Pagination<TData>({
   table,
   classes,
   totalRows,
   fontSize = 'md',
   pageSizes = DEFAULT_PAGE_SIZES,
 }: {
-  table: Table<any>;
+  table: Table<TData>;
   classes: string[];
   totalRows: number;
   pageSizes?: string[];
-  fontSize: MantineNumberSize;
+  fontSize?: MantineNumberSize;
 }) {
   const pageIndex = table.getState().pagination.pageIndex;
   const pageSize = table.getState().pagination.pageSize;
@@ -44,8 +37,7 @@ export function Pagination({
   return (
     <Box className={classes[0]}>
       <Text size={fontSize} className={classes[1]}>
-        Showing <b>{firstRowNum}</b> - <b>{lastRowNum}</b> of <b>{totalRows}</b>{' '}
-        result
+        Showing <b>{firstRowNum}</b> - <b>{lastRowNum}</b> of <b>{totalRows}</b> result
       </Text>
 
       <Group>
@@ -55,7 +47,7 @@ export function Pagination({
             data={pageSizes}
             value={`${table.getState().pagination.pageSize}`}
             onChange={handlePageSizeChange}
-            sx={(_theme) => ({
+            sx={() => ({
               width: '72px',
             })}
           />

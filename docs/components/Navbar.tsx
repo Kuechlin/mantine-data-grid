@@ -1,12 +1,4 @@
-import {
-  Button,
-  Avatar,
-  Navbar as MantineNavbar,
-  Stack,
-  Text,
-  NavLink,
-  useMantineColorScheme,
-} from '@mantine/core';
+import { Button, Avatar, Navbar as MantineNavbar, Stack, Text, NavLink, useMantineColorScheme } from '@mantine/core';
 import { Book, Paint, Rocket, Star } from 'tabler-icons-react';
 
 import { Link, useLocation } from 'react-router-dom';
@@ -50,14 +42,7 @@ export default function Navbar() {
           <Button
             key={link.path}
             component={Link}
-            leftIcon={
-              <Avatar
-                children={link.icon}
-                radius="xl"
-                size="sm"
-                color={link.color}
-              />
-            }
+            leftIcon={<Avatar children={link.icon} radius="xl" size="sm" color={link.color} />}
             children={link.label}
             to={link.path}
             variant={location.pathname == link.path ? 'filled' : 'subtle'}
