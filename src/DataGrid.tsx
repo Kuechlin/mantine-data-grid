@@ -158,7 +158,7 @@ export function DataGrid<TData extends RowData>({
     const pageCount = withPagination
         ? total
             ? Math.floor(total / table.getState().pagination.pageSize)
-            : Math.floor(data.length / table.getState().pagination.pageSize)
+            : Math.ceil(data.length / table.getState().pagination.pageSize)
         : -1;
 
     table.setOptions((prev) => ({
@@ -311,6 +311,7 @@ export function DataGrid<TData extends RowData>({
             </ScrollArea>
             {withPagination && (
                 <Pagination
+                    totalRows={data.length}
                     table={table}
                     pageSizes={pageSizes}
                     className={classes.pagination}
