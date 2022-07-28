@@ -13,6 +13,7 @@ import {
   SortingState,
   useReactTable,
   RowData,
+  Row,
 } from '@tanstack/react-table';
 import useStyles from './DataGrid.styles';
 
@@ -56,6 +57,7 @@ export function DataGrid<TData extends RowData>({
   // table ref
   tableRef,
   initialState,
+  onRowClick,
   // common props
   ...others
 }: DataGridProps<TData>) {
@@ -145,6 +147,15 @@ export function DataGrid<TData extends RowData>({
       }
     },
     [onPageChange]
+  );
+
+  const handleOnRowClick = useCallback(
+    (e: React.MouseEvent<HTMLTableRowElement, MouseEvent>, row: Row<TData>) => {
+      if (onRowClick) {
+        onRowClick(e, row);
+      }
+    },
+    [onRowClick]
   );
 
   const pageCount = withPagination
@@ -244,7 +255,7 @@ export function DataGrid<TData extends RowData>({
           </thead>
           <tbody className={classes.body} role="rowgroup">
             {table.getRowModel().rows.map((row) => (
-              <tr key={row.id} className={classes.row} role="row">
+              <tr key={row.id} className={classes.row} onClick={(event) => handleOnRowClick(event, row)} role="row">
                 {row.getVisibleCells().map((cell) => (
                   <td
                     key={cell.id}

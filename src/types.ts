@@ -6,6 +6,7 @@ import {
   FilterFn,
   InitialTableState,
   PaginationState,
+  Row,
   RowData,
   SortingState,
   Table,
@@ -99,9 +100,14 @@ export interface DataGridProps<TData extends RowData>
   onSort?: OnChangeCallback<DataGridSortingState>;
 
   /**
-   * The intial table state
+   * The initial table state
    */
   initialState?: InitialTableState;
+
+  /**
+   * Callback when clicking on a specific row
+   */
+  onRowClick?: (event: React.MouseEvent<HTMLTableRowElement, MouseEvent>, row: Row<TData>) => void;
 }
 
 export type DataGridFilterFn<TData extends RowData, TFilter = unknown> = FilterFn<TData> & {
