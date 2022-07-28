@@ -4,6 +4,7 @@ import {
     ColumnDef,
     ColumnFiltersState,
     FilterFn,
+    InitialTableState,
     PaginationState,
     RowData,
     SortingState,
@@ -92,6 +93,11 @@ export interface DataGridProps<TData extends RowData>
      * Callback when sorting changed
      */
     onSort?: OnChangeCallback<DataGridSortingState>;
+
+    /**
+     * The intial table state
+     */
+    initialState?: InitialTableState;
 }
 
 export type DataGridFilterFn<TData extends RowData> = FilterFn<TData> & {

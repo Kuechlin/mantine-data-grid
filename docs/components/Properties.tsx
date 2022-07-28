@@ -100,6 +100,11 @@ const properties = [
                 type: 'Ref<Table<TData>>',
                 description: 'Table instance ref',
             },
+            {
+                name: 'initialState',
+                type: 'InitialTableState',
+                description: 'The initial table state',
+            },
         ],
     },
     {
