@@ -42,6 +42,8 @@
     "tabler-icons-react": "^1.54.0"
   },
   "devDependencies": {
+    "@commitlint/cli": "^17.0.3",
+    "@commitlint/config-conventional": "^17.0.3",
     "@faker-js/faker": "^7.3.0",
     "@mantine/prism": "^5.0.0",
     "@types/node": "^18.6.1",
