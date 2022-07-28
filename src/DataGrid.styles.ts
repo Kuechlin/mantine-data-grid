@@ -43,5 +43,33 @@ export default createStyles((theme, _: {}) => ({
     sorter: {},
     filter: {},
     globalFilter: {},
-    pagination: {},
+    pagination: {
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+
+        [`@media (min-width: ${theme.breakpoints.xl}px)`]: {
+            justifyContent: "space-between",
+        },
+    },
+
+    pagination_info: {
+        display: "none",
+
+        [`@media (min-width: ${theme.breakpoints.xl}px)`]: {
+            display: "inline-block",
+        },
+    },
+
+    pagination_size: {
+        display: "none",
+
+        [`@media (min-width: ${theme.breakpoints.xl}px)`]: {
+            display: "flex",
+            alignItems: "center",
+            gap: `${theme.spacing.xs}px`,
+        },
+    },
+
+    pagination_page: {},
 }));

@@ -12,8 +12,8 @@ export default function CodeDemo({
     children: ReactNode;
 }) {
     return (
-        <Tabs variant="pills" defaultValue="comp" color="gray">
-            <Tabs.List position="center" grow>
+        <Tabs variant="pills" defaultValue="comp">
+            <Tabs.List position="right">
                 <Tabs.Tab
                     value="comp"
                     icon={<Components />}

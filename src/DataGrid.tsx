@@ -314,7 +314,13 @@ export function DataGrid<TData extends RowData>({
                     totalRows={data.length}
                     table={table}
                     pageSizes={pageSizes}
-                    className={classes.pagination}
+                    fontSize={fontSize}
+                    classes={[
+                        classes.pagination,
+                        classes.pagination_info,
+                        classes.pagination_size,
+                        classes.pagination_page
+                    ]}
                 />
             )}
         </Stack>
