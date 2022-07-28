@@ -1,39 +1,33 @@
 {
     "name": "mantine-data-grid",
     "version": "0.0.9",
-    "license": "MIT",
-    "type": "module",
-    "repository": {
-        "url": "https://github.com/Kuechlin/mantine-data-grid.git",
-        "type": "git"
-    },
-    "author": "Yannick Küchlin <y.kuechlin@vws.app>",
     "homepage": "https://kuechlin.github.io/mantine-data-grid/",
-    "files": [
-        "dist",
-        "README.md"
-    ],
-    "types": "./dist/index.d.ts",
-    "main": "./dist/mantine-data-grid.umd.cjs",
-    "module": "./dist/mantine-data-grid.js",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Kuechlin/mantine-data-grid.git"
+    },
+    "license": "MIT",
+    "author": "Yannick Küchlin <y.kuechlin@vws.app>",
+    "type": "module",
     "exports": {
         ".": {
             "import": "./dist/mantine-data-grid.js",
             "require": "./dist/mantine-data-grid.umd.cjs"
         }
     },
+    "main": "./dist/mantine-data-grid.umd.cjs",
+    "module": "./dist/mantine-data-grid.js",
+    "types": "./dist/index.d.ts",
+    "files": [
+        "dist",
+        "README.md"
+    ],
     "scripts": {
-        "dev": "vite -c vite.config.docs.ts --port 3000",
         "build": "vite build && tsc --emitDeclarationOnly",
-        "build:docs": "vite build -c vite.config.docs.ts"
-    },
-    "peerDependencies": {
-        "@mantine/core": "^4.2.5",
-        "@mantine/dates": "^4.2.11",
-        "@mantine/hooks": "^4.2.5",
-        "dayjs": "^1.11.3",
-        "react": "^18.0.0",
-        "react-dom": "^18.0.0"
+        "build:docs": "vite build -c vite.config.docs.ts",
+        "dev": "vite -c vite.config.docs.ts --port 3000",
+        "format": "prettier \"**/*.+(js|ts|tsx|css|scss|json|md|html)\" --write",
+        "lint": "eslint ."
     },
     "dependencies": {
         "@emotion/react": "^11.9.3",
@@ -44,7 +38,6 @@
         "dayjs": "^1.11.4",
         "react": "^18.0.0",
         "react-dom": "^18.0.0",
-        "remove": "^0.1.5",
         "tabler-icons-react": "^1.54.0"
     },
     "devDependencies": {
@@ -54,6 +47,14 @@
         "@types/react": "^18.0.15",
         "@types/react-dom": "^18.0.6",
         "@vitejs/plugin-react": "^2.0.0",
+        "@typescript-eslint/eslint-plugin": "^5.31.0",
+        "@typescript-eslint/parser": "^5.31.0",
+        "eslint": "^8.20.0",
+        "eslint-config-prettier": "^8.5.0",
+        "eslint-import-resolver-typescript": "^3.3.0",
+        "eslint-plugin-import": "^2.26.0",
+        "eslint-plugin-prettier": "^4.2.1",
+        "prettier": "^2.7.1",
         "react-markdown": "^8.0.3",
         "react-router-dom": "^6.3.0",
         "remark-gfm": "^3.0.1",
@@ -61,5 +62,18 @@
         "rollup-plugin-visualizer": "^5.7.1",
         "typescript": "^4.6.3",
         "vite": "^3.0.3"
+    },
+    "peerDependencies": {
+        "@mantine/core": "^4.2.5",
+        "@mantine/dates": "^4.2.11",
+        "@mantine/hooks": "^4.2.5",
+        "dayjs": "^1.11.3",
+        "react": "^18.0.0",
+        "react-dom": "^18.0.0"
+    },
+    "peerDependenciesMeta": {
+        "dayjs": {
+            "optional": true
+        }
     }
 }
