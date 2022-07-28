@@ -223,7 +223,7 @@ export default function Demo() {
           />
           <Text color="dimmed">Styles</Text>
           <NumberInput
-            label="Table Height"
+            label="Table body height"
             value={state.height}
             onChange={(val) =>
               update({
@@ -232,7 +232,7 @@ export default function Demo() {
             }
           />
           <Switch
-            label="Header Fixed"
+            label="With fixed Header"
             checked={state.headerFixed}
             onChange={(e) =>
               update({

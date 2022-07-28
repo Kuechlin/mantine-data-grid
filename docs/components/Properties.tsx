@@ -95,6 +95,9 @@ const properties = [
   {
     group: 'Styles',
     children: [
+      { name: 'height', type: 'number', description: 'Table body height' },
+
+      { name: 'withFixedHeader', type: 'boolean', description: 'Enable fixed header' },
       {
         name: 'noEllipsis',
         type: 'boolean',

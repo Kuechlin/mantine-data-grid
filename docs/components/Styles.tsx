@@ -26,6 +26,10 @@ export default function Styles() {
             <td>table header</td>
           </tr>
           <tr>
+            <td>headerFixed</td>
+            <td>table fixed header</td>
+          </tr>
+          <tr>
             <td>body</td>
             <td>table body</td>
           </tr>

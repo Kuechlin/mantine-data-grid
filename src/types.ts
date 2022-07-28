@@ -35,8 +35,10 @@ export interface DataGridProps<TData extends RowData>
   tableRef?: Ref<Table<TData>>;
 
   // Styles
+  /** Table body height */
   height?: number;
-  headerFixed?: boolean;
+  /** Enable fixed header */
+  withFixedHeader?: boolean;
   /** Text overflow ellipsis is disabled*/
   noEllipsis?: boolean;
   /** If true react-table debug log is enabled */

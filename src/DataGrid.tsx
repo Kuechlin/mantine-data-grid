@@ -31,7 +31,7 @@ export function DataGrid<TData extends RowData>({
   classNames,
   styles,
   height,
-  headerFixed,
+  withFixedHeader,
   noEllipsis,
   striped,
   highlightOnHover,
@@ -195,7 +195,7 @@ export function DataGrid<TData extends RowData>({
         >
           <thead
             className={cx(classes.header, {
-              [classes.headerFixed]: headerFixed === true,
+              [classes.headerFixed]: !!withFixedHeader,
             })}
             role="rowgroup"
           >
