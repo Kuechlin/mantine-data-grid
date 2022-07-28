@@ -59,6 +59,7 @@ export function DataGrid<TData extends RowData>({
     onSort,
     // table ref
     tableRef,
+    initialState,
     // common props
     ...others
 }: DataGridProps<TData>) {
@@ -90,6 +91,8 @@ export function DataGrid<TData extends RowData>({
         debugTable: debug,
         debugHeaders: debug,
         debugColumns: debug,
+
+        initialState,
     });
 
     useImperativeHandle(tableRef, () => table);
@@ -155,7 +158,7 @@ export function DataGrid<TData extends RowData>({
     const pageCount = withPagination
         ? total
             ? Math.floor(total / table.getState().pagination.pageSize)
-            : Math.floor(data.length / table.getState().pagination.pageSize)
+            : Math.ceil(data.length / table.getState().pagination.pageSize)
         : -1;
 
     table.setOptions((prev) => ({
@@ -308,6 +311,7 @@ export function DataGrid<TData extends RowData>({
             </ScrollArea>
             {withPagination && (
                 <Pagination
+                    totalRows={data.length}
                     table={table}
                     pageSizes={pageSizes}
                     fontSize={fontSize}

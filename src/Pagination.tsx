@@ -1,10 +1,10 @@
 import {
-    Group,
-    Select,
-    Text,
-    Pagination as MantinePagination,
-    Box,
-    MantineNumberSize,
+  Group,
+  Select,
+  Text,
+  Pagination as MantinePagination,
+  Box,
+  MantineNumberSize,
 } from '@mantine/core';
 import { Table } from '@tanstack/react-table';
 
@@ -13,63 +13,62 @@ export const DEFAULT_INITIAL_PAGE = 0;
 export const DEFAULT_INITIAL_SIZE = 10;
 
 export function Pagination({
-    table,
-    classes,
-    fontSize = "md",
-    pageSizes = DEFAULT_PAGE_SIZES,
+  table,
+  classes,
+  totalRows,
+  fontSize = 'md',
+  pageSizes = DEFAULT_PAGE_SIZES,
 }: {
-    table: Table<any>;
-    classes: string[];
-    pageSizes?: string[];
-    fontSize: MantineNumberSize;
+  table: Table<any>;
+  classes: string[];
+  totalRows: number;
+  pageSizes?: string[];
+  fontSize: MantineNumberSize;
 }) {
-    const pageIndex = table.getState().pagination.pageIndex;
-    const pageSize = table.getState().pagination.pageSize;
+  const pageIndex = table.getState().pagination.pageIndex;
+  const pageSize = table.getState().pagination.pageSize;
 
-    const allRows = table.getPageCount() * pageSize;
+  const firstRowNum = pageIndex * pageSize + 1;
 
-    const firstRowNum = pageIndex * pageSize + 1;
+  const currLastRowNum = (pageIndex + 1) * pageSize;
+  const lastRowNum = currLastRowNum < totalRows ? currLastRowNum : totalRows;
 
-    const currLastRowNum = (pageIndex + 1) * pageSize;
-    const lastRowNum = currLastRowNum < allRows ? currLastRowNum : allRows;
+  const handlePageSizeChange = (value: string) => {
+    table.setPageSize(Number(value));
+  };
 
-    const handlePageSizeChange = (value: string) => {
-        table.setPageSize(Number(value));
-    };
+  const handlePageChange = (pageNum: number) => {
+    table.setPageIndex(Number(pageNum) - 1);
+  };
 
-    const handlePageChange = (pageNum: number) => {
-        table.setPageIndex(Number(pageNum) - 1);
-    };
+  return (
+    <Box className={classes[0]}>
+      <Text size={fontSize} className={classes[1]}>
+        Showing <b>{firstRowNum}</b> - <b>{lastRowNum}</b> of <b>{totalRows}</b>{' '}
+        result
+      </Text>
 
-    return (
-        <Box className={classes[0]}>
-
-            <Text size={fontSize} className={classes[1]}>
-                Showing <b>{firstRowNum}</b> - <b>{lastRowNum}</b> of{' '}
-                <b>{allRows}</b> result
-            </Text>
-
-            <Group>
-                <Box className={classes[2]}>
-                    <Text size={fontSize}>Rows per page: </Text>
-                    <Select
-                        data={pageSizes}
-                        value={`${table.getState().pagination.pageSize}`}
-                        onChange={handlePageSizeChange}
-                        sx={(_theme) => ({
-                            width: '72px',
-                        })}
-                    />
-                </Box>
-                <MantinePagination
-                    size={fontSize}
-                    page={table.getState().pagination.pageIndex + 1}
-                    total={table.getPageCount()}
-                    onChange={handlePageChange}
-                    className={classes[3]}
-                    siblings={1}
-                />
-            </Group>
+      <Group>
+        <Box className={classes[2]}>
+          <Text size={fontSize}>Rows per page: </Text>
+          <Select
+            data={pageSizes}
+            value={`${table.getState().pagination.pageSize}`}
+            onChange={handlePageSizeChange}
+            sx={(_theme) => ({
+              width: '72px',
+            })}
+          />
         </Box>
-    );
+        <MantinePagination
+          size={fontSize}
+          page={table.getState().pagination.pageIndex + 1}
+          total={table.getPageCount()}
+          onChange={handlePageChange}
+          className={classes[3]}
+          siblings={1}
+        />
+      </Group>
+    </Box>
+  );
 }
