@@ -7,17 +7,9 @@ import {
   NavLink,
   useMantineColorScheme,
 } from '@mantine/core';
-import {
-  Book,
-  Paint,
-  Rocket,
-  Star,
-} from 'tabler-icons-react';
+import { Book, Paint, Rocket, Star } from 'tabler-icons-react';
 
-import {
-  Link,
-  useLocation,
-} from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 import { BASE_URL } from '../constants';
 
@@ -68,11 +60,7 @@ export default function Navbar() {
             }
             children={link.label}
             to={link.path}
-            variant={
-              location.pathname == link.path
-                ? 'filled'
-                : 'subtle'
-            }
+            variant={location.pathname == link.path ? 'filled' : 'subtle'}
             color={dark ? 'gray' : 'blue'}
             styles={{
               inner: {
@@ -97,6 +85,10 @@ export default function Navbar() {
         {
           label: 'Async data',
           path: BASE_URL + '/example/async',
+        },
+        {
+          label: 'Initial State',
+          path: BASE_URL + '/example/initial-state',
         },
       ].map((item) => (
         <NavLink
