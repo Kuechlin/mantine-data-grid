@@ -18,7 +18,7 @@ export default function Properties() {
     <Stack p="md">
       <Title order={2} style={{ display: 'flex' }}>
         {'DataGrid<'}
-        <Text inherit inline color="orange" children="T extends object = any" />
+        <Text inherit inline color="orange" children="TData extends object = any" />
         {'> component props'}
       </Title>
       <Table>
@@ -89,6 +89,11 @@ const properties = [
         name: 'initialState',
         type: 'InitialTableState',
         description: 'The initial table state',
+      },
+      {
+        name: 'onRowClick',
+        type: '(event: MouseEvent<HTMLTableRowElement, MouseEvent>, row: Row<TData>) => void',
+        description: 'Callback when clicking on a specific row',
       },
     ],
   },

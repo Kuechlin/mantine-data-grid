@@ -1,32 +1,6 @@
-import { MultiSelect } from '@mantine/core';
-import { DataGrid, DataGridFilterFn } from '../../../src';
+import { DataGrid, stringFilterFn } from '../../../src';
 import CodeDemo from '../CodeDemo';
 import { demoData } from '../../demoData';
-
-const catFilter: DataGridFilterFn<any> = (row, columnId, filter) => {
-  const rowValue = String(row.getValue(columnId));
-  return Array.isArray(filter) ? filter.includes(rowValue) : false;
-};
-catFilter.autoRemove = (val) => !val;
-catFilter.init = () => [];
-catFilter.element = function ({ filter, onFilterChange }) {
-  return (
-    <MultiSelect
-      data={[
-        { value: 'Peterbald', label: 'Peterbald' },
-        { value: 'Chartreux', label: 'Chartreux' },
-        { value: 'Highlander', label: 'Highlander' },
-        { value: 'Savannah', label: 'Savannah' },
-        { value: 'Birman', label: 'Birman' },
-        { value: 'Burmese', label: 'Burmese' },
-        { value: 'Siberian', label: 'Siberian' },
-      ]}
-      value={filter || []}
-      onChange={onFilterChange}
-      placeholder="Filter value"
-    />
-  );
-};
 
 export default function OnRowClickExample() {
   return (
@@ -36,7 +10,7 @@ export default function OnRowClickExample() {
         columns={[
           {
             accessorKey: 'cat',
-            filterFn: catFilter,
+            filterFn: stringFilterFn,
           },
         ]}
         onRowClick={(event, row) => {
@@ -60,7 +34,7 @@ function Demo() {
       columns={[
         {
           accessorKey: 'cat',
-          filterFn: catFilter,
+          filterFn: stringFilterFn,
         },
       ]}
       onRowClick={(event, row) => {
