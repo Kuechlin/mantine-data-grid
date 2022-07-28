@@ -5,15 +5,15 @@ module.exports = {
     'prettier',
     'plugin:@typescript-eslint/recommended',
     'plugin:import/recommended',
-    'plugin:import/typescript'
+    'plugin:import/typescript',
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaFeatures: {
-      jsx: true
+      jsx: true,
     },
     ecmaVersion: 12,
-    sourceType: 'module'
+    sourceType: 'module',
   },
   plugins: ['prettier', '@typescript-eslint', 'import'],
   rules: {
@@ -24,8 +24,8 @@ module.exports = {
       {
         css: 'ignorePackages',
         json: 'ignorePackages',
-        md: 'ignorePackages'
-      }
+        md: 'ignorePackages',
+      },
     ],
     'import/default': 2,
     'import/export': 2,
@@ -37,13 +37,13 @@ module.exports = {
     'import/no-anonymous-default-export': 0,
     'import/order': 'error',
     'react/no-unescaped-entities': 'off',
-    'react/no-children-prop': 'off'
+    'react/no-children-prop': 'off',
   },
   settings: {
     'import/resolver': {
       typescript: {
-        project: './tsconfig.json'
-      }
-    }
-  }
-}
+        project: './tsconfig.json',
+      },
+    },
+  },
+};
