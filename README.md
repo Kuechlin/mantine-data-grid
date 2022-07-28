@@ -23,48 +23,43 @@ With pnpm
 ## Usage
 
 ```typescript
-import {
-    DataGrid,
-    stringFilterFn,
-    numberFilterFn,
-    dateFilterFn,
-} from 'mantine-data-grid';
+import { DataGrid, stringFilterFn, numberFilterFn, dateFilterFn } from 'mantine-data-grid';
 
 function Demo() {
-    return (
-        <DataGrid
-            data={/* data source */}
-            size="md"
-            withGlobalFilter
-            columns={[
-                {
-                    accessorKey: 'text',
-                    header: 'Text that is too long for a Header',
-                    filterFn: stringFilterFn,
-                },
-                {
-                    header: 'Animal',
-                    columns: [
-                        { accessorKey: 'cat', filterFn: stringFilterFn },
-                        {
-                            accessorKey: 'fish',
-                            filterFn: stringFilterFn,
-                        },
-                    ],
-                },
-                {
-                    accessorKey: 'city',
-                    filterFn: stringFilterFn,
-                },
-                { accessorKey: 'value', filterFn: numberFilterFn },
-                {
-                    accessorKey: 'date',
-                    cell: (cell) => cell.getValue()?.toLocaleDateString(),
-                    filterFn: dateFilterFn,
-                },
-            ]}
-        />
-    );
+  return (
+    <DataGrid
+      data={/* data source */}
+      size="md"
+      withGlobalFilter
+      columns={[
+        {
+          accessorKey: 'text',
+          header: 'Text that is too long for a Header',
+          filterFn: stringFilterFn,
+        },
+        {
+          header: 'Animal',
+          columns: [
+            { accessorKey: 'cat', filterFn: stringFilterFn },
+            {
+              accessorKey: 'fish',
+              filterFn: stringFilterFn,
+            },
+          ],
+        },
+        {
+          accessorKey: 'city',
+          filterFn: stringFilterFn,
+        },
+        { accessorKey: 'value', filterFn: numberFilterFn },
+        {
+          accessorKey: 'date',
+          cell: (cell) => cell.getValue()?.toLocaleDateString(),
+          filterFn: dateFilterFn,
+        },
+      ]}
+    />
+  );
 }
 ```
 
@@ -76,23 +71,23 @@ function Demo() {
 
 ## Roadmap
 
--   [x] Simple Data Grid
--   [x] Virualized Data Grid
--   [x] Global Filter
--   [x] Column Filter
-    -   [x] string filter
-    -   [x] number filter
-    -   [x] date filter
-    -   [x] boolean filter
-    -   [x] custom fitler
--   [x] Column Sizing
--   [x] Column sorting
--   [ ] Scrolling
-    -   [ ] Fixed Header
-    -   [ ] Column pinning
--   [ ] Column Ordering
--   [x] Pagination
--   [x] Styles Api
--   [x] Docs
--   [x] Create npm package
--   [ ] Add tests
+- [x] Simple Data Grid
+- [x] Virualized Data Grid
+- [x] Global Filter
+- [x] Column Filter
+  - [x] string filter
+  - [x] number filter
+  - [x] date filter
+  - [x] boolean filter
+  - [x] custom fitler
+- [x] Column Sizing
+- [x] Column sorting
+- [ ] Scrolling
+  - [x] Fixed Header
+  - [ ] Column pinning
+- [ ] Column Ordering
+- [x] Pagination
+- [x] Styles Api
+- [x] Docs
+- [x] Create npm package
+- [ ] Add tests
