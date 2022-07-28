@@ -30,6 +30,8 @@ export function DataGrid<TData extends RowData>({
   // styles
   classNames,
   styles,
+  height,
+  withFixedHeader,
   noEllipsis,
   striped,
   highlightOnHover,
@@ -176,7 +178,12 @@ export function DataGrid<TData extends RowData>({
       {withGlobalFilter && (
         <GlobalFilter table={table} globalFilter={table.getState().globalFilter} className={classes.globalFilter} />
       )}
-      <ScrollArea style={{ position: 'relative' }}>
+      <ScrollArea
+        style={{
+          position: 'relative',
+          height: height ? height + 'px' : '',
+        }}
+      >
         <LoadingOverlay visible={loading || false} overlayOpacity={0.8} />
         <MantineTable
           striped={striped}
@@ -186,7 +193,12 @@ export function DataGrid<TData extends RowData>({
           fontSize={fontSize}
           className={classes.table}
         >
-          <thead className={classes.header} role="rowgroup">
+          <thead
+            className={cx(classes.header, {
+              [classes.headerFixed]: !!withFixedHeader,
+            })}
+            role="rowgroup"
+          >
             {table.getHeaderGroups().map((group) => (
               <tr key={group.id} className={classes.row} role="row">
                 {group.headers.map((header) => (

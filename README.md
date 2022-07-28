@@ -83,7 +83,7 @@ function Demo() {
 - [x] Column Sizing
 - [x] Column sorting
 - [ ] Scrolling
-  - [ ] Fixed Header
+  - [x] Fixed Header
   - [ ] Column pinning
 - [ ] Column Ordering
 - [x] Pagination
