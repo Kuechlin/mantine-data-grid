@@ -33,6 +33,7 @@ import GettingStarted from './GettingStarted';
 import MainExample from './examples/MainExample';
 import CustomFilterExample from './examples/CustomFilterExample';
 import AsyncExample from './examples/AsyncExample';
+import InitialStateExample from './examples/InitialStateExample';
 import Properties from './Properties';
 import Styles from './Styles';
 
@@ -119,6 +120,10 @@ export default function App() {
                             label: 'Async data',
                             path: baseUrl + '/example/async',
                         },
+                        {
+                            label: 'Initial State',
+                            path: baseUrl + '/example/initial-state',
+                        },
                     ].map((item) => (
                         <NavLink
                             key={item.path}
@@ -170,6 +175,10 @@ export default function App() {
                 <Route
                     path={baseUrl + '/example/async'}
                     element={<AsyncExample />}
+                />
+                <Route
+                    path={baseUrl + '/example/initial-state'}
+                    element={<InitialStateExample />}
                 />
             </Routes>
         </AppShell>
