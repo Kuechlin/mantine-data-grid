@@ -308,7 +308,7 @@ export function DataGrid<TData extends RowData>({
             </ScrollArea>
             {withPagination && (
                 <Pagination
-                    nbRows={data.length}
+                    totalRows={data.length}
                     table={table}
                     pageSizes={pageSizes}
                     className={classes.pagination}

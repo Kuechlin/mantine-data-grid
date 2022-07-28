@@ -14,12 +14,12 @@ export const DEFAULT_INITIAL_SIZE = 10;
 
 export function Pagination({
     table,
-    nbRows,
+    totalRows,
     className = 'pagination',
     pageSizes = DEFAULT_PAGE_SIZES,
 }: {
     table: Table<any>;
-    nbRows: number;
+    totalRows: number;
     className: string;
     pageSizes?: string[];
 }) {
@@ -29,7 +29,7 @@ export function Pagination({
     const firstRowNum = pageIndex * pageSize + 1;
 
     const currLastRowNum = (pageIndex + 1) * pageSize;
-    const lastRowNum = currLastRowNum < nbRows ? currLastRowNum : nbRows;
+    const lastRowNum = currLastRowNum < totalRows ? currLastRowNum : totalRows;
 
     const handlePageSizeChange = (value: string) => {
         table.setPageSize(Number(value));
@@ -44,7 +44,7 @@ export function Pagination({
             <Group position="apart">
                 <Text size="sm" className={`${className}-info`}>
                     Showing <b>{firstRowNum}</b> - <b>{lastRowNum}</b> of{' '}
-                    <b>{nbRows}</b> result
+                    <b>{totalRows}</b> result
                 </Text>
                 <Group>
                     <Text size="sm">Rows per page: </Text>
