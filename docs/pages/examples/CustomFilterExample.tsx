@@ -1,6 +1,6 @@
 import { MultiSelect } from '@mantine/core';
 import { DataGrid, DataGridFilterFn } from '../../../src';
-import CodeDemo from '../CodeDemo';
+import CodeDemo from '../../components/CodeDemo';
 import { Data, demoData } from '../../demoData';
 
 const catFilter: DataGridFilterFn<Data, string[]> = (row, columnId, filter) => {

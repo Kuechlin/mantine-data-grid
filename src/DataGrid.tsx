@@ -1,5 +1,14 @@
 import { useCallback, useEffect, useImperativeHandle } from 'react';
-import { LoadingOverlay, ScrollArea, Stack, Table as MantineTable } from '@mantine/core';
+import {
+  ActionIcon,
+  Center,
+  LoadingOverlay,
+  ScrollArea,
+  Space,
+  Stack,
+  Table as MantineTable,
+  Text,
+} from '@mantine/core';
 import {
   ColumnFiltersState,
   flexRender,
@@ -15,6 +24,7 @@ import {
   RowData,
   Row,
 } from '@tanstack/react-table';
+import { Box, BoxOff } from 'tabler-icons-react';
 import useStyles from './DataGrid.styles';
 
 import { GlobalFilter, globalFilterFn } from './GlobalFilter';
@@ -58,6 +68,7 @@ export function DataGrid<TData extends RowData>({
   tableRef,
   initialState,
   onRowClick,
+  iconColor = 'blue',
   // common props
   ...others
 }: DataGridProps<TData>) {
@@ -232,10 +243,10 @@ export function DataGrid<TData extends RowData>({
                         </div>
                         <div className={classes.headerCellButtons}>
                           {header.column.getCanSort() && (
-                            <ColumnSorter className={classes.sorter} column={header.column} />
+                            <ColumnSorter className={classes.sorter} column={header.column} color={iconColor} />
                           )}
                           {header.column.getCanFilter() && (
-                            <ColumnFilter className={classes.filter} column={header.column} />
+                            <ColumnFilter className={classes.filter} column={header.column} color={iconColor} />
                           )}
                         </div>
                         {header.column.getCanResize() && (
@@ -254,23 +265,43 @@ export function DataGrid<TData extends RowData>({
             ))}
           </thead>
           <tbody className={classes.body} role="rowgroup">
-            {table.getRowModel().rows.map((row) => (
-              <tr key={row.id} className={classes.row} onClick={(event) => handleOnRowClick(event, row)} role="row">
-                {row.getVisibleCells().map((cell) => (
-                  <td
-                    key={cell.id}
-                    style={{
-                      width: cell.column.getSize(),
-                    }}
-                    className={cx(classes.dataCell, {
-                      [classes.ellipsis]: !noEllipsis,
-                    })}
-                    children={flexRender(cell.column.columnDef.cell, cell.getContext())}
-                    role="cell"
-                  />
-                ))}
-              </tr>
-            ))}
+            <>
+              {table.getRowModel().rows.length > 0 ? (
+                <>
+                  {table.getRowModel().rows.map((row) => (
+                    <tr
+                      key={row.id}
+                      className={classes.row}
+                      onClick={(event) => handleOnRowClick(event, row)}
+                      role="row"
+                    >
+                      {row.getVisibleCells().map((cell) => (
+                        <td
+                          key={cell.id}
+                          style={{
+                            width: cell.column.getSize(),
+                          }}
+                          className={cx(classes.dataCell, {
+                            [classes.ellipsis]: !noEllipsis,
+                          })}
+                          children={flexRender(cell.column.columnDef.cell, cell.getContext())}
+                          role="cell"
+                        />
+                      ))}
+                    </tr>
+                  ))}
+                </>
+              ) : (
+                <Stack align="center" spacing="md">
+                  <Space h="md" />
+                  <ActionIcon size={100} variant="light" color={iconColor} p="lg" radius="lg">
+                    <BoxOff size={100} />
+                  </ActionIcon>
+                  <Text>No Data</Text>
+                  <Space h="md" />
+                </Stack>
+              )}
+            </>
           </tbody>
         </MantineTable>
       </ScrollArea>
@@ -280,6 +311,7 @@ export function DataGrid<TData extends RowData>({
           table={table}
           pageSizes={pageSizes}
           fontSize={fontSize}
+          color={iconColor}
           classes={[classes.pagination, classes.pagination_info, classes.pagination_size, classes.pagination_page]}
         />
       )}

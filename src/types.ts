@@ -108,6 +108,11 @@ export interface DataGridProps<TData extends RowData>
    * Callback when clicking on a specific row
    */
   onRowClick?: (event: React.MouseEvent<HTMLTableRowElement, MouseEvent>, row: Row<TData>) => void;
+
+  /**
+   * Change Icon Color on Sort & Filter
+   */
+  iconColor?: string;
 }
 
 export type DataGridFilterFn<TData extends RowData, TFilter = unknown> = FilterFn<TData> & {
