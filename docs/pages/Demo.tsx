@@ -14,7 +14,6 @@ import {
   Switch,
   Text,
   Title,
-  useMantineTheme,
 } from '@mantine/core';
 import { useState } from 'react';
 
@@ -85,8 +84,7 @@ const useStyles = createStyles((theme) => ({
 }));
 
 export default function Demo() {
-  const { classes } = useStyles();
-  const theme = useMantineTheme();
+  const { classes, theme } = useStyles();
 
   const initialPageIndex = 0;
   const initialPageSize = 10;
@@ -106,7 +104,7 @@ export default function Demo() {
     highlightOnHover: true,
     loading: false,
     empty: false,
-    iconColor: 'blue',
+    iconColor: theme.primaryColor,
   });
 
   const onPageChange = (e: DataGridPaginationState) => {

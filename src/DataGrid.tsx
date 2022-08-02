@@ -1,14 +1,5 @@
 import { useCallback, useEffect, useImperativeHandle } from 'react';
-import {
-  ActionIcon,
-  Center,
-  LoadingOverlay,
-  ScrollArea,
-  Space,
-  Stack,
-  Table as MantineTable,
-  Text,
-} from '@mantine/core';
+import { ActionIcon, LoadingOverlay, ScrollArea, Space, Stack, Table as MantineTable, Text } from '@mantine/core';
 import {
   ColumnFiltersState,
   flexRender,
@@ -24,7 +15,7 @@ import {
   RowData,
   Row,
 } from '@tanstack/react-table';
-import { Box, BoxOff } from 'tabler-icons-react';
+import { BoxOff } from 'tabler-icons-react';
 import useStyles from './DataGrid.styles';
 
 import { GlobalFilter, globalFilterFn } from './GlobalFilter';
@@ -68,11 +59,11 @@ export function DataGrid<TData extends RowData>({
   tableRef,
   initialState,
   onRowClick,
-  iconColor = 'blue',
+  iconColor,
   // common props
   ...others
 }: DataGridProps<TData>) {
-  const { classes, cx } = useStyles(
+  const { classes, cx, theme } = useStyles(
     {},
     {
       classNames,
@@ -80,6 +71,7 @@ export function DataGrid<TData extends RowData>({
       name: 'DataGrid',
     }
   );
+  const color = iconColor || theme.primaryColor;
 
   const table = useReactTable<TData>({
     data,
@@ -243,10 +235,10 @@ export function DataGrid<TData extends RowData>({
                         </div>
                         <div className={classes.headerCellButtons}>
                           {header.column.getCanSort() && (
-                            <ColumnSorter className={classes.sorter} column={header.column} color={iconColor} />
+                            <ColumnSorter className={classes.sorter} column={header.column} color={color} />
                           )}
                           {header.column.getCanFilter() && (
-                            <ColumnFilter className={classes.filter} column={header.column} color={iconColor} />
+                            <ColumnFilter className={classes.filter} column={header.column} color={color} />
                           )}
                         </div>
                         {header.column.getCanResize() && (
@@ -311,7 +303,7 @@ export function DataGrid<TData extends RowData>({
           table={table}
           pageSizes={pageSizes}
           fontSize={fontSize}
-          color={iconColor}
+          color={color}
           classes={[classes.pagination, classes.pagination_info, classes.pagination_size, classes.pagination_page]}
         />
       )}
