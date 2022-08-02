@@ -1,4 +1,4 @@
-import { DataGrid, stringFilterFn } from '../../../src';
+import { DataGrid } from '../../../src';
 import CodeDemo from '../../components/CodeDemo';
 import { demoData } from '../../demoData';
 
@@ -10,12 +10,24 @@ export default function OnRowClickExample() {
         columns={[
           {
             accessorKey: 'cat',
-            filterFn: stringFilterFn,
+          },
+          {
+            accessorKey: 'fish',
+          },
+          {
+            accessorKey: 'city',
           },
         ]}
-        onRowClick={(event, row) => {
-          alert(`You clicked on ${row.original.cat}`);
-        }}
+        onRow={(row) => ({
+          onDoubleClick: () => alert(`You clicked on row ${row.index}`),
+        })}
+        onCell={(cell) =>
+          cell.column.id === 'fish'
+            ? {
+                onClick: () => alert(`You clicked on cell ${cell.getValue()}`),
+              }
+            : {}
+        }
       />
     </CodeDemo>
   );
@@ -30,17 +42,29 @@ import { demoData } from '../../demoData';
 function Demo() {
     return (
       <DataGrid
-      data={demoData.slice(0, 10)}
-      columns={[
-        {
-          accessorKey: 'cat',
-          filterFn: stringFilterFn,
-        },
-      ]}
-      onRowClick={(event, row) => {
-        alert(\`You clicked on \${row.original.cat}\`);
-      }}
-    />
+        data={demoData.slice(0, 10)}
+        columns={[
+          {
+            accessorKey: 'cat',
+          },
+          {
+            accessorKey: 'fish',
+          },
+          {
+            accessorKey: 'city',
+          },
+        ]}
+        onRow={(row) => ({
+          onDoubleClick: () => alert(\`You clicked on row \${row.index}\`),
+        })}
+        onCell={(cell) =>
+          cell.column.id === 'fish'
+            ? {
+                onClick: () => alert(\`You clicked on cell \${cell.getValue()}\`),
+              }
+            : {}
+        }
+      />
     );
 }
 `;

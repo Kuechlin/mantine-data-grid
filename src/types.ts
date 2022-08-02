@@ -1,6 +1,7 @@
-import { ComponentPropsWithoutRef, ComponentType, Ref } from 'react';
+import { ComponentPropsWithoutRef, ComponentType, HTMLAttributes, Ref } from 'react';
 import { DefaultProps, MantineNumberSize, Selectors } from '@mantine/core';
 import {
+  Cell,
   ColumnDef,
   ColumnFiltersState,
   FilterFn,
@@ -105,9 +106,14 @@ export interface DataGridProps<TData extends RowData>
   initialState?: InitialTableState;
 
   /**
-   * Callback when clicking on a specific row
+   * Callback to set props pre row
    */
-  onRowClick?: (event: React.MouseEvent<HTMLTableRowElement, MouseEvent>, row: Row<TData>) => void;
+  onRow?: (row: Row<TData>) => HTMLAttributes<HTMLTableRowElement>;
+
+  /**
+   * Callback to set props pre cell
+   */
+  onCell?: (cell: Cell<TData, unknown>) => HTMLAttributes<HTMLTableCellElement>;
 
   /**
    * Change Icon Color on Sort & Filter

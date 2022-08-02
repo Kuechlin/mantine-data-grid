@@ -91,9 +91,14 @@ const properties = [
         description: 'The initial table state',
       },
       {
-        name: 'onRowClick',
-        type: '(event: MouseEvent<HTMLTableRowElement, MouseEvent>, row: Row<TData>) => void',
-        description: 'Callback when clicking on a specific row',
+        name: 'onRow',
+        type: '(row: Row<TData>) => HTMLAttributes<HTMLTableRowElement>',
+        description: 'Callback to set props pre row',
+      },
+      {
+        name: 'onCell',
+        type: '(cell: Cell<TData, unknown>) => HTMLAttributes<HTMLTableCellElement>',
+        description: ' Callback to set props pre cell',
       },
     ],
   },
