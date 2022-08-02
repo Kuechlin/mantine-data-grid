@@ -57,9 +57,10 @@ export default function InitialStateExample() {
           sorting: [
             {
               id: 'value',
-              desc: true,
+              desc: false,
             },
           ],
+          columnFilters: [{ id: 'value', value: { op: 'gt', value: 100 } }],
         }}
       />
     </CodeDemo>
@@ -86,47 +87,48 @@ function Demo() {
       withColumnFilters
       withSorting
       columns={[
-          {
-              accessorKey: 'text',
-              header: 'Text that is too long for a Header',
+        {
+          accessorKey: 'text',
+          header: 'Text that is too long for a Header',
+          filterFn: stringFilterFn,
+          size: 300,
+          cell: highlightFilterValue,
+        },
+        {
+          header: 'Animal',
+          columns: [
+            { accessorKey: 'cat', filterFn: stringFilterFn },
+            {
+              accessorKey: 'fish',
               filterFn: stringFilterFn,
-              size: 300,
-              cell: highlightFilterValue,
-          },
-          {
-              header: 'Animal',
-              columns: [
-                  { accessorKey: 'cat', filterFn: stringFilterFn },
-                  {
-                      accessorKey: 'fish',
-                      filterFn: stringFilterFn,
-                  },
-              ],
-          },
-          {
-              accessorKey: 'city',
-              filterFn: stringFilterFn,
-          },
-          { accessorKey: 'value', filterFn: numberFilterFn },
-          {
-              accessorKey: 'date',
-              cell: (cell) => cell.getValue<Date>()?.toLocaleDateString(),
-              filterFn: dateFilterFn,
-          },
-          {
-              accessorKey: 'bool',
-              filterFn: booleanFilterFn,
-          },
+            },
+          ],
+        },
+        {
+          accessorKey: 'city',
+          filterFn: stringFilterFn,
+        },
+        { accessorKey: 'value', filterFn: numberFilterFn },
+        {
+          accessorKey: 'date',
+          cell: (cell) => cell.getValue<Date>()?.toLocaleDateString(),
+          filterFn: dateFilterFn,
+        },
+        {
+          accessorKey: 'bool',
+          filterFn: booleanFilterFn,
+        },
       ]}
       initialState={{
-          sorting: [
-              {
-                  id: 'value',
-                  desc: true,
-              },
-          ],
+        sorting: [
+          {
+            id: 'value',
+            desc: false,
+          },
+        ],
+        columnFilters: [{ id: 'value', value: { op: 'gt', value: 100 } }],
       }}
-  />
+    />
   );
 }
 `;
