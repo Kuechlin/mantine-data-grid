@@ -11,12 +11,14 @@ export function Pagination<TData>({
   totalRows,
   fontSize = 'md',
   pageSizes = DEFAULT_PAGE_SIZES,
+  color = '', // Empty color will follow the primary button color
 }: {
   table: Table<TData>;
   classes: string[];
   totalRows: number;
   pageSizes?: string[];
   fontSize?: MantineNumberSize;
+  color: string;
 }) {
   const pageIndex = table.getState().pagination.pageIndex;
   const pageSize = table.getState().pagination.pageSize;
@@ -59,6 +61,7 @@ export function Pagination<TData>({
           onChange={handlePageChange}
           className={classes[3]}
           siblings={1}
+          color={color}
         />
       </Group>
     </Box>

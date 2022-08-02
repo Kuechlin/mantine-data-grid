@@ -1,17 +1,16 @@
 import { Routes as RRRoutes, Route } from 'react-router-dom';
 
-import Demo from '../components/Demo';
-import GettingStarted from '../components/GettingStarted';
-import Properties from '../components/Properties';
-import Styles from '../components/Styles';
-
-import MainExample from '../components/examples/MainExample';
-import CustomFilterExample from '../components/examples/CustomFilterExample';
-import AsyncExample from '../components/examples/AsyncExample';
-import InitialStateExample from '../components/examples/InitialStateExample';
-import OnRowClickExample from '../components/examples/OnRowClickExample';
-
 import { BASE_URL } from '../constants';
+import Demo from './Demo';
+import GettingStarted from './GettingStarted';
+import Properties from './Properties';
+import Styles from './Styles';
+
+import MainExample from './examples/MainExample';
+import CustomFilterExample from './examples/CustomFilterExample';
+import AsyncExample from './examples/AsyncExample';
+import InitialStateExample from './examples/InitialStateExample';
+import OnRowClickExample from './examples/OnRowClickExample';
 
 export default function Routes() {
   return (
