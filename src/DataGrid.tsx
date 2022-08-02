@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useImperativeHandle, useState } from 'react';
-import { Box, ActionIcon, LoadingOverlay, ScrollArea, Space, Stack, Switch, Table as MantineTable, Text } from '@mantine/core';
+import { Box, ActionIcon, LoadingOverlay, ScrollArea, Space, Stack, Switch, Table as MantineTable, Text, useMantineTheme } from '@mantine/core';
 import {
   ColumnFiltersState,
   flexRender,
@@ -68,6 +68,8 @@ export function DataGrid<TData extends RowData>({
 }: DataGridProps<TData>) {
   const [columnVisibility, setColumnVisibility] = useState({})
   const [state, setState] = useState<InitialTableState>({})
+  const theme = useMantineTheme();
+
   const { classes, cx } = useStyles(
     {},
     {
