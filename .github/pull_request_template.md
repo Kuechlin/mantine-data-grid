@@ -12,3 +12,8 @@ This is to indicate how much you have been progressing before this PR is ready f
 - [ ] (task 1)
 - [ ] (task 2)
 - [ ] (task 3)
+
+## Live Demo Link
+
+<!-- (Optional) Provide live demo link for testing the result.
+It will help a lot when reviewing your pull request. -->
