@@ -6,7 +6,7 @@ import {
   numberFilterFn,
   stringFilterFn,
 } from '../../../src';
-import CodeDemo from '../CodeDemo';
+import CodeDemo from '../../components/CodeDemo';
 import { demoData } from '../../demoData';
 
 export default function MainExample() {

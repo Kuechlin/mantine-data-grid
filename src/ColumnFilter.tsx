@@ -7,9 +7,10 @@ import { isDataGridFilter } from './types';
 export interface ColumnFilterProps {
   column: Column<any, any>;
   className: string;
+  color: string;
 }
 
-export const ColumnFilter = ({ column, className }: ColumnFilterProps) => {
+export const ColumnFilter = ({ column, className, color }: ColumnFilterProps) => {
   const [state, setState] = useState(null as null | { value: any });
 
   const filterFn = column.columnDef.filterFn;
@@ -55,7 +56,8 @@ export const ColumnFilter = ({ column, className }: ColumnFilterProps) => {
           children={<Filter size={16} />}
           onClick={open}
           className={className}
-          color={column.getIsFiltered() ? 'blue' : 'gray'}
+          variant={column.getIsFiltered() ? 'light' : 'transparent'}
+          color={column.getIsFiltered() ? color : 'gray'}
         />
       </Menu.Target>
       <Menu.Dropdown>

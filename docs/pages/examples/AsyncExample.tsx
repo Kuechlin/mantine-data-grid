@@ -10,7 +10,7 @@ import {
   OnChangeCallback,
   stringFilterFn,
 } from '../../../src';
-import CodeDemo from '../CodeDemo';
+import CodeDemo from '../../components/CodeDemo';
 import { Data, demoData } from '../../demoData';
 
 type FetchResponse = {

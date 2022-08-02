@@ -1,7 +1,10 @@
 import {
   Badge,
+  CheckIcon,
+  ColorSwatch,
   createStyles,
   Grid,
+  Group,
   MantineSize,
   MultiSelect,
   NumberInput,
@@ -81,7 +84,7 @@ const useStyles = createStyles((theme) => ({
 }));
 
 export default function Demo() {
-  const { classes } = useStyles();
+  const { classes, theme } = useStyles();
 
   const initialPageIndex = 0;
   const initialPageSize = 10;
@@ -102,6 +105,8 @@ export default function Demo() {
     striped: true,
     highlightOnHover: true,
     loading: false,
+    empty: false,
+    iconColor: theme.primaryColor,
   });
 
   const onPageChange = (e: DataGridPaginationState) => {
@@ -131,7 +136,7 @@ export default function Demo() {
           {...state}
           
           debug
-          data={state.withPagination ? demoData : demoData.slice(0, 25)}
+          data={state.empty ? [] : state.withPagination ? demoData : demoData.slice(0, 25)}
           initialPageIndex={initialPageIndex}
           initialPageSize={initialPageSize}
           onPageChange={onPageChange}
@@ -183,6 +188,7 @@ export default function Demo() {
               filterFn: booleanFilterFn,
             },
           ]}
+          iconColor={state.iconColor}
         />
       </Grid.Col>
       <Grid.Col span={2} p="md" className={classes.gridProps}>
@@ -280,6 +286,15 @@ export default function Demo() {
               })
             }
           />
+          <Switch
+            label="Empty State"
+            checked={state.empty}
+            onChange={(e) =>
+              update({
+                empty: e.target.checked,
+              })
+            }
+          />
           <div>
             <Text weight="bold">Font Size</Text>
             <Slider
@@ -338,6 +353,27 @@ export default function Demo() {
                 })
               }
             />
+          </div>
+          <Space />
+          <div>
+            <Text weight="bold">Icon Color</Text>
+            <Group spacing="xs">
+              {Object.keys(theme.colors).map((color) => (
+                <ColorSwatch
+                  component="button"
+                  key={color}
+                  color={theme.colors[color][6]}
+                  onClick={() =>
+                    update({
+                      iconColor: color,
+                    })
+                  }
+                  sx={{ color: '#fff', cursor: 'pointer' }}
+                >
+                  {state.iconColor === color && <CheckIcon width={10} />}
+                </ColorSwatch>
+              ))}
+            </Group>
           </div>
         </Stack>
       </Grid.Col>
