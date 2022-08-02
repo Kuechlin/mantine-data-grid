@@ -85,13 +85,15 @@ export default function Demo() {
 
   const initialPageIndex = 0;
   const initialPageSize = 10;
+  const [columnVisibility, setColumnVisibility] = useState({})
+
 
   const [state, setState] = useState({
     horizontalSpacing: 'xs' as MantineSize,
     verticalSpacing: 'xs' as MantineSize,
     fontSize: 'md' as MantineSize,
     height: 0,
-    headerFixed: false,
+    withFixedHeader: false,
     noEllipsis: false,
     withGlobalFilter: true,
     withPagination: true,
@@ -127,6 +129,7 @@ export default function Demo() {
       <Grid.Col span={10} p="md">
         <DataGrid<Data>
           {...state}
+          
           debug
           data={state.withPagination ? demoData : demoData.slice(0, 25)}
           initialPageIndex={initialPageIndex}
@@ -135,6 +138,7 @@ export default function Demo() {
           onSort={onSort}
           onFilter={onFilter}
           onSearch={onSearch}
+          withColumnToggle
           columns={[
             {
               accessorKey: 'id',
@@ -233,10 +237,10 @@ export default function Demo() {
           />
           <Switch
             label="With fixed Header"
-            checked={state.headerFixed}
+            checked={state.withFixedHeader}
             onChange={(e) =>
               update({
-                headerFixed: e.target.checked,
+                withFixedHeader: e.target.checked,
               })
             }
           />

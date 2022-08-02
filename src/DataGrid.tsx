@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useImperativeHandle } from 'react';
-import { LoadingOverlay, ScrollArea, Stack, Table as MantineTable } from '@mantine/core';
+import { useCallback, useEffect, useImperativeHandle, useState } from 'react';
+import { Box, LoadingOverlay, ScrollArea, Stack, Switch, Table as MantineTable } from '@mantine/core';
 import {
   ColumnFiltersState,
   flexRender,
@@ -14,6 +14,7 @@ import {
   useReactTable,
   RowData,
   Row,
+  InitialTableState,
 } from '@tanstack/react-table';
 import useStyles from './DataGrid.styles';
 
@@ -43,6 +44,7 @@ export function DataGrid<TData extends RowData>({
   // features
   withGlobalFilter,
   withColumnFilters,
+  withColumnToggle,
   withSorting,
   withPagination,
   pageSizes,
@@ -61,6 +63,8 @@ export function DataGrid<TData extends RowData>({
   // common props
   ...others
 }: DataGridProps<TData>) {
+  const [columnVisibility, setColumnVisibility] = useState({})
+  const [state, setState] = useState<InitialTableState>({})
   const { classes, cx } = useStyles(
     {},
     {
@@ -85,12 +89,14 @@ export function DataGrid<TData extends RowData>({
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
+    onColumnVisibilityChange: setColumnVisibility,
+
 
     debugTable: debug,
     debugHeaders: debug,
     debugColumns: debug,
 
-    initialState,
+    initialState: state,
   });
 
   useImperativeHandle(tableRef, () => table);
@@ -182,10 +188,31 @@ export function DataGrid<TData extends RowData>({
     } else {
       table.setPageSize(data.length);
     }
-  }, [withPagination]);
+    if (withColumnToggle) {
+      setState((prev)=>({...prev, columnVisibility }))
+      console.log(state)
+    }
+  }, [withPagination, withColumnToggle]);
 
   return (
     <Stack {...others} spacing={verticalSpacing}>
+      {withColumnToggle && (
+        <>
+          {table.getAllLeafColumns().map(column => (
+            <Box key={column.id}>
+              <Switch
+                label={column.id}
+                checked={column.getIsVisible()}
+                // value={}
+                onChange={column.getToggleVisibilityHandler()}
+              />
+            </Box>
+          ))}
+        </>
+
+      )
+
+      }
       {withGlobalFilter && (
         <GlobalFilter table={table} globalFilter={table.getState().globalFilter} className={classes.globalFilter} />
       )}

@@ -94,6 +94,8 @@ export interface DataGridProps<TData extends RowData>
 
   /** Enables sorting */
   withSorting?: boolean;
+  /** Enables Columns toggling */
+  withColumnToggle?: boolean;
   /**
    * Callback when sorting changed
    */
