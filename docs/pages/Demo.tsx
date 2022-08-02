@@ -96,7 +96,7 @@ export default function Demo() {
     verticalSpacing: 'xs' as MantineSize,
     fontSize: 'md' as MantineSize,
     height: 0,
-    headerFixed: false,
+    withFixedHeader: false,
     noEllipsis: false,
     withGlobalFilter: true,
     withPagination: true,
@@ -241,10 +241,10 @@ export default function Demo() {
           />
           <Switch
             label="With fixed Header"
-            checked={state.headerFixed}
+            checked={state.withFixedHeader}
             onChange={(e) =>
               update({
-                headerFixed: e.target.checked,
+                withFixedHeader: e.target.checked,
               })
             }
           />
