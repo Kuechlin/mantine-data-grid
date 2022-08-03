@@ -1,5 +1,5 @@
 import { Button, Avatar, Navbar as MantineNavbar, Stack, Text, NavLink, useMantineColorScheme } from '@mantine/core';
-import { Book, Paint, Rocket, Star } from 'tabler-icons-react';
+import { Book, Filter, Paint, Rocket, Star } from 'tabler-icons-react';
 
 import { Link, useLocation } from 'react-router-dom';
 
@@ -37,6 +37,12 @@ export default function Navbar() {
             icon: <Paint size={16} />,
             label: 'Styles',
             path: BASE_URL + '/styles',
+          },
+          {
+            color: 'yellow',
+            icon: <Filter size={16} />,
+            label: 'Filters',
+            path: BASE_URL + '/filters',
           },
         ].map((link) => (
           <Button
@@ -78,6 +84,10 @@ export default function Navbar() {
         {
           label: 'On row click',
           path: BASE_URL + '/example/on-row-click',
+        },
+        {
+          label: 'Column Filters',
+          path: BASE_URL + '/example/filters',
         },
       ].map((item) => (
         <NavLink

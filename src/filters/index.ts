@@ -1,4 +1,4 @@
-export { booleanFilterFn } from './booleanFilter';
-export { dateFilterFn } from './dateFilter';
-export { numberFilterFn } from './numberFilter';
-export { stringFilterFn, highlightFilterValue } from './stringFilter';
+export { booleanFilterFn, createBooleanFilter, BooleanFilterOperator } from './booleanFilter';
+export { dateFilterFn, createDateFilter, DateFilterOperator } from './dateFilter';
+export { numberFilterFn, createNumberFilter, NumberFilterOperator } from './numberFilter';
+export { stringFilterFn, highlightFilterValue, createStringFilter, StringFilterOperator } from './stringFilter';

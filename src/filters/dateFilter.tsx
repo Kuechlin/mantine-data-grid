@@ -1,72 +1,140 @@
-import { Select } from '@mantine/core';
-import { DatePicker } from '@mantine/dates';
+import { Select, Text } from '@mantine/core';
+import { DatePicker, DateRangePicker } from '@mantine/dates';
 import { Filter } from 'tabler-icons-react';
 import { DataGridFilterFn, DataGridFilterProps } from '../types';
 
 type FilterState = {
-  op: DateFilter;
-  value: string;
+  op: DateFilterOperator;
+  value: string | null | [string | null, string | null];
 };
 
-export enum DateFilter {
+export enum DateFilterOperator {
   Equals = 'eq',
   NotEquals = 'neq',
   GreaterThan = 'gt',
   GreaterThanOrEquals = 'gte',
   LowerThan = 'lt',
   LowerThanOrEquals = 'lte',
+  Range = 'range',
 }
 
-export const dateFilterFn: DataGridFilterFn<any, FilterState> = (row, columnId, filter) => {
-  const rowValue = new Date(row.getValue(columnId));
-  const op = filter.op || DateFilter.Equals;
-  const filterValue = new Date(filter.value);
-  switch (op) {
-    case DateFilter.Equals:
-      return rowValue === filterValue;
-    case DateFilter.NotEquals:
-      return rowValue !== filterValue;
-    case DateFilter.GreaterThan:
-      return rowValue > filterValue;
-    case DateFilter.GreaterThanOrEquals:
-      return rowValue >= filterValue;
-    case DateFilter.LowerThan:
-      return rowValue < filterValue;
-    case DateFilter.LowerThanOrEquals:
-      return rowValue <= filterValue;
-    default:
-      return true;
+type DateInputProps = DataGridFilterProps<FilterState> & {
+  placeholder: string;
+};
+
+function toValue(value: string | null): Date | null;
+function toValue(value: [string | null, string | null]): [Date | null, Date | null];
+function toValue(value: FilterState['value']): Date | null | [Date | null, Date | null];
+function toValue(value: FilterState['value']): Date | null | [Date | null, Date | null] {
+  if (Array.isArray(value)) {
+    return [toValue(value[0]), toValue(value[1])];
   }
+  if (!value) return null;
+  const time = Date.parse(value);
+  if (isNaN(time)) return null;
+  return new Date(time);
+}
+
+function toString(value: Date | null): string | null;
+function toString(value: [Date | null, Date | null]): [string | null, string | null];
+function toString(value: Date | null | [Date | null, Date | null]): FilterState['value'] {
+  if (Array.isArray(value)) {
+    return [toString(value[0]), toString(value[1])];
+  } else {
+    return value?.toISOString() || null;
+  }
+}
+
+const DateInput = ({ filter, onFilterChange, placeholder }: DateInputProps) => (
+  <DatePicker
+    value={Array.isArray(filter.value) ? null : toValue(filter.value)}
+    onChange={(value) => onFilterChange({ ...filter, value: toString(value) })}
+    placeholder={placeholder}
+    rightSection={<Filter />}
+    allowFreeInput
+  />
+);
+
+const DateRangeInput = ({ filter, onFilterChange, placeholder }: DateInputProps) => (
+  <DateRangePicker
+    value={Array.isArray(filter.value) ? toValue(filter.value) : [null, null]}
+    onChange={(value) => onFilterChange({ ...filter, value: toString(value) })}
+    placeholder={placeholder}
+    rightSection={<Filter />}
+  />
+);
+
+export type DateFilterOptions = {
+  title?: string;
+  fixedOperator?: DateFilterOperator;
+  labels?: Partial<Record<DateFilterOperator, string>>;
+  placeholder?: string;
 };
-dateFilterFn.autoRemove = (val) => !val;
+export const createDateFilter = ({ title, fixedOperator, labels, placeholder = 'Filter value' }: DateFilterOptions) => {
+  const filterFn: DataGridFilterFn<any, FilterState> = (row, columnId, filter: FilterState) => {
+    if (!filter.value) return true;
+    const rowValue = new Date(row.getValue(columnId));
+    const op = filter.op || DateFilterOperator.Equals;
+    const value = toValue(filter.value);
+    if (
+      op === DateFilterOperator.Range &&
+      Array.isArray(value) &&
+      value.length === 2 &&
+      value[0] instanceof Date &&
+      value[1] instanceof Date
+    ) {
+      return value[0] <= rowValue && rowValue <= value[1];
+    } else if (value instanceof Date) {
+      switch (op) {
+        case DateFilterOperator.Equals:
+          return rowValue === value;
+        case DateFilterOperator.NotEquals:
+          return rowValue !== value;
+        case DateFilterOperator.GreaterThan:
+          return rowValue > value;
+        case DateFilterOperator.GreaterThanOrEquals:
+          return rowValue >= value;
+        case DateFilterOperator.LowerThan:
+          return rowValue < value;
+        case DateFilterOperator.LowerThanOrEquals:
+          return rowValue <= value;
+      }
+    }
+    return true;
+  };
+  filterFn.autoRemove = (val) => !val;
 
-dateFilterFn.init = () => ({
-  op: DateFilter.GreaterThan,
-  value: '',
-});
+  filterFn.init = () => ({
+    op: fixedOperator || DateFilterOperator.GreaterThan,
+    value: null,
+  });
 
-dateFilterFn.element = function ({ filter, onFilterChange }: DataGridFilterProps) {
-  const handleValueChange = (value: string) => onFilterChange({ ...filter, value });
+  filterFn.element = function DateFilter({ filter, onFilterChange }: DataGridFilterProps<FilterState>) {
+    return (
+      <>
+        {title && <Text>{title}</Text>}
 
-  const handleOperatorChange = (op: string) => onFilterChange({ ...filter, op });
+        {!fixedOperator && (
+          <Select
+            data={Object.entries(DateFilterOperator).map(([label, value]) => ({
+              value,
+              label: (labels && labels[value]) || label,
+            }))}
+            value={filter.op || DateFilterOperator.Equals}
+            onChange={(op: DateFilterOperator) => onFilterChange({ ...filter, op })}
+          />
+        )}
 
-  return (
-    <>
-      <Select
-        data={Object.entries(DateFilter).map(([label, value]) => ({
-          value,
-          label,
-        }))}
-        value={filter.op || DateFilter.Equals}
-        onChange={handleOperatorChange}
-      />
+        {filter.op === DateFilterOperator.Range ? (
+          <DateRangeInput filter={filter} placeholder={placeholder} onFilterChange={onFilterChange} />
+        ) : (
+          <DateInput filter={filter} placeholder={placeholder} onFilterChange={onFilterChange} />
+        )}
+      </>
+    );
+  };
 
-      <DatePicker
-        value={filter.value ? new Date(filter.value) : null}
-        onChange={(e) => handleValueChange(e?.toISOString() || '')}
-        placeholder="Filter value"
-        rightSection={<Filter />}
-      />
-    </>
-  );
+  return filterFn;
 };
+
+export const dateFilterFn = createDateFilter({});
