@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useImperativeHandle, useState } from 'react';
-import { Box, ActionIcon, LoadingOverlay, ScrollArea, Space, Stack, Switch, Table as MantineTable, Text, useMantineTheme } from '@mantine/core';
+import { Box, ActionIcon, LoadingOverlay, ScrollArea, Space, Stack, Switch, Table as MantineTable, Text, useMantineTheme, Menu, Button, Popover, Divider } from '@mantine/core';
 import {
   ColumnFiltersState,
   flexRender,
@@ -24,6 +24,7 @@ import { ColumnSorter } from './ColumnSorter';
 import { ColumnFilter } from './ColumnFilter';
 import { DEFAULT_INITIAL_SIZE, Pagination } from './Pagination';
 import { DataGridProps } from './types';
+import ToggleColumns from './ToggleColumns';
 
 export function DataGrid<TData extends RowData>({
   // data
@@ -67,7 +68,6 @@ export function DataGrid<TData extends RowData>({
   ...others
 }: DataGridProps<TData>) {
   const [columnVisibility, setColumnVisibility] = useState({})
-  const [state, setState] = useState<InitialTableState>({})
   const theme = useMantineTheme();
 
   const { classes, cx } = useStyles(
@@ -102,7 +102,7 @@ export function DataGrid<TData extends RowData>({
     debugHeaders: debug,
     debugColumns: debug,
 
-    initialState: state,
+    initialState,
   });
 
   useImperativeHandle(tableRef, () => table);
@@ -172,6 +172,7 @@ export function DataGrid<TData extends RowData>({
     pageCount,
     state: {
       ...prev.state,
+      columnVisibility
     },
     onGlobalFilterChange: handleGlobalFilterChange,
     onColumnFiltersChange: handleColumnFiltersChange,
@@ -185,28 +186,15 @@ export function DataGrid<TData extends RowData>({
     } else {
       table.setPageSize(data.length);
     }
-    if (withColumnToggle) {
-      setState((prev)=>({...prev, columnVisibility }))
-      console.log(state)
-    }
-  }, [withPagination, withColumnToggle]);
+
+  }, [withPagination]);
+
 
   return (
     <Stack {...others} spacing={verticalSpacing}>
-      {withColumnToggle && (
-        <>
-          {table.getAllLeafColumns().map(column => (
-            <Box key={column.id}>
-              <Switch
-                label={column.id}
-                checked={column.getIsVisible()}
-                // value={}
-                onChange={column.getToggleVisibilityHandler()}
-              />
-            </Box>
-          ))}
-        </>
 
+      {withColumnToggle && (
+        <ToggleColumns table={table}/>
       )
 
       }
