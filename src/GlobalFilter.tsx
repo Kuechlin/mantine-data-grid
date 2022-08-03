@@ -10,10 +10,10 @@ type GlobalFilterProps<TData> = {
 };
 
 export function GlobalFilter<TData>({ globalFilter, table, className }: GlobalFilterProps<TData>) {
-  const [value, setValue] = useState(globalFilter);
+  const [value, setValue] = useState(globalFilter || '');
 
   useEffect(() => {
-    setValue(globalFilter);
+    setValue(globalFilter || '');
   }, [globalFilter]);
 
   useEffect(() => {

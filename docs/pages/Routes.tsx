@@ -11,6 +11,9 @@ import CustomFilterExample from './examples/CustomFilterExample';
 import AsyncExample from './examples/AsyncExample';
 import InitialStateExample from './examples/InitialStateExample';
 import OnRowClickExample from './examples/OnRowClickExample';
+import FilersExample from './examples/FiltersExample';
+import Filters from './Filters';
+import EmptyExample from './examples/EmptyExample';
 
 export default function Routes() {
   return (
@@ -18,6 +21,7 @@ export default function Routes() {
       <Route path={BASE_URL + '/'} element={<Demo />} />
       <Route path={BASE_URL + '/getting-started'} element={<GettingStarted />} />
       <Route path={BASE_URL + '/properties'} element={<Properties />} />
+      <Route path={BASE_URL + '/filters'} element={<Filters />} />
       <Route path={BASE_URL + '/styles'} element={<Styles />} />
       <Route path={BASE_URL + '/example'} element={<MainExample />} />
       <Route path={BASE_URL + '/example/custom-filter'} element={<CustomFilterExample />} />
@@ -25,6 +29,8 @@ export default function Routes() {
       <Route path={BASE_URL + '/example/initial-state'} element={<InitialStateExample />} />
       <Route path={BASE_URL + '/example/initial-state'} element={<InitialStateExample />} />
       <Route path={BASE_URL + '/example/on-row-click'} element={<OnRowClickExample />} />
+      <Route path={BASE_URL + '/example/filters'} element={<FilersExample />} />
+      <Route path={BASE_URL + '/example/empty'} element={<EmptyExample />} />
     </RRRoutes>
   );
 }

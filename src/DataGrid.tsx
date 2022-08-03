@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useImperativeHandle } from 'react';
-import { ActionIcon, LoadingOverlay, ScrollArea, Space, Stack, Table as MantineTable, Text } from '@mantine/core';
+import { LoadingOverlay, ScrollArea, Stack, Table as MantineTable, Text } from '@mantine/core';
 import {
   ColumnFiltersState,
   flexRender,
@@ -60,6 +60,7 @@ export function DataGrid<TData extends RowData>({
   onRow,
   onCell,
   iconColor,
+  empty,
   // common props
   ...others
 }: DataGridProps<TData>) {
@@ -248,39 +249,39 @@ export function DataGrid<TData extends RowData>({
             ))}
           </thead>
           <tbody className={classes.body} role="rowgroup">
-            <>
-              {table.getRowModel().rows.length > 0 ? (
-                <>
-                  {table.getRowModel().rows.map((row) => (
-                    <tr {...(onRow && onRow(row))} key={row.id} className={classes.row} role="row">
-                      {row.getVisibleCells().map((cell) => (
-                        <td
-                          {...(onCell && onCell(cell))}
-                          key={cell.id}
-                          style={{
-                            width: cell.column.getSize(),
-                          }}
-                          className={cx(classes.dataCell, {
-                            [classes.ellipsis]: !noEllipsis,
-                          })}
-                          children={flexRender(cell.column.columnDef.cell, cell.getContext())}
-                          role="cell"
-                        />
-                      ))}
-                    </tr>
+            {table.getRowModel().rows.length > 0 ? (
+              table.getRowModel().rows.map((row) => (
+                <tr {...(onRow && onRow(row))} key={row.id} className={classes.row} role="row">
+                  {row.getVisibleCells().map((cell) => (
+                    <td
+                      {...(onCell && onCell(cell))}
+                      key={cell.id}
+                      style={{
+                        width: cell.column.getSize(),
+                      }}
+                      className={cx(classes.dataCell, {
+                        [classes.ellipsis]: !noEllipsis,
+                      })}
+                      children={flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      role="cell"
+                    />
                   ))}
-                </>
-              ) : (
-                <Stack align="center" spacing="md">
-                  <Space h="md" />
-                  <ActionIcon size={100} variant="light" color={iconColor} p="lg" radius="lg">
-                    <BoxOff size={100} />
-                  </ActionIcon>
-                  <Text>No Data</Text>
-                  <Space h="md" />
-                </Stack>
-              )}
-            </>
+                </tr>
+              ))
+            ) : (
+              <tr className={classes.row} role="row">
+                <td style={{ width: '100%' }}>
+                  <Stack align="center" spacing="xs">
+                    {empty || (
+                      <>
+                        <BoxOff size={64} />
+                        <Text weight="bold">No Data</Text>
+                      </>
+                    )}
+                  </Stack>
+                </td>
+              </tr>
+            )}
           </tbody>
         </MantineTable>
       </ScrollArea>

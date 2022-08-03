@@ -1,13 +1,13 @@
-import { NumberInput, Select } from '@mantine/core';
+import { NumberInput, Select, Text } from '@mantine/core';
 import { Filter } from 'tabler-icons-react';
 import { DataGridFilterFn, DataGridFilterProps } from '../types';
 
 type FilterState = {
-  op: NumberFilter;
+  op: NumberFilterOperator;
   value: number;
 };
 
-export enum NumberFilter {
+export enum NumberFilterOperator {
   Equals = 'eq',
   NotEquals = 'neq',
   GreaterThan = 'gt',
@@ -16,54 +16,70 @@ export enum NumberFilter {
   LowerThanOrEquals = 'lte',
 }
 
-export const numberFilterFn: DataGridFilterFn<any, FilterState> = (row, columnId, filter) => {
-  const rowValue = Number(row.getValue(columnId));
-  const op = filter.op || NumberFilter.Equals;
-  const filterValue = Number(filter.value);
-  switch (op) {
-    case NumberFilter.Equals:
-      return rowValue === filterValue;
-    case NumberFilter.NotEquals:
-      return rowValue !== filterValue;
-    case NumberFilter.GreaterThan:
-      return rowValue > filterValue;
-    case NumberFilter.GreaterThanOrEquals:
-      return rowValue >= filterValue;
-    case NumberFilter.LowerThan:
-      return rowValue < filterValue;
-    case NumberFilter.LowerThanOrEquals:
-      return rowValue <= filterValue;
-    default:
-      return true;
-  }
+export type NumberFilterOptions = {
+  title?: string;
+  fixedOperator?: NumberFilterOperator;
+  labels?: Partial<Record<NumberFilterOperator, string>>;
+  placeholder?: string;
 };
-numberFilterFn.autoRemove = (val) => !val;
-numberFilterFn.init = () => ({
-  op: NumberFilter.GreaterThan,
-  value: 0,
-});
-numberFilterFn.element = function ({ filter, onFilterChange }: DataGridFilterProps) {
-  const handleValueChange = (value: number) => onFilterChange({ ...filter, value });
+export const createNumberFilter = ({
+  title,
+  fixedOperator,
+  labels,
+  placeholder = 'Filter value',
+}: NumberFilterOptions) => {
+  const filterFn: DataGridFilterFn<any, FilterState> = (row, columnId, filter) => {
+    const rowValue = Number(row.getValue(columnId));
+    const op = filter.op || NumberFilterOperator.Equals;
+    const filterValue = Number(filter.value);
+    switch (op) {
+      case NumberFilterOperator.Equals:
+        return rowValue === filterValue;
+      case NumberFilterOperator.NotEquals:
+        return rowValue !== filterValue;
+      case NumberFilterOperator.GreaterThan:
+        return rowValue > filterValue;
+      case NumberFilterOperator.GreaterThanOrEquals:
+        return rowValue >= filterValue;
+      case NumberFilterOperator.LowerThan:
+        return rowValue < filterValue;
+      case NumberFilterOperator.LowerThanOrEquals:
+        return rowValue <= filterValue;
+      default:
+        return true;
+    }
+  };
+  filterFn.autoRemove = (val) => !val;
+  filterFn.init = () => ({
+    op: fixedOperator || NumberFilterOperator.GreaterThan,
+    value: 0,
+  });
+  filterFn.element = function NumberFilter({ filter, onFilterChange }: DataGridFilterProps) {
+    return (
+      <>
+        {title && <Text>{title}</Text>}
 
-  const handleOperatorChange = (op: string) => onFilterChange({ ...filter, op });
+        {!fixedOperator && (
+          <Select
+            data={Object.entries(NumberFilterOperator).map(([label, value]) => ({
+              value,
+              label: (labels && labels[value]) || label,
+            }))}
+            value={filter.op || NumberFilterOperator.Equals}
+            onChange={(op) => onFilterChange({ ...filter, op })}
+          />
+        )}
 
-  return (
-    <>
-      <Select
-        data={Object.entries(NumberFilter).map(([label, value]) => ({
-          value,
-          label,
-        }))}
-        value={filter.op || NumberFilter.Equals}
-        onChange={handleOperatorChange}
-      />
-
-      <NumberInput
-        value={filter.value}
-        onChange={(e) => handleValueChange(e || 0)}
-        placeholder="Filter value"
-        rightSection={<Filter />}
-      />
-    </>
-  );
+        <NumberInput
+          value={filter.value}
+          onChange={(value) => onFilterChange({ ...filter, value })}
+          placeholder={placeholder}
+          rightSection={<Filter />}
+        />
+      </>
+    );
+  };
+  return filterFn;
 };
+
+export const numberFilterFn = createNumberFilter({});

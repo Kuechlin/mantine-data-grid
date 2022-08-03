@@ -1,4 +1,4 @@
-import { ComponentPropsWithoutRef, ComponentType, HTMLAttributes, Ref } from 'react';
+import { ComponentPropsWithoutRef, ComponentType, HTMLAttributes, ReactElement, Ref } from 'react';
 import { DefaultProps, MantineNumberSize, Selectors } from '@mantine/core';
 import {
   Cell,
@@ -119,6 +119,11 @@ export interface DataGridProps<TData extends RowData>
    * Change Icon Color on Sort & Filter
    */
   iconColor?: string;
+
+  /**
+   * Empty table element
+   */
+  empty?: ReactElement;
 }
 
 export type DataGridFilterFn<TData extends RowData, TFilter = unknown> = FilterFn<TData> & {
