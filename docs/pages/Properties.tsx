@@ -51,6 +51,11 @@ export default function Properties() {
                 type: '(cell: Cell<TData, unknown>) => HTMLAttributes<HTMLTableCellElement>',
                 description: ' Callback to set props pre cell',
               },
+              {
+                name: 'empty',
+                type: 'ReactElement',
+                description: 'Empty table element',
+              },
             ],
           },
           {

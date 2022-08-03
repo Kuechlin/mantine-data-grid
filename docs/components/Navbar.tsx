@@ -89,6 +89,10 @@ export default function Navbar() {
           label: 'Column Filters',
           path: BASE_URL + '/example/filters',
         },
+        {
+          label: 'Empty Grid',
+          path: BASE_URL + '/example/empty',
+        },
       ].map((item) => (
         <NavLink
           key={item.path}
