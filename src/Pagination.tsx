@@ -56,6 +56,13 @@ export function Pagination<TData>({
         </Box>
         <MantinePagination
           size={fontSize}
+          /** Read: https://github.com/mantinedev/mantine/discussions/2001 */
+          sx={() => ({
+            '> button': {
+              height: '36px',
+              minWidth: '36px',
+            },
+          })}
           page={table.getState().pagination.pageIndex + 1}
           total={table.getPageCount()}
           onChange={handlePageChange}
