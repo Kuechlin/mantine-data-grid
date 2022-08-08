@@ -58,6 +58,8 @@ export function DataGrid<TData extends RowData>({
   tableRef,
   initialState,
   onRowClick,
+
+  state,
   // common props
   ...others
 }: DataGridProps<TData>) {
@@ -91,6 +93,7 @@ export function DataGrid<TData extends RowData>({
     debugColumns: debug,
 
     initialState,
+    state,
   });
 
   useImperativeHandle(tableRef, () => table);

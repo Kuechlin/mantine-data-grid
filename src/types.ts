@@ -10,6 +10,7 @@ import {
   RowData,
   SortingState,
   Table,
+  TableState,
 } from '@tanstack/react-table';
 import useStyles from './DataGrid.styles';
 
@@ -108,6 +109,12 @@ export interface DataGridProps<TData extends RowData>
    * Callback when clicking on a specific row
    */
   onRowClick?: (event: React.MouseEvent<HTMLTableRowElement, MouseEvent>, row: Row<TData>) => void;
+
+  /**
+   * The state option can be used to optionally control part or all of the table state.
+   * The state you pass here will merge with and overwrite the internal automatically-managed state to produce the final state for the table.
+   */
+  state?: Partial<TableState>;
 }
 
 export type DataGridFilterFn<TData extends RowData, TFilter = unknown> = FilterFn<TData> & {

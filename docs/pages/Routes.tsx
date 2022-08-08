@@ -12,6 +12,7 @@ import InitialStateExample from '../components/examples/InitialStateExample';
 import OnRowClickExample from '../components/examples/OnRowClickExample';
 
 import { BASE_URL } from '../constants';
+import StateExample from '../components/examples/StateExample';
 
 export default function Routes() {
   return (
@@ -24,8 +25,8 @@ export default function Routes() {
       <Route path={BASE_URL + '/example/custom-filter'} element={<CustomFilterExample />} />
       <Route path={BASE_URL + '/example/async'} element={<AsyncExample />} />
       <Route path={BASE_URL + '/example/initial-state'} element={<InitialStateExample />} />
-      <Route path={BASE_URL + '/example/initial-state'} element={<InitialStateExample />} />
       <Route path={BASE_URL + '/example/on-row-click'} element={<OnRowClickExample />} />
+      <Route path={BASE_URL + '/example/state'} element={<StateExample />} />
     </RRRoutes>
   );
 }

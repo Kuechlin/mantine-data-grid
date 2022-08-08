@@ -79,6 +79,10 @@ export default function Navbar() {
           label: 'On row click',
           path: BASE_URL + '/example/on-row-click',
         },
+        {
+          label: 'State',
+          path: BASE_URL + '/example/state',
+        },
       ].map((item) => (
         <NavLink
           key={item.path}
