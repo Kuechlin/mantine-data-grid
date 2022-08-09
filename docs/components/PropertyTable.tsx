@@ -1,5 +1,5 @@
 import { createStyles, Table, Text } from '@mantine/core';
-import { Fragment } from 'react';
+import { Fragment, ReactNode } from 'react';
 
 export type PropertyGroup = {
   group: string;
@@ -9,7 +9,7 @@ export type PropertyDefinition = {
   name: string;
   required?: boolean;
   type: string;
-  description: string;
+  description: ReactNode;
 };
 
 const Required = () => <Text style={{ display: 'inline' }} color="red" children="*" />;

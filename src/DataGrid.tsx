@@ -57,6 +57,7 @@ export function DataGrid<TData extends RowData>({
   // table ref
   tableRef,
   initialState,
+  state,
   onRow,
   onCell,
   iconColor,
@@ -95,6 +96,7 @@ export function DataGrid<TData extends RowData>({
     debugColumns: debug,
 
     initialState,
+    state,
   });
 
   useImperativeHandle(tableRef, () => table);
