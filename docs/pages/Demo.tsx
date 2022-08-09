@@ -87,9 +87,6 @@ const useStyles = createStyles((theme) => ({
 export default function Demo() {
   const { classes, theme } = useStyles();
 
-  const initialPageIndex = 0;
-  const initialPageSize = 10;
-
   const [state, setState] = useState({
     horizontalSpacing: 'xs' as MantineSize,
     verticalSpacing: 'xs' as MantineSize,
@@ -152,8 +149,6 @@ export default function Demo() {
           highlightOnHover={state.highlightOnHover}
           loading={state.loading}
           iconColor={state.iconColor}
-          initialPageIndex={initialPageIndex}
-          initialPageSize={initialPageSize}
           onPageChange={onPageChange}
           onSort={onSort}
           onFilter={onFilter}
