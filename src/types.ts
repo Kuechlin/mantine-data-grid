@@ -11,6 +11,7 @@ import {
   RowData,
   SortingState,
   Table,
+  TableState,
 } from '@tanstack/react-table';
 import useStyles from './DataGrid.styles';
 
@@ -104,6 +105,11 @@ export interface DataGridProps<TData extends RowData>
    * The initial table state
    */
   initialState?: InitialTableState;
+
+  /**
+   * The state of table
+   */
+  state?: Partial<TableState>;
 
   /**
    * Callback to set props pre row
