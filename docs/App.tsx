@@ -15,8 +15,8 @@ export default function App() {
       <MantineProvider theme={{ colorScheme }} withGlobalStyles withNormalizeCSS>
         <AppShell navbar={<Navbar />} header={<Header />}>
           <Routes>
-            {pages.map(({ path, element: Element }) => (
-              <Route path={path} element={<Element />} />
+            {pages.map(({ path, element: Element }, i) => (
+              <Route key={i} path={path} element={<Element />} />
             ))}
             {Object.values(examples).map(({ path, element: Example }, i) => (
               <Route key={i} path={path} element={<Example />} />

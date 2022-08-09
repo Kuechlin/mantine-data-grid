@@ -7,6 +7,7 @@ import EmptyExample from './EmptyExample';
 import InitialStateExample from './InitialStateExample';
 import OnRowClickExample from './OnRowClickExample';
 import StateExample from './StateExample';
+import StylesExample from './StylesExample';
 
 export type Example = {
   label: string;
@@ -55,5 +56,10 @@ export const examples = {
     label: 'Table State',
     path: BASE_URL + '/example/state',
     element: StateExample,
+  }),
+  styles: ex({
+    label: 'Custom Styles',
+    path: BASE_URL + '/example/styles',
+    element: StylesExample,
   }),
 };

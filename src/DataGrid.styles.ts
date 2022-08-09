@@ -1,9 +1,21 @@
 import { createStyles } from '@mantine/core';
 
-export default createStyles((theme, _params: any) => ({
-  table: {},
+export default createStyles((theme, _params: object) => ({
+  table: {
+    borderCollapse: 'separate',
+    borderSpacing: 0,
+  },
   header: {
-    borderBottom: `2px solid ${theme.colors.dark[4]}`,
+    position: 'relative',
+    '::after': {
+      content: "' '",
+      backgroundColor: theme.colors.dark[4],
+      position: 'absolute',
+      left: 0,
+      right: 0,
+      bottom: 0,
+      height: '2px',
+    },
   },
   headerFixed: {
     position: 'sticky',
@@ -12,23 +24,28 @@ export default createStyles((theme, _params: any) => ({
     transition: 'box-shadow 150ms ease',
   },
   body: {
-    display: 'block',
     minHeight: '160px',
   },
-  row: {
-    display: 'flex',
-  },
+  row: {},
   headerCell: {
     position: 'relative',
+  },
+  headerCellContent: {
     display: 'flex',
+    width: 'inherit',
     justifyContent: 'space-between',
   },
   headerCellButtons: {
-    display: 'flex',
+    display: 'inline-flex',
     gap: '4px',
     alignItems: 'center',
   },
   dataCell: {},
+  dataCellContent: {
+    display: 'flex',
+    width: 'inherit',
+    justifyContent: 'space-between',
+  },
   ellipsis: {
     overflow: 'hidden',
     textOverflow: 'ellipsis',

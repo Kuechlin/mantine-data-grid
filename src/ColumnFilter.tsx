@@ -49,6 +49,7 @@ export const ColumnFilter = ({ column, className, color }: ColumnFilterProps) =>
       onClose={close}
       closeOnClickOutside={false}
       width="256px"
+      withinPortal
     >
       <Menu.Target>
         <ActionIcon

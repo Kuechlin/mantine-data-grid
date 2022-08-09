@@ -1,21 +1,6 @@
-import { Stack, Title, Text, Anchor } from '@mantine/core';
-import { Link } from 'react-router-dom';
+import { Stack, Title, Text } from '@mantine/core';
 import { PropertyTable } from '../components/PropertyTable';
-import { examples } from './examples';
-
-const see = (ex: keyof typeof examples) => {
-  return (
-    <>
-      {'(example: '}
-
-      <Anchor component={Link} to={examples[ex].path}>
-        {examples[ex].label}
-      </Anchor>
-
-      {')'}
-    </>
-  );
-};
+import { See } from '../components/See';
 
 export default function Properties() {
   return (
@@ -45,7 +30,11 @@ export default function Properties() {
               {
                 name: 'total',
                 type: 'number',
-                description: <>Total number of items for external data. {see('async')}</>,
+                description: (
+                  <>
+                    Total number of items for external data. <See ex="async" />
+                  </>
+                ),
               },
               {
                 name: 'tableRef',
@@ -55,27 +44,47 @@ export default function Properties() {
               {
                 name: 'initialState',
                 type: 'InitialTableState',
-                description: <>The initial table state. {see('initialState')}</>,
+                description: (
+                  <>
+                    The initial table state. <See ex="initialState" />
+                  </>
+                ),
               },
               {
                 name: 'state',
                 type: 'Partial<TableState>',
-                description: <>The partial state of the table. {see('state')}</>,
+                description: (
+                  <>
+                    The partial state of the table. <See ex="state" />
+                  </>
+                ),
               },
               {
                 name: 'onRow',
                 type: '(row: Row<TData>) => HTMLAttributes<HTMLTableRowElement>',
-                description: <>Callback to set props pre row. {see('onRowClick')}</>,
+                description: (
+                  <>
+                    Callback to set props pre row. <See ex="onRowClick" />
+                  </>
+                ),
               },
               {
                 name: 'onCell',
                 type: '(cell: Cell<TData, unknown>) => HTMLAttributes<HTMLTableCellElement>',
-                description: <>Callback to set props pre cell. {see('onRowClick')}</>,
+                description: (
+                  <>
+                    Callback to set props pre cell. <See ex="onRowClick" />
+                  </>
+                ),
               },
               {
                 name: 'empty',
                 type: 'ReactElement',
-                description: <>Empty table element. {see('empty')}</>,
+                description: (
+                  <>
+                    Empty table element. <See ex="empty" />
+                  </>
+                ),
               },
             ],
           },
@@ -86,9 +95,14 @@ export default function Properties() {
 
               { name: 'withFixedHeader', type: 'boolean', description: 'Enable fixed header' },
               {
+                name: 'noFelxLayout',
+                type: 'boolean',
+                description: 'Disable flex layout',
+              },
+              {
                 name: 'noEllipsis',
                 type: 'boolean',
-                description: 'Text overflow ellipsis is disable',
+                description: 'Disable Text overflow ellipsis',
               },
               {
                 name: 'debug',
@@ -128,6 +142,10 @@ export default function Properties() {
             ],
           },
           {
+            group: 'Resizing',
+            children: [{ name: 'withColumnResizing', type: 'boolean', description: 'Enables column resizing' }],
+          },
+          {
             group: 'Pagination',
             children: [
               {
@@ -140,16 +158,6 @@ export default function Properties() {
                 type: 'string[]',
                 description:
                   'Sets of string for page size (rows per page) selections.\nDefault is `["10", "25", "50", "100"]`',
-              },
-              {
-                name: 'initialPageIndex',
-                type: 'number',
-                description: 'An initial current page index.\nDefault is `0` ',
-              },
-              {
-                name: 'initialPageSize',
-                type: 'number',
-                description: 'An initial current page size (rows per page).\nDefault is `10`  ',
               },
               {
                 name: 'onPageChange',

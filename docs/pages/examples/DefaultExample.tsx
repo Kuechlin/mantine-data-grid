@@ -20,6 +20,7 @@ export default function DefaultExample() {
         withPagination
         withColumnFilters
         withSorting
+        withColumnResizing
         columns={[
           {
             accessorKey: 'text',
