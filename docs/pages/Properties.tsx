@@ -1,5 +1,21 @@
-import { Stack, Title, Text } from '@mantine/core';
+import { Stack, Title, Text, Anchor } from '@mantine/core';
+import { Link } from 'react-router-dom';
 import { PropertyTable } from '../components/PropertyTable';
+import { examples } from './examples';
+
+const see = (ex: keyof typeof examples) => {
+  return (
+    <>
+      {'(example: '}
+
+      <Anchor component={Link} to={examples[ex].path}>
+        {examples[ex].label}
+      </Anchor>
+
+      {')'}
+    </>
+  );
+};
 
 export default function Properties() {
   return (
@@ -29,7 +45,7 @@ export default function Properties() {
               {
                 name: 'total',
                 type: 'number',
-                description: 'Total number of items for external data',
+                description: <>Total number of items for external data. {see('async')}</>,
               },
               {
                 name: 'tableRef',
@@ -39,22 +55,27 @@ export default function Properties() {
               {
                 name: 'initialState',
                 type: 'InitialTableState',
-                description: 'The initial table state',
+                description: <>The initial table state. {see('initialState')}</>,
+              },
+              {
+                name: 'state',
+                type: 'Partial<TableState>',
+                description: <>The partial state of the table. {see('state')}</>,
               },
               {
                 name: 'onRow',
                 type: '(row: Row<TData>) => HTMLAttributes<HTMLTableRowElement>',
-                description: 'Callback to set props pre row',
+                description: <>Callback to set props pre row. {see('onRowClick')}</>,
               },
               {
                 name: 'onCell',
                 type: '(cell: Cell<TData, unknown>) => HTMLAttributes<HTMLTableCellElement>',
-                description: ' Callback to set props pre cell',
+                description: <>Callback to set props pre cell. {see('onRowClick')}</>,
               },
               {
                 name: 'empty',
                 type: 'ReactElement',
-                description: 'Empty table element',
+                description: <>Empty table element. {see('empty')}</>,
               },
             ],
           },
