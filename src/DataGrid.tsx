@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useImperativeHandle } from 'react';
+import { useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { LoadingOverlay, ScrollArea, Stack, Table as MantineTable, Text } from '@mantine/core';
 import {
   ColumnFiltersState,
@@ -45,6 +45,8 @@ export function DataGrid<TData extends RowData>({
   withColumnFilters,
   withSorting,
   withPagination,
+  withColumnResizing,
+  noFelxLayout,
   pageSizes,
   initialPageIndex,
   initialPageSize,
@@ -73,6 +75,9 @@ export function DataGrid<TData extends RowData>({
       name: 'DataGrid',
     }
   );
+  const viewportRef = useRef<HTMLDivElement>(null);
+  const [tableWidth, setTableWidth] = useState(0);
+
   const color = iconColor || theme.primaryColor;
 
   const table = useReactTable<TData>({
@@ -82,7 +87,7 @@ export function DataGrid<TData extends RowData>({
     globalFilterFn,
     enableColumnFilters: !!withColumnFilters,
     enableSorting: !!withSorting,
-    enableColumnResizing: true,
+    enableColumnResizing: !!withColumnResizing,
     columnResizeMode: 'onChange',
     manualPagination: !!total, // when external data, handle pagination manually
 
@@ -98,6 +103,17 @@ export function DataGrid<TData extends RowData>({
     initialState,
     state,
   });
+
+  useEffect(() => {
+    if (noFelxLayout) {
+      setTableWidth(table.getTotalSize());
+    } else {
+      const tableWidth = table.getTotalSize();
+      const viewportWidth = viewportRef.current?.clientWidth || -1;
+      const nextWidth = tableWidth > viewportWidth ? tableWidth : viewportWidth;
+      setTableWidth(nextWidth);
+    }
+  }, [viewportRef.current, noFelxLayout, table.getTotalSize()]);
 
   useImperativeHandle(tableRef, () => table);
 
@@ -184,6 +200,7 @@ export function DataGrid<TData extends RowData>({
           position: 'relative',
           height: height ? height + 'px' : '',
         }}
+        viewportRef={viewportRef}
       >
         <LoadingOverlay visible={loading || false} overlayOpacity={0.8} />
         <MantineTable
@@ -194,7 +211,7 @@ export function DataGrid<TData extends RowData>({
           fontSize={fontSize}
           className={classes.table}
           style={{
-            width: table.getTotalSize(),
+            width: tableWidth,
           }}
         >
           <thead
@@ -211,11 +228,12 @@ export function DataGrid<TData extends RowData>({
                     style={{
                       width: header.getSize(),
                     }}
+                    colSpan={header.colSpan}
                     className={cx(classes.headerCell)}
                     role="columnheader"
                   >
                     {!header.isPlaceholder && (
-                      <>
+                      <div className={classes.headerCellContent}>
                         <div
                           className={cx({
                             [classes.ellipsis]: !noEllipsis,
@@ -239,7 +257,7 @@ export function DataGrid<TData extends RowData>({
                             onTouchStart={header.getResizeHandler()}
                           />
                         )}
-                      </>
+                      </div>
                     )}
                   </th>
                 ))}
@@ -257,18 +275,25 @@ export function DataGrid<TData extends RowData>({
                       style={{
                         width: cell.column.getSize(),
                       }}
-                      className={cx(classes.dataCell, {
-                        [classes.ellipsis]: !noEllipsis,
-                      })}
-                      children={flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      className={classes.dataCell}
                       role="cell"
-                    />
+                    >
+                      <div className={cx(classes.dataCellContent)}>
+                        <div
+                          className={cx({
+                            [classes.ellipsis]: !noEllipsis,
+                          })}
+                        >
+                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        </div>
+                      </div>
+                    </td>
                   ))}
                 </tr>
               ))
             ) : (
               <tr className={classes.row} role="row">
-                <td style={{ width: '100%' }}>
+                <td colSpan={table.getVisibleLeafColumns().length}>
                   <Stack align="center" spacing="xs">
                     {empty || (
                       <>
@@ -283,6 +308,7 @@ export function DataGrid<TData extends RowData>({
           </tbody>
         </MantineTable>
       </ScrollArea>
+
       {withPagination && (
         <Pagination
           totalRows={data.length}

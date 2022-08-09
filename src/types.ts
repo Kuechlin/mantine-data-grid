@@ -59,6 +59,13 @@ export interface DataGridProps<TData extends RowData>
   /** Show loading overlay */
   loading?: boolean;
 
+  // Layout
+  /** Disable flex layout */
+  noFelxLayout?: boolean;
+
+  /** Enables column resizing */
+  withColumnResizing?: boolean;
+
   // Pagination
   /** Enables pagination */
   withPagination?: boolean;

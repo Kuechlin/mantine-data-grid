@@ -101,6 +101,8 @@ export default function Demo() {
     withPagination: true,
     withColumnFilters: true,
     withSorting: true,
+    noFelxLayout: false,
+    withColumnResizing: true,
     striped: true,
     highlightOnHover: true,
     loading: false,
@@ -144,6 +146,8 @@ export default function Demo() {
           withPagination={state.withPagination}
           withColumnFilters={state.withColumnFilters}
           withSorting={state.withSorting}
+          withColumnResizing={state.withColumnResizing}
+          noFelxLayout={state.noFelxLayout}
           striped={state.striped}
           highlightOnHover={state.highlightOnHover}
           loading={state.loading}
@@ -166,7 +170,7 @@ export default function Demo() {
               filterFn: createStringFilter({
                 title: 'Filter with Title',
               }),
-              size: 300,
+              size: 200,
               cell: highlightFilterValue,
             },
             {
@@ -254,7 +258,25 @@ export default function Demo() {
               })
             }
           />
+          <Switch
+            label="With column resizing"
+            checked={state.withColumnResizing}
+            onChange={(e) =>
+              update({
+                withColumnResizing: e.target.checked,
+              })
+            }
+          />
           <Text color="dimmed">Styles</Text>
+          <Switch
+            label="No flex layout"
+            checked={state.noFelxLayout}
+            onChange={(e) =>
+              update({
+                noFelxLayout: e.target.checked,
+              })
+            }
+          />
           <NumberInput
             label="Table body height"
             value={state.height}

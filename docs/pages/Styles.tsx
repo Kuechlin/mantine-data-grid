@@ -1,14 +1,15 @@
 import { Stack, Table, Title } from '@mantine/core';
-import { Prism } from '@mantine/prism';
+import { See } from '../components/See';
 
 export default function Styles() {
   return (
     <Stack p="md">
       <Title order={2}>Mantine styles API</Title>
-      Mantine components support styling of individual elements by adding your classes or inline styles to any element
-      inside component.
-      <Prism withLineNumbers language="tsx" children={override_styles} />
-      <Title order={2}>DataGrid styles API</Title>
+      <p>
+        Mantine components support styling of individual elements by adding your classes or inline styles to any element
+        inside component. <See ex="styles" />
+      </p>
+      <Title order={3}>DataGrid styles API</Title>
       <Table>
         <thead>
           <tr>
@@ -74,26 +75,3 @@ export default function Styles() {
     </Stack>
   );
 }
-
-const override_styles = `
-import { DataGrid } from 'mantine-data-grid';
-
-function Demo() {
-    return (
-        <DataGrid
-            data={/* data source */}
-            styles={(theme) => ({
-                header: {
-                    borderColor: theme.colors.teal[4],
-                },
-            })}
-            columns={[
-                {
-                    accessorKey: 'text'
-                    header: 'Text'
-                }
-            ]}
-        />
-    );
-}
-`;
