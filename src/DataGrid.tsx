@@ -86,9 +86,9 @@ export function DataGrid<TData extends RowData>({
     manualPagination: !!total, // when external data, handle pagination manually
 
     getCoreRowModel: getCoreRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
 
     debugTable: debug,
     debugHeaders: debug,
@@ -153,18 +153,11 @@ export function DataGrid<TData extends RowData>({
     [onPageChange]
   );
 
-  const pageCount = withPagination
-    ? total
-      ? Math.floor(total / table.getState().pagination.pageSize)
-      : Math.ceil(data.length / table.getState().pagination.pageSize)
-    : -1;
+  const pageCount = withPagination && total ? Math.ceil(total / table.getState().pagination.pageSize) : undefined;
 
   table.setOptions((prev) => ({
     ...prev,
     pageCount,
-    state: {
-      ...prev.state,
-    },
     onGlobalFilterChange: handleGlobalFilterChange,
     onColumnFiltersChange: handleColumnFiltersChange,
     onSortingChange: handleSortingChange,

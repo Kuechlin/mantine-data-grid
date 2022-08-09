@@ -18,28 +18,39 @@ type FetchResponse = {
   total: number;
 };
 
-function fetchData(page: number, pageSize: number): Promise<FetchResponse> {
+function fetchData(page: number, pageSize: number, search: string): Promise<FetchResponse> {
   return new Promise((resolve) =>
-    setTimeout(
-      () =>
-        resolve({
-          list: demoData.slice(page * pageSize, page * pageSize + pageSize),
-          total: demoData.length,
-        }),
-      1000
-    )
+    setTimeout(() => {
+      const data = demoData.filter(
+        (x) => x.text.includes(search) || x.cat.includes(search) || x.fish.includes(search) || x.city.includes(search)
+      );
+      resolve({
+        list: data.slice(page * pageSize, page * pageSize + pageSize),
+        total: data.length + 2,
+      });
+    }, 1000)
   );
 }
 
 export default function AsyncExample() {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<FetchResponse>({ list: [], total: 0 });
+  const [searchValue, setSearchValue] = useState<string>('');
 
   const load: OnChangeCallback<DataGridPaginationState> = async ({ pageIndex, pageSize }) => {
     console.log(`pageIndex: ${pageIndex}, pageSize: ${pageSize}`);
     setLoading(true);
-    const res = await fetchData(pageIndex, pageSize);
+    const res = await fetchData(pageIndex, pageSize, searchValue);
     setData(res);
+    setLoading(false);
+  };
+
+  const search: OnChangeCallback<string> = async (val) => {
+    console.log(`search`);
+    setLoading(true);
+    const res = await fetchData(0, 10, val);
+    setData(res);
+    setSearchValue(val);
     setLoading(false);
   };
 
@@ -53,7 +64,9 @@ export default function AsyncExample() {
         data={data.list}
         total={data.total}
         onPageChange={load}
+        onSearch={search}
         withPagination
+        withGlobalFilter
         loading={loading}
         columns={[
           {
@@ -110,34 +123,38 @@ type FetchResponse = {
     total: number;
 };
 
-function fetchData(page: number, pageSize: number): Promise<FetchResponse> {
-    return new Promise((resolve) =>
-        setTimeout(
-            () =>
-                resolve({
-                    list: demoData.slice(
-                        page * pageSize,
-                        page * pageSize + pageSize
-                    ),
-                    total: demoData.length,
-                }),
-            100
-        )
-    );
+function fetchData(page: number, pageSize: number, search: string): Promise<FetchResponse> {
+  return new Promise((resolve) =>
+    setTimeout(() => {
+      const data = demoData.filter(
+        (x) => x.text.includes(search) || x.cat.includes(search) || x.fish.includes(search) || x.city.includes(search)
+      );
+      resolve({
+        list: data.slice(page * pageSize, page * pageSize + pageSize),
+        total: data.length + 2,
+      });
+    }, 1000)
+  );
 }
 
 export default function AsyncExample() {
     const [loading, setLoading] = useState(false);
     const [data, setData] = useState<FetchResponse>({ list: [], total: 0 });
+    const [searchValue, setSearchValue] = useState<string>('');
 
-    const load: OnChangeCallback<DataGridPaginationState> = async ({
-        pageIndex,
-        pageSize,
-    }) => {
-        setLoading(true);
-        var res = await fetchData(pageIndex, pageSize);
-        setData(res);
-        setLoading(false);
+    const load: OnChangeCallback<DataGridPaginationState> = async ({ pageIndex, pageSize }) => {
+      setLoading(true);
+      const res = await fetchData(pageIndex, pageSize, searchValue);
+      setData(res);
+      setLoading(false);
+    };
+
+    const search: OnChangeCallback<string> = async (val) => {
+      setLoading(true);
+      const res = await fetchData(0, 10, val);
+      setData(res);
+      setSearchValue(val);
+      setLoading(false);
     };
 
     useEffect(() => {
@@ -149,7 +166,9 @@ export default function AsyncExample() {
             data={data.list}
             total={data.total}
             onPageChange={load}
+            onSearch={search}
             withPagination
+            withGlobalFilter
             loading={loading}
             columns={[
                 {
