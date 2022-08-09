@@ -54,6 +54,9 @@ export default function InitialStateExample() {
           },
         ]}
         initialState={{
+          pagination: {
+            pageIndex: 2,
+          },
           sorting: [
             {
               id: 'value',
@@ -120,6 +123,9 @@ function Demo() {
         },
       ]}
       initialState={{
+        pagination: {
+          pageIndex: 2,
+        },
         sorting: [
           {
             id: 'value',

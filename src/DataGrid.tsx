@@ -48,8 +48,6 @@ export function DataGrid<TData extends RowData>({
   withColumnResizing,
   noFelxLayout,
   pageSizes,
-  initialPageIndex,
-  initialPageSize,
   debug = false,
   // callbacks
   onPageChange,
@@ -184,7 +182,7 @@ export function DataGrid<TData extends RowData>({
 
   useEffect(() => {
     if (withPagination) {
-      table.setPageSize(initialPageSize || DEFAULT_INITIAL_SIZE);
+      table.setPageSize(initialState?.pagination?.pageSize || DEFAULT_INITIAL_SIZE);
     } else {
       table.setPageSize(data.length);
     }

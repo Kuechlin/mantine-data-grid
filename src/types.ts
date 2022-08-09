@@ -74,14 +74,7 @@ export interface DataGridProps<TData extends RowData>
    * Default is `["10", "25", "50", "100"]`
    * */
   pageSizes?: string[];
-  /**
-   * An initial current page index.
-   * Default is `0` */
-  initialPageIndex?: number;
-  /**
-   * An initial current page size (rows per page).
-   * Default is `10`  */
-  initialPageSize?: number;
+
   /**
    * Callback when page index or page size changed
    * */

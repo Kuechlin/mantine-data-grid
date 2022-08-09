@@ -160,16 +160,6 @@ export default function Properties() {
                   'Sets of string for page size (rows per page) selections.\nDefault is `["10", "25", "50", "100"]`',
               },
               {
-                name: 'initialPageIndex',
-                type: 'number',
-                description: 'An initial current page index.\nDefault is `0` ',
-              },
-              {
-                name: 'initialPageSize',
-                type: 'number',
-                description: 'An initial current page size (rows per page).\nDefault is `10`  ',
-              },
-              {
                 name: 'onPageChange',
                 type: 'OnChangeCallback<DataGridPaginationState>',
                 description: 'Callback when page index or page size changed',
