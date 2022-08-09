@@ -193,6 +193,9 @@ export function DataGrid<TData extends RowData>({
           verticalSpacing={verticalSpacing}
           fontSize={fontSize}
           className={classes.table}
+          style={{
+            width: table.getTotalSize(),
+          }}
         >
           <thead
             className={cx(classes.header, {
