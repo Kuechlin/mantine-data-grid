@@ -5,11 +5,11 @@ import { Search } from 'tabler-icons-react';
 
 type GlobalFilterProps<TData> = {
   table: Table<TData>;
-  globalFilter: string;
-  className?: string;
+  className: string;
 };
 
-export function GlobalFilter<TData>({ globalFilter, table, className }: GlobalFilterProps<TData>) {
+export function GlobalFilter<TData>({ table, className }: GlobalFilterProps<TData>) {
+  const globalFilter = table.getState().globalFilter;
   const [value, setValue] = useState(globalFilter || '');
 
   useEffect(() => {

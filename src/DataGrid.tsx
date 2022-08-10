@@ -65,8 +65,12 @@ export function DataGrid<TData extends RowData>({
   // common props
   ...others
 }: DataGridProps<TData>) {
-  const { classes, cx, theme } = useStyles(
-    {},
+  const { classes, theme } = useStyles(
+    {
+      height,
+      noEllipsis,
+      withFixedHeader,
+    },
     {
       classNames,
       styles,
@@ -190,16 +194,8 @@ export function DataGrid<TData extends RowData>({
 
   return (
     <Stack {...others} spacing={verticalSpacing}>
-      {withGlobalFilter && (
-        <GlobalFilter table={table} globalFilter={table.getState().globalFilter} className={classes.globalFilter} />
-      )}
-      <ScrollArea
-        style={{
-          position: 'relative',
-          height: height ? height + 'px' : '',
-        }}
-        viewportRef={viewportRef}
-      >
+      {withGlobalFilter && <GlobalFilter table={table} className={classes.globalFilter} />}
+      <ScrollArea className={classes.scrollArea} viewportRef={viewportRef}>
         <LoadingOverlay visible={loading || false} overlayOpacity={0.8} />
         <MantineTable
           striped={striped}
@@ -212,31 +208,22 @@ export function DataGrid<TData extends RowData>({
             width: tableWidth,
           }}
         >
-          <thead
-            className={cx(classes.header, {
-              [classes.headerFixed]: !!withFixedHeader,
-            })}
-            role="rowgroup"
-          >
+          <thead className={classes.thead} role="rowgroup">
             {table.getHeaderGroups().map((group) => (
-              <tr key={group.id} className={classes.row} role="row">
+              <tr key={group.id} className={classes.tr} role="row">
                 {group.headers.map((header) => (
                   <th
                     key={header.id}
                     style={{
                       width: header.getSize(),
                     }}
+                    className={classes.th}
                     colSpan={header.colSpan}
-                    className={cx(classes.headerCell)}
                     role="columnheader"
                   >
                     {!header.isPlaceholder && (
-                      <div className={classes.headerCellContent}>
-                        <div
-                          className={cx({
-                            [classes.ellipsis]: !noEllipsis,
-                          })}
-                        >
+                      <div className={classes.headerCell}>
+                        <div className={classes.headerCellContent}>
                           {flexRender(header.column.columnDef.header, header.getContext())}
                         </div>
                         <div className={classes.headerCellButtons}>
@@ -262,10 +249,10 @@ export function DataGrid<TData extends RowData>({
               </tr>
             ))}
           </thead>
-          <tbody className={classes.body} role="rowgroup">
+          <tbody className={classes.tbody} role="rowgroup">
             {table.getRowModel().rows.length > 0 ? (
               table.getRowModel().rows.map((row) => (
-                <tr {...(onRow && onRow(row))} key={row.id} className={classes.row} role="row">
+                <tr {...(onRow && onRow(row))} key={row.id} className={classes.tr} role="row">
                   {row.getVisibleCells().map((cell) => (
                     <td
                       {...(onCell && onCell(cell))}
@@ -273,15 +260,11 @@ export function DataGrid<TData extends RowData>({
                       style={{
                         width: cell.column.getSize(),
                       }}
-                      className={classes.dataCell}
+                      className={classes.td}
                       role="cell"
                     >
-                      <div className={cx(classes.dataCellContent)}>
-                        <div
-                          className={cx({
-                            [classes.ellipsis]: !noEllipsis,
-                          })}
-                        >
+                      <div className={classes.dataCell}>
+                        <div className={classes.dataCellContent}>
                           {flexRender(cell.column.columnDef.cell, cell.getContext())}
                         </div>
                       </div>
@@ -290,7 +273,7 @@ export function DataGrid<TData extends RowData>({
                 </tr>
               ))
             ) : (
-              <tr className={classes.row} role="row">
+              <tr className={classes.tr} role="row">
                 <td colSpan={table.getVisibleLeafColumns().length}>
                   <Stack align="center" spacing="xs">
                     {empty || (
