@@ -18,60 +18,37 @@ export default function Styles() {
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>table</td>
-            <td>table element</td>
-          </tr>
-          <tr>
-            <td>header</td>
-            <td>table header</td>
-          </tr>
-          <tr>
-            <td>headerFixed</td>
-            <td>table fixed header</td>
-          </tr>
-          <tr>
-            <td>body</td>
-            <td>table body</td>
-          </tr>
-          <tr>
-            <td>row</td>
-            <td>table row</td>
-          </tr>
-          <tr>
-            <td>headerCell</td>
-            <td>table header cell</td>
-          </tr>
-          <tr>
-            <td>headerCellActions</td>
-            <td>table header cell actions</td>
-          </tr>
-          <tr>
-            <td>dataCell</td>
-            <td>table data cell</td>
-          </tr>
-          <tr>
-            <td>ellipsis</td>
-            <td>text ellipsis</td>
-          </tr>
-          <tr>
-            <td>resizer</td>
-            <td>resizer handle</td>
-          </tr>
-          <tr>
-            <td>sorter</td>
-            <td>sorter handle</td>
-          </tr>
-          <tr>
-            <td>filter</td>
-            <td>filter handle</td>
-          </tr>
-          <tr>
-            <td>globalFilter</td>
-            <td>global filter</td>
-          </tr>
+          {classes.map((x, i) => (
+            <tr key={i}>
+              <td>{x.name}</td>
+              <td>{x.description}</td>
+            </tr>
+          ))}
         </tbody>
       </Table>
     </Stack>
   );
 }
+
+const classes = [
+  { name: 'scrollArea', description: 'scroll area' },
+  { name: 'table', description: 'table' },
+  { name: 'thead', description: 'table head' },
+  { name: 'tbody', description: 'table body' },
+  { name: 'tr', description: 'table row' },
+  { name: 'th', description: 'table header cell' },
+  { name: 'td', description: 'table data cell' },
+  { name: 'headerCell', description: 'header cell' },
+  { name: 'headerCellContent', description: 'header cell content' },
+  { name: 'headerCellButtons', description: 'header cell buttons' },
+  { name: 'dataCell', description: 'data cell' },
+  { name: 'dataCellContent', description: 'data cell content' },
+  { name: 'resizer', description: 'resizer' },
+  { name: 'sorter', description: 'sorter' },
+  { name: 'filter', description: 'filter' },
+  { name: 'globalFilter', description: 'global filter' },
+  { name: 'pagination', description: 'pagination' },
+  { name: 'pagination_info', description: 'pagination info' },
+  { name: 'pagination_size', description: 'pagination size' },
+  { name: 'pagination_page', description: 'pagination page' },
+];
