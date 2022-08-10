@@ -1,11 +1,27 @@
-import { createStyles } from '@mantine/core';
+import { createStyles, CSSObject } from '@mantine/core';
 
-export default createStyles((theme, _params: object) => ({
+export type DataGridStylesParams = {
+  height?: number;
+  noEllipsis?: boolean;
+  withFixedHeader?: boolean;
+};
+
+const ellipsis: CSSObject = {
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+  whiteSpace: 'nowrap',
+};
+
+export default createStyles((theme, { height, noEllipsis, withFixedHeader }: DataGridStylesParams) => ({
+  scrollArea: {
+    position: 'relative',
+    height: height ? height + 'px' : undefined,
+  },
   table: {
     borderCollapse: 'separate',
     borderSpacing: 0,
   },
-  header: {
+  thead: {
     position: 'relative',
     '::after': {
       content: "' '",
@@ -16,40 +32,40 @@ export default createStyles((theme, _params: object) => ({
       bottom: 0,
       height: '2px',
     },
+    ...(withFixedHeader && {
+      position: 'sticky',
+      top: 0,
+      backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
+      transition: 'box-shadow 150ms ease',
+    }),
   },
-  headerFixed: {
-    position: 'sticky',
-    top: 0,
-    backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
-    transition: 'box-shadow 150ms ease',
-  },
-  body: {
+  tbody: {
     minHeight: '160px',
   },
-  row: {},
+  tr: {},
+  th: { position: 'relative' },
+  td: {},
   headerCell: {
-    position: 'relative',
-  },
-  headerCellContent: {
     display: 'flex',
     width: 'inherit',
+    height: 'inherit',
     justifyContent: 'space-between',
+  },
+  headerCellContent: {
+    ...(!noEllipsis && ellipsis),
   },
   headerCellButtons: {
     display: 'inline-flex',
     gap: '4px',
     alignItems: 'center',
   },
-  dataCell: {},
-  dataCellContent: {
+  dataCell: {
     display: 'flex',
     width: 'inherit',
     justifyContent: 'space-between',
   },
-  ellipsis: {
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-    whiteSpace: 'nowrap',
+  dataCellContent: {
+    ...(!noEllipsis && ellipsis),
   },
   resizer: {
     position: 'absolute',
