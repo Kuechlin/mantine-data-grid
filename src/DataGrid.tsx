@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react';
+import { useCallback, useEffect, useImperativeHandle, useState } from 'react';
 import { LoadingOverlay, ScrollArea, Stack, Table as MantineTable, Text } from '@mantine/core';
 import {
   ColumnFiltersState,
@@ -15,6 +15,8 @@ import {
   RowData,
 } from '@tanstack/react-table';
 import { BoxOff } from 'tabler-icons-react';
+import { useResizeObserver } from '@mantine/hooks';
+
 import useStyles from './DataGrid.styles';
 
 import { GlobalFilter, globalFilterFn } from './GlobalFilter';
@@ -77,7 +79,7 @@ export function DataGrid<TData extends RowData>({
       name: 'DataGrid',
     }
   );
-  const viewportRef = useRef<HTMLDivElement>(null);
+  const [viewportRef, viewportRect] = useResizeObserver();
   const [tableWidth, setTableWidth] = useState(0);
 
   const color = iconColor || theme.primaryColor;
@@ -105,19 +107,18 @@ export function DataGrid<TData extends RowData>({
     initialState,
     state,
   });
+  useImperativeHandle(tableRef, () => table);
 
   useEffect(() => {
     if (noFelxLayout) {
       setTableWidth(table.getTotalSize());
     } else {
       const tableWidth = table.getTotalSize();
-      const viewportWidth = viewportRef.current?.clientWidth || -1;
+      const viewportWidth = viewportRect.width || -1;
       const nextWidth = tableWidth > viewportWidth ? tableWidth : viewportWidth;
       setTableWidth(nextWidth);
     }
-  }, [viewportRef.current, noFelxLayout, table.getTotalSize()]);
-
-  useImperativeHandle(tableRef, () => table);
+  }, [viewportRect.width, noFelxLayout, table.getTotalSize()]);
 
   const handleGlobalFilterChange: OnChangeFn<string> = useCallback(
     (arg0) =>
