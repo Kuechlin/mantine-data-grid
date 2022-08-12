@@ -95,7 +95,7 @@ export default function Properties() {
 
               { name: 'withFixedHeader', type: 'boolean', description: 'Enable fixed header' },
               {
-                name: 'noFelxLayout',
+                name: 'noFlexLayout',
                 type: 'boolean',
                 description: 'Disable flex layout',
               },

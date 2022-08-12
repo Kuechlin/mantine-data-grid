@@ -61,7 +61,7 @@ export interface DataGridProps<TData extends RowData>
 
   // Layout
   /** Disable flex layout */
-  noFelxLayout?: boolean;
+  noFlexLayout?: boolean;
 
   /** Enables column resizing */
   withColumnResizing?: boolean;

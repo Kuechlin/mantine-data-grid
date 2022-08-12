@@ -98,7 +98,7 @@ export default function Demo() {
     withPagination: true,
     withColumnFilters: true,
     withSorting: true,
-    noFelxLayout: false,
+    noFlexLayout: false,
     withColumnResizing: true,
     striped: true,
     highlightOnHover: true,
@@ -144,7 +144,7 @@ export default function Demo() {
           withColumnFilters={state.withColumnFilters}
           withSorting={state.withSorting}
           withColumnResizing={state.withColumnResizing}
-          noFelxLayout={state.noFelxLayout}
+          noFlexLayout={state.noFlexLayout}
           striped={state.striped}
           highlightOnHover={state.highlightOnHover}
           loading={state.loading}
@@ -265,10 +265,10 @@ export default function Demo() {
           <Text color="dimmed">Styles</Text>
           <Switch
             label="No flex layout"
-            checked={state.noFelxLayout}
+            checked={state.noFlexLayout}
             onChange={(e) =>
               update({
-                noFelxLayout: e.target.checked,
+                noFlexLayout: e.target.checked,
               })
             }
           />

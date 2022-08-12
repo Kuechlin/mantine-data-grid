@@ -48,7 +48,7 @@ export function DataGrid<TData extends RowData>({
   withSorting,
   withPagination,
   withColumnResizing,
-  noFelxLayout,
+  noFlexLayout,
   pageSizes,
   debug = false,
   // callbacks
@@ -110,7 +110,7 @@ export function DataGrid<TData extends RowData>({
   useImperativeHandle(tableRef, () => table);
 
   useEffect(() => {
-    if (noFelxLayout) {
+    if (noFlexLayout) {
       setTableWidth(table.getTotalSize());
     } else {
       const tableWidth = table.getTotalSize();
@@ -118,7 +118,7 @@ export function DataGrid<TData extends RowData>({
       const nextWidth = tableWidth > viewportWidth ? tableWidth : viewportWidth;
       setTableWidth(nextWidth);
     }
-  }, [viewportRect.width, noFelxLayout, table.getTotalSize()]);
+  }, [viewportRect.width, noFlexLayout, table.getTotalSize()]);
 
   const handleGlobalFilterChange: OnChangeFn<string> = useCallback(
     (arg0) =>

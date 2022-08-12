@@ -34,7 +34,7 @@ export default function CustomFilterExample() {
       <DataGrid
         data={demoData.slice(0, 10)}
         withColumnFilters
-        noFelxLayout
+        noFlexLayout
         columns={[
           {
             accessorKey: 'cat',
