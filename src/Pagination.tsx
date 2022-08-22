@@ -11,20 +11,24 @@ export function Pagination<TData>({
   fontSize = 'md',
   pageSizes = DEFAULT_PAGE_SIZES,
   color = '', // Empty color will follow the primary button color
+  total,
 }: {
   table: Table<TData>;
   classes: string[];
   pageSizes?: string[];
   fontSize?: MantineNumberSize;
   color: string;
+  total?: number;
 }) {
   const pageIndex = table.getState().pagination.pageIndex;
   const pageSize = table.getState().pagination.pageSize;
 
-  const maxRows = table.getPrePaginationRowModel().rows.length;
+  const maxRows = total ? total : table.getPrePaginationRowModel().rows.length;
   const currentRowAmount = table.getRowModel().rows.length;
   const firstRowNum = maxRows === 0 ? 0 : pageIndex * pageSize + 1;
   const lastRowNum = maxRows === 0 ? 0 : firstRowNum + currentRowAmount - 1;
+
+  console.log({ total, maxRows, currentRowAmount, firstRowNum, lastRowNum });
 
   const handlePageSizeChange = (value: string) => {
     table.setPageSize(Number(value));
