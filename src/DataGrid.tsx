@@ -293,8 +293,8 @@ export function DataGrid<TData extends RowData>({
 
       {withPagination && (
         <Pagination
-          totalRows={data.length}
           table={table}
+          total={total}
           pageSizes={pageSizes}
           fontSize={fontSize}
           color={color}

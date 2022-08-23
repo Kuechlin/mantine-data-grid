@@ -8,25 +8,27 @@ export const DEFAULT_INITIAL_SIZE = 10;
 export function Pagination<TData>({
   table,
   classes,
-  totalRows,
   fontSize = 'md',
   pageSizes = DEFAULT_PAGE_SIZES,
   color = '', // Empty color will follow the primary button color
+  total,
 }: {
   table: Table<TData>;
   classes: string[];
-  totalRows: number;
   pageSizes?: string[];
   fontSize?: MantineNumberSize;
   color: string;
+  total?: number;
 }) {
   const pageIndex = table.getState().pagination.pageIndex;
   const pageSize = table.getState().pagination.pageSize;
 
-  const firstRowNum = pageIndex * pageSize + 1;
+  const maxRows = total ? total : table.getPrePaginationRowModel().rows.length;
+  const currentRowAmount = table.getRowModel().rows.length;
+  const firstRowNum = maxRows === 0 ? 0 : pageIndex * pageSize + 1;
+  const lastRowNum = maxRows === 0 ? 0 : firstRowNum + currentRowAmount - 1;
 
-  const currLastRowNum = (pageIndex + 1) * pageSize;
-  const lastRowNum = currLastRowNum < totalRows ? currLastRowNum : totalRows;
+  console.log({ total, maxRows, currentRowAmount, firstRowNum, lastRowNum });
 
   const handlePageSizeChange = (value: string) => {
     table.setPageSize(Number(value));
@@ -39,7 +41,7 @@ export function Pagination<TData>({
   return (
     <Box className={classes[0]}>
       <Text size={fontSize} className={classes[1]}>
-        Showing <b>{firstRowNum}</b> - <b>{lastRowNum}</b> of <b>{totalRows}</b> result
+        Showing <b>{firstRowNum}</b> - <b>{lastRowNum}</b> of <b>{maxRows}</b> result{maxRows === 1 ? '' : 's'}
       </Text>
 
       <Group>
