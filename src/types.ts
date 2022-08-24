@@ -39,7 +39,9 @@ export interface DataGridProps<TData extends RowData>
 
   // Styles
   /** Table body height */
-  height?: number;
+  height?: string;
+  /** Table body width */
+  width?: string;
   /** Enable fixed header */
   withFixedHeader?: boolean;
   /** Text overflow ellipsis is disabled*/
