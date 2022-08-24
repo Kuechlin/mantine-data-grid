@@ -4,7 +4,7 @@ import { DataGridFilterFn, DataGridFilterProps } from '../types';
 
 type FilterState = {
   op: NumberFilterOperator;
-  value: number;
+  value?: number;
 };
 
 export enum NumberFilterOperator {
@@ -54,7 +54,7 @@ export const createNumberFilter = ({
     op: fixedOperator || NumberFilterOperator.GreaterThan,
     value: 0,
   });
-  filterFn.element = function NumberFilter({ filter, onFilterChange }: DataGridFilterProps) {
+  filterFn.element = function NumberFilter({ filter, onFilterChange }: DataGridFilterProps<FilterState>) {
     return (
       <>
         {title && <Text>{title}</Text>}
@@ -66,7 +66,7 @@ export const createNumberFilter = ({
               label: (labels && labels[value]) || label,
             }))}
             value={filter.op || NumberFilterOperator.Equals}
-            onChange={(op) => onFilterChange({ ...filter, op })}
+            onChange={(op) => onFilterChange({ ...filter, op: op as NumberFilterOperator })}
           />
         )}
 
