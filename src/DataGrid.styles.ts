@@ -12,10 +12,11 @@ const ellipsis: CSSObject = {
   whiteSpace: 'nowrap',
 };
 
-export default createStyles((theme, { height, noEllipsis, withFixedHeader }: DataGridStylesParams) => ({
+export default createStyles((theme, { height, width, noEllipsis, withFixedHeader }: DataGridStylesParams) => ({
   scrollArea: {
     position: 'relative',
-    height: height ? height + 'px' : undefined,
+    height: height ? height : undefined,
+    width: width ? width : undefined,
   },
   table: {
     borderCollapse: 'separate',
