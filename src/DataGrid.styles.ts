@@ -1,7 +1,8 @@
 import { createStyles, CSSObject } from '@mantine/core';
 
 export type DataGridStylesParams = {
-  height?: number;
+  height?: string | number;
+  width?: string | number;
   noEllipsis?: boolean;
   withFixedHeader?: boolean;
 };
@@ -13,10 +14,13 @@ const ellipsis: CSSObject = {
 };
 
 export default createStyles((theme, { height, width, noEllipsis, withFixedHeader }: DataGridStylesParams) => ({
-  scrollArea: {
-    position: 'relative',
+  wrapper: {
     height: height ? height : undefined,
     width: width ? width : undefined,
+    overflow: 'hidden',
+  },
+  scrollArea: {
+    position: 'relative',
   },
   table: {
     borderCollapse: 'separate',

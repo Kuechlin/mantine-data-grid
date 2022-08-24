@@ -39,9 +39,9 @@ export interface DataGridProps<TData extends RowData>
 
   // Styles
   /** Table body height */
-  height?: string;
+  height?: string | number;
   /** Table body width */
-  width?: string;
+  width?: string | number;
   /** Enable fixed header */
   withFixedHeader?: boolean;
   /** Text overflow ellipsis is disabled*/
@@ -143,7 +143,7 @@ export function isDataGridFilter(val: unknown): val is DataGridFilterFn<unknown>
   return typeof val === 'function' && 'element' in val && 'init' in val;
 }
 
-export type DataGridFilterProps<T = any> = {
+export type DataGridFilterProps<T = unknown> = {
   filter: T;
   onFilterChange(value: T): void;
 };
