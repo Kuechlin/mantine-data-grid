@@ -55,7 +55,7 @@ export const createStringFilter = ({
     op: fixedOperator || StringFilterOperator.Includes,
     value: '',
   });
-  filterFn.element = function ({ filter, onFilterChange }: DataGridFilterProps) {
+  filterFn.element = function ({ filter, onFilterChange }: DataGridFilterProps<FilterState>) {
     return (
       <>
         {title && <Text>{title}</Text>}
@@ -67,7 +67,7 @@ export const createStringFilter = ({
               label: (labels && labels[value]) || label,
             }))}
             value={filter.op || StringFilterOperator.Includes}
-            onChange={(op) => onFilterChange({ ...filter, op })}
+            onChange={(op) => onFilterChange({ ...filter, op: op as StringFilterOperator })}
           />
         )}
 
