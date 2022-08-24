@@ -68,7 +68,7 @@ export function DataGrid<TData extends RowData>({
   // common props
   ...others
 }: DataGridProps<TData>) {
-  const { classes, theme } = useStyles(
+  const { classes, theme, cx } = useStyles(
     {
       height,
       width,
@@ -254,27 +254,33 @@ export function DataGrid<TData extends RowData>({
           </thead>
           <tbody className={classes.tbody} role="rowgroup">
             {table.getRowModel().rows.length > 0 ? (
-              table.getRowModel().rows.map((row) => (
-                <tr {...(onRow && onRow(row))} key={row.id} className={classes.tr} role="row">
-                  {row.getVisibleCells().map((cell) => (
-                    <td
-                      {...(onCell && onCell(cell))}
-                      key={cell.id}
-                      style={{
-                        width: cell.column.getSize(),
-                      }}
-                      className={classes.td}
-                      role="cell"
-                    >
-                      <div className={classes.dataCell}>
-                        <div className={classes.dataCellContent}>
-                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                        </div>
-                      </div>
-                    </td>
-                  ))}
-                </tr>
-              ))
+              table.getRowModel().rows.map((row) => {
+                const rowProps = onRow ? onRow(row) : {};
+                return (
+                  <tr {...rowProps} key={row.id} className={cx(classes.tr, rowProps.className)} role="row">
+                    {row.getVisibleCells().map((cell) => {
+                      const cellProps = onCell ? onCell(cell) : {};
+                      return (
+                        <td
+                          {...cellProps}
+                          key={cell.id}
+                          style={{
+                            width: cell.column.getSize(),
+                          }}
+                          className={cx(classes.td, cellProps.className)}
+                          role="cell"
+                        >
+                          <div className={classes.dataCell}>
+                            <div className={classes.dataCellContent}>
+                              {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                            </div>
+                          </div>
+                        </td>
+                      );
+                    })}
+                  </tr>
+                );
+              })
             ) : (
               <tr className={classes.tr} role="row">
                 <td colSpan={table.getVisibleLeafColumns().length}>

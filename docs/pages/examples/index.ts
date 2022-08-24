@@ -5,7 +5,7 @@ import CustomFilterExample from './CustomFilterExample';
 import DefaultExample from './DefaultExample';
 import EmptyExample from './EmptyExample';
 import InitialStateExample from './InitialStateExample';
-import OnRowClickExample from './OnRowClickExample';
+import OnRowClickExample from './OnRowExample';
 import StateExample from './StateExample';
 import StylesExample from './StylesExample';
 
@@ -38,7 +38,7 @@ export const examples = {
     element: InitialStateExample,
   }),
   onRowClick: ex({
-    label: 'On row click',
+    label: 'On row / On cell',
     path: BASE_URL + '/example/on-row-click',
     element: OnRowClickExample,
   }),
