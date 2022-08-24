@@ -8,7 +8,7 @@ export default function StylesExample() {
       <DataGrid
         data={demoData.slice(0, 2)}
         styles={(theme) => ({
-          header: {
+          thead: {
             '::after': {
               backgroundColor: theme.colors.teal[4],
             },

@@ -31,6 +31,7 @@ export default function Styles() {
 }
 
 const classes = [
+  { name: 'wrapper', description: 'table wrapper' },
   { name: 'scrollArea', description: 'scroll area' },
   { name: 'table', description: 'table' },
   { name: 'thead', description: 'table head' },
