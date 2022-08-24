@@ -7,12 +7,12 @@ import {
   Group,
   MantineSize,
   MultiSelect,
-  NumberInput,
   Slider,
   Space,
   Stack,
   Switch,
   Text,
+  TextInput,
   Title,
 } from '@mantine/core';
 import { useState } from 'react';
@@ -91,7 +91,8 @@ export default function Demo() {
     horizontalSpacing: 'xs' as MantineSize,
     verticalSpacing: 'xs' as MantineSize,
     fontSize: 'md' as MantineSize,
-    height: 0,
+    height: '',
+    width: '',
     withFixedHeader: false,
     noEllipsis: false,
     withGlobalFilter: true,
@@ -137,6 +138,7 @@ export default function Demo() {
           verticalSpacing={state.verticalSpacing}
           fontSize={state.fontSize}
           height={state.height}
+          width={state.width}
           withFixedHeader={state.withFixedHeader}
           noEllipsis={state.noEllipsis}
           withGlobalFilter={state.withGlobalFilter}
@@ -272,12 +274,23 @@ export default function Demo() {
               })
             }
           />
-          <NumberInput
-            label="Table body height"
+          <TextInput
+            label="Table height"
             value={state.height}
-            onChange={(val) =>
+            placeholder="css size value"
+            onChange={(e) =>
               update({
-                height: val,
+                height: e.target.value,
+              })
+            }
+          />
+          <TextInput
+            label="Table width"
+            value={state.width}
+            placeholder="css size value"
+            onChange={(e) =>
+              update({
+                width: e.target.value,
               })
             }
           />

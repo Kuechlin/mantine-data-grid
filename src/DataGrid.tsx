@@ -34,6 +34,7 @@ export function DataGrid<TData extends RowData>({
   classNames,
   styles,
   height,
+  width,
   withFixedHeader,
   noEllipsis,
   striped,
@@ -70,6 +71,7 @@ export function DataGrid<TData extends RowData>({
   const { classes, theme } = useStyles(
     {
       height,
+      width,
       noEllipsis,
       withFixedHeader,
     },
@@ -194,7 +196,7 @@ export function DataGrid<TData extends RowData>({
   }, [withPagination]);
 
   return (
-    <Stack {...others} spacing={verticalSpacing}>
+    <Stack {...others} spacing={verticalSpacing} className={classes.wrapper}>
       {withGlobalFilter && <GlobalFilter table={table} className={classes.globalFilter} />}
       <ScrollArea className={classes.scrollArea} viewportRef={viewportRef}>
         <LoadingOverlay visible={loading || false} overlayOpacity={0.8} />

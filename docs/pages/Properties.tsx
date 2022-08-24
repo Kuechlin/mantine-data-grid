@@ -91,8 +91,8 @@ export default function Properties() {
           {
             group: 'Styles',
             children: [
-              { name: 'height', type: 'number', description: 'Table body height' },
-
+              { name: 'height', type: 'number', description: 'Table height' },
+              { name: 'width', type: 'number', description: 'Table width' },
               { name: 'withFixedHeader', type: 'boolean', description: 'Enable fixed header' },
               {
                 name: 'noFlexLayout',

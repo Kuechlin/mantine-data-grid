@@ -28,8 +28,6 @@ export function Pagination<TData>({
   const firstRowNum = maxRows === 0 ? 0 : pageIndex * pageSize + 1;
   const lastRowNum = maxRows === 0 ? 0 : firstRowNum + currentRowAmount - 1;
 
-  console.log({ total, maxRows, currentRowAmount, firstRowNum, lastRowNum });
-
   const handlePageSizeChange = (value: string) => {
     table.setPageSize(Number(value));
   };
