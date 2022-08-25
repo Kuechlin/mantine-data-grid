@@ -59,13 +59,14 @@ export function DataGrid<TData extends RowData>({
   onSort,
   // table ref
   tableRef,
+  // common props
   initialState,
   state,
   onRow,
   onCell,
   iconColor,
   empty,
-  // common props
+  locale,
   ...others
 }: DataGridProps<TData>) {
   const { classes, theme, cx } = useStyles(
@@ -197,7 +198,7 @@ export function DataGrid<TData extends RowData>({
 
   return (
     <Stack {...others} spacing={verticalSpacing} className={classes.wrapper}>
-      {withGlobalFilter && <GlobalFilter table={table} className={classes.globalFilter} />}
+      {withGlobalFilter && <GlobalFilter table={table} className={classes.globalFilter} locale={locale} />}
       <ScrollArea className={classes.scrollArea} viewportRef={viewportRef}>
         <LoadingOverlay visible={loading || false} overlayOpacity={0.8} />
         <MantineTable
@@ -307,6 +308,7 @@ export function DataGrid<TData extends RowData>({
           fontSize={fontSize}
           color={color}
           classes={[classes.pagination, classes.pagination_info, classes.pagination_size, classes.pagination_page]}
+          locale={locale}
         />
       )}
     </Stack>

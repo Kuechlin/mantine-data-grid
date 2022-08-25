@@ -1,4 +1,4 @@
-import { ComponentPropsWithoutRef, ComponentType, HTMLAttributes, ReactElement, Ref } from 'react';
+import { ComponentPropsWithoutRef, ComponentType, HTMLAttributes, ReactElement, ReactNode, Ref } from 'react';
 import { DefaultProps, MantineNumberSize, Selectors } from '@mantine/core';
 import {
   Cell,
@@ -22,6 +22,11 @@ export type OnChangeCallback<T> = (arg0: T) => void;
 export type DataGridSortingState = SortingState;
 export type DataGridPaginationState = PaginationState;
 export type DataGridFiltersState = ColumnFiltersState;
+export type DataGridLocale = {
+  pagination?: (firstRowNum: number, lastRowNum: number, maxRows: number) => ReactNode;
+  pageSize?: ReactNode;
+  globalSearch?: string;
+};
 
 export interface DataGridProps<TData extends RowData>
   extends DefaultProps<DataGridStylesNames, object>,
@@ -132,6 +137,11 @@ export interface DataGridProps<TData extends RowData>
    * Empty table element
    */
   empty?: ReactElement;
+
+  /**
+   * The i18n text including pagination text, pageSize text, globalSearch placeholder, etc
+   */
+  locale?: DataGridLocale;
 }
 
 export type DataGridFilterFn<TData extends RowData, TFilter = unknown> = FilterFn<TData> & {

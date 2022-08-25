@@ -86,6 +86,16 @@ export default function Properties() {
                   </>
                 ),
               },
+              {
+                name: 'locale',
+                type: 'DataGridLocale',
+                description: (
+                  <>
+                    The i18n text including pagination text, pageSize text, globalSearch placeholder.
+                    <See ex="locale" />
+                  </>
+                ),
+              },
             ],
           },
           {

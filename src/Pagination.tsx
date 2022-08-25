@@ -1,9 +1,20 @@
 import { Group, Select, Text, Pagination as MantinePagination, Box, MantineNumberSize } from '@mantine/core';
 import { Table } from '@tanstack/react-table';
+import { DataGridLocale } from './types';
 
 export const DEFAULT_PAGE_SIZES = ['10', '25', '50', '100'];
 export const DEFAULT_INITIAL_PAGE = 0;
 export const DEFAULT_INITIAL_SIZE = 10;
+
+type PaginationProps<TData> = {
+  table: Table<TData>;
+  classes: string[];
+  pageSizes?: string[];
+  fontSize?: MantineNumberSize;
+  color: string;
+  total?: number;
+  locale?: DataGridLocale;
+};
 
 export function Pagination<TData>({
   table,
@@ -12,14 +23,8 @@ export function Pagination<TData>({
   pageSizes = DEFAULT_PAGE_SIZES,
   color = '', // Empty color will follow the primary button color
   total,
-}: {
-  table: Table<TData>;
-  classes: string[];
-  pageSizes?: string[];
-  fontSize?: MantineNumberSize;
-  color: string;
-  total?: number;
-}) {
+  locale,
+}: PaginationProps<TData>) {
   const pageIndex = table.getState().pagination.pageIndex;
   const pageSize = table.getState().pagination.pageSize;
 
@@ -39,12 +44,18 @@ export function Pagination<TData>({
   return (
     <Box className={classes[0]}>
       <Text size={fontSize} className={classes[1]}>
-        Showing <b>{firstRowNum}</b> - <b>{lastRowNum}</b> of <b>{maxRows}</b> result{maxRows === 1 ? '' : 's'}
+        {locale?.pagination ? (
+          locale.pagination(firstRowNum, lastRowNum, maxRows)
+        ) : (
+          <>
+            Showing <b>{firstRowNum}</b> - <b>{lastRowNum}</b> of <b>{maxRows}</b> result{maxRows === 1 ? '' : 's'}
+          </>
+        )}
       </Text>
 
       <Group>
         <Box className={classes[2]}>
-          <Text size={fontSize}>Rows per page: </Text>
+          <Text size={fontSize}>{locale?.pageSize || 'Rows per page:'}</Text>
           <Select
             data={pageSizes}
             value={`${table.getState().pagination.pageSize}`}
