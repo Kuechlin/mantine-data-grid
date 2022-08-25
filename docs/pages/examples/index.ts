@@ -5,6 +5,7 @@ import CustomFilterExample from './CustomFilterExample';
 import DefaultExample from './DefaultExample';
 import EmptyExample from './EmptyExample';
 import InitialStateExample from './InitialStateExample';
+import LocaleExample from './LocaleExample';
 import OnRowClickExample from './OnRowExample';
 import StateExample from './StateExample';
 import StylesExample from './StylesExample';
@@ -61,5 +62,10 @@ export const examples = {
     label: 'Custom Styles',
     path: BASE_URL + '/example/styles',
     element: StylesExample,
+  }),
+  locale: ex({
+    label: 'Locale i18n',
+    path: BASE_URL + '/example/locale',
+    element: LocaleExample,
   }),
 };
