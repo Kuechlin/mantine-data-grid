@@ -1,5 +1,4 @@
 import { ComponentType } from 'react';
-import { BASE_URL } from '../../constants';
 import AsyncExample from './AsyncExample';
 import CustomFilterExample from './CustomFilterExample';
 import DefaultExample from './DefaultExample';
@@ -20,52 +19,52 @@ const ex = (o: Example) => o;
 export const examples = {
   default: ex({
     label: 'Default',
-    path: BASE_URL + '/example',
+    path: '/example',
     element: DefaultExample,
   }),
   customFilter: ex({
     label: 'Custom Filter',
-    path: BASE_URL + '/example/custom-filter',
+    path: '/example/custom-filter',
     element: CustomFilterExample,
   }),
   async: ex({
     label: 'Async data',
-    path: BASE_URL + '/example/async',
+    path: '/example/async',
     element: AsyncExample,
   }),
   initialState: ex({
     label: 'Initial State',
-    path: BASE_URL + '/example/initial-state',
+    path: '/example/initial-state',
     element: InitialStateExample,
   }),
   onRowClick: ex({
     label: 'On row / On cell',
-    path: BASE_URL + '/example/on-row-click',
+    path: '/example/on-row-click',
     element: OnRowClickExample,
   }),
   filters: ex({
     label: 'Column Filters',
-    path: BASE_URL + '/example/filters',
+    path: '/example/filters',
     element: CustomFilterExample,
   }),
   empty: ex({
     label: 'Empty Grid',
-    path: BASE_URL + '/example/empty',
+    path: '/example/empty',
     element: EmptyExample,
   }),
   state: ex({
     label: 'Table State',
-    path: BASE_URL + '/example/state',
+    path: '/example/state',
     element: StateExample,
   }),
   styles: ex({
     label: 'Custom Styles',
-    path: BASE_URL + '/example/styles',
+    path: '/example/styles',
     element: StylesExample,
   }),
   locale: ex({
     label: 'Locale i18n',
-    path: BASE_URL + '/example/locale',
+    path: '/example/locale',
     element: LocaleExample,
   }),
 };
