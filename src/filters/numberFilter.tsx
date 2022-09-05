@@ -4,7 +4,7 @@ import { DataGridFilterFn, DataGridFilterProps } from '../types';
 
 type FilterState = {
   op: NumberFilterOperator;
-  value?: number;
+  value?: number[];
 };
 
 export enum NumberFilterOperator {
@@ -14,7 +14,15 @@ export enum NumberFilterOperator {
   GreaterThanOrEquals = 'gte',
   LowerThan = 'lt',
   LowerThanOrEquals = 'lte',
+  Between = 'bet',
+  BetweenOrEquals = 'beteq',
 }
+
+const betweenFilters = [NumberFilterOperator.Between, NumberFilterOperator.BetweenOrEquals];
+
+const isBetweenFilter = (op: NumberFilterOperator) => {
+  return betweenFilters.includes(op);
+};
 
 export type NumberFilterOptions = {
   title?: string;
@@ -31,20 +39,25 @@ export const createNumberFilter = ({
   const filterFn: DataGridFilterFn<any, FilterState> = (row, columnId, filter) => {
     const rowValue = Number(row.getValue(columnId));
     const op = filter.op || NumberFilterOperator.Equals;
-    const filterValue = Number(filter.value);
+    const firstFilterValue = Number(filter.value[0]);
+    const secondFilterValue = Number(filter.value[1]);
     switch (op) {
       case NumberFilterOperator.Equals:
-        return rowValue === filterValue;
+        return rowValue === firstFilterValue;
       case NumberFilterOperator.NotEquals:
-        return rowValue !== filterValue;
+        return rowValue !== firstFilterValue;
       case NumberFilterOperator.GreaterThan:
-        return rowValue > filterValue;
+        return rowValue > firstFilterValue;
       case NumberFilterOperator.GreaterThanOrEquals:
-        return rowValue >= filterValue;
+        return rowValue >= firstFilterValue;
       case NumberFilterOperator.LowerThan:
-        return rowValue < filterValue;
+        return rowValue < firstFilterValue;
       case NumberFilterOperator.LowerThanOrEquals:
-        return rowValue <= filterValue;
+        return rowValue <= firstFilterValue;
+      case NumberFilterOperator.Between:
+        return rowValue > firstFilterValue && rowValue < secondFilterValue;
+      case NumberFilterOperator.BetweenOrEquals:
+        return rowValue >= firstFilterValue && rowValue <= secondFilterValue;
       default:
         return true;
     }
@@ -52,9 +65,10 @@ export const createNumberFilter = ({
   filterFn.autoRemove = (val) => !val;
   filterFn.init = () => ({
     op: fixedOperator || NumberFilterOperator.GreaterThan,
-    value: 0,
+    value: [0, 0],
   });
   filterFn.element = function NumberFilter({ filter, onFilterChange }: DataGridFilterProps<FilterState>) {
+    if (!filter.value) filter.value = [0, 0];
     return (
       <>
         {title && <Text>{title}</Text>}
@@ -71,11 +85,21 @@ export const createNumberFilter = ({
         )}
 
         <NumberInput
-          value={filter.value}
-          onChange={(value) => onFilterChange({ ...filter, value })}
+          value={filter.value[0]}
+          onChange={(value) => {
+            onFilterChange({ ...filter, value: [value ?? 0, filter.value?.at(1) ?? 0] });
+          }}
           placeholder={placeholder}
           rightSection={<Filter />}
         />
+        {isBetweenFilter(filter.op) && (
+          <NumberInput
+            value={filter.value[1]}
+            onChange={(value) => onFilterChange({ ...filter, value: [filter.value?.at(0) ?? 0, value ?? 0] })}
+            placeholder={placeholder}
+            rightSection={<Filter />}
+          />
+        )}
       </>
     );
   };
