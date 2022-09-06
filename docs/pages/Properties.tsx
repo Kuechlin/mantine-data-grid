@@ -174,6 +174,11 @@ export default function Properties() {
                 type: 'OnChangeCallback<DataGridPaginationState>',
                 description: 'Callback when page index or page size changed',
               },
+              {
+                name: 'paginationMode',
+                type: '"default" | "compact"',
+                description: '"compact" mode will only show pagination step without page size and current page info',
+              },
             ],
           },
           {

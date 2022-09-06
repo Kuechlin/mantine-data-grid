@@ -51,6 +51,7 @@ export function DataGrid<TData extends RowData>({
   withColumnResizing,
   noFlexLayout,
   pageSizes,
+  paginationMode = 'default',
   debug = false,
   // callbacks
   onPageChange,
@@ -75,6 +76,7 @@ export function DataGrid<TData extends RowData>({
       width,
       noEllipsis,
       withFixedHeader,
+      paginationMode,
     },
     {
       classNames,
@@ -309,6 +311,7 @@ export function DataGrid<TData extends RowData>({
           color={color}
           classes={[classes.pagination, classes.pagination_info, classes.pagination_size, classes.pagination_page]}
           locale={locale}
+          mode={paginationMode}
         />
       )}
     </Stack>
