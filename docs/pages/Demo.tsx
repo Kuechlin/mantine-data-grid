@@ -106,6 +106,7 @@ export default function Demo() {
     loading: false,
     showEmpty: false,
     iconColor: theme.primaryColor,
+    paginationCompactMode: false,
   });
 
   const onPageChange = (e: DataGridPaginationState) => {
@@ -155,6 +156,7 @@ export default function Demo() {
           onSort={onSort}
           onFilter={onFilter}
           onSearch={onSearch}
+          paginationMode={state.paginationCompactMode ? 'compact' : 'default'}
           columns={[
             {
               accessorKey: 'id',
@@ -348,6 +350,17 @@ export default function Demo() {
               })
             }
           />
+          {state.withPagination ? (
+            <Switch
+              label="Compact pagination"
+              checked={state.paginationCompactMode}
+              onChange={(e) =>
+                update({
+                  paginationCompactMode: e.target.checked,
+                })
+              }
+            />
+          ) : null}
           <div>
             <Text weight="bold">Font Size</Text>
             <Slider

@@ -1,6 +1,6 @@
 import { Group, Select, Text, Pagination as MantinePagination, Box, MantineNumberSize } from '@mantine/core';
 import { Table } from '@tanstack/react-table';
-import { DataGridLocale } from './types';
+import { DataGridLocale, PaginationMode } from './types';
 
 export const DEFAULT_PAGE_SIZES = ['10', '25', '50', '100'];
 export const DEFAULT_INITIAL_PAGE = 0;
@@ -14,6 +14,7 @@ type PaginationProps<TData> = {
   color: string;
   total?: number;
   locale?: DataGridLocale;
+  mode?: PaginationMode;
 };
 
 export function Pagination<TData>({
@@ -24,6 +25,7 @@ export function Pagination<TData>({
   color = '', // Empty color will follow the primary button color
   total,
   locale,
+  mode = 'default',
 }: PaginationProps<TData>) {
   const pageIndex = table.getState().pagination.pageIndex;
   const pageSize = table.getState().pagination.pageSize;
@@ -43,27 +45,33 @@ export function Pagination<TData>({
 
   return (
     <Box className={classes[0]}>
-      <Text size={fontSize} className={classes[1]}>
-        {locale?.pagination ? (
-          locale.pagination(firstRowNum, lastRowNum, maxRows)
-        ) : (
-          <>
-            Showing <b>{firstRowNum}</b> - <b>{lastRowNum}</b> of <b>{maxRows}</b> result{maxRows === 1 ? '' : 's'}
-          </>
-        )}
-      </Text>
+      {mode === 'default' ? (
+        <Text size={fontSize} className={classes[1]}>
+          {locale?.pagination ? (
+            locale.pagination(firstRowNum, lastRowNum, maxRows)
+          ) : (
+            <>
+              Showing <b>{firstRowNum}</b> - <b>{lastRowNum}</b> of <b>{maxRows}</b> result{maxRows === 1 ? '' : 's'}
+            </>
+          )}
+        </Text>
+      ) : null}
 
       <Group>
         <Box className={classes[2]}>
-          <Text size={fontSize}>{locale?.pageSize || 'Rows per page:'}</Text>
-          <Select
-            data={pageSizes}
-            value={`${table.getState().pagination.pageSize}`}
-            onChange={handlePageSizeChange}
-            sx={() => ({
-              width: '72px',
-            })}
-          />
+          {mode === 'default' ? (
+            <>
+              <Text size={fontSize}>{locale?.pageSize || 'Rows per page:'}</Text>
+              <Select
+                data={pageSizes}
+                value={`${table.getState().pagination.pageSize}`}
+                onChange={handlePageSizeChange}
+                sx={() => ({
+                  width: '72px',
+                })}
+              />
+            </>
+          ) : null}
         </Box>
         <MantinePagination
           size={fontSize}

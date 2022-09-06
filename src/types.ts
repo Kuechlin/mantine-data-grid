@@ -28,6 +28,7 @@ export type DataGridLocale = {
   globalSearch?: string;
 };
 
+export type PaginationMode = 'default' | 'compact';
 export interface DataGridProps<TData extends RowData>
   extends DefaultProps<DataGridStylesNames, object>,
     ComponentPropsWithoutRef<'div'> {
@@ -81,6 +82,10 @@ export interface DataGridProps<TData extends RowData>
    * Default is `["10", "25", "50", "100"]`
    * */
   pageSizes?: string[];
+  /**
+   * Mode of pagination: default or compact
+   * */
+  paginationMode?: PaginationMode;
 
   /**
    * Callback when page index or page size changed

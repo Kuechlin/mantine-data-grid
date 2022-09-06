@@ -20,6 +20,7 @@ const useStyles = createStyles((t) => ({
   },
   subtile: {
     borderBottom: '1px solid ' + t.colors.dark[2] + ' !important',
+    paddingTop: `${t.spacing.lg}px !important`,
   },
   cell: { whiteSpace: 'pre-wrap' },
 }));
@@ -47,7 +48,7 @@ export const PropertyTable = ({ groups, items }: PropertyTableProps) => {
     <Fragment key={group.group}>
       <tr>
         <td colSpan={3} className={classes.subtile}>
-          <Text weight="bold" size="xs" color="dimmed">
+          <Text weight="bold" size="md" color="dimmed">
             {group.group}
           </Text>
         </td>
