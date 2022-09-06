@@ -75,7 +75,7 @@ export const createStringFilter = ({
           value={filter.value}
           onChange={(e) => onFilterChange({ ...filter, value: e.target.value })}
           placeholder={placeholder}
-          rightSection={<Filter />}
+          rightSection={<Filter size={20} />}
         />
       </>
     );

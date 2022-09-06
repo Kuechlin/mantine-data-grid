@@ -1,10 +1,10 @@
-import { NumberInput, Select, Text } from '@mantine/core';
+import { Group, NumberInput, Select, Text } from '@mantine/core';
 import { Filter } from 'tabler-icons-react';
 import { DataGridFilterFn, DataGridFilterProps } from '../types';
 
 type FilterState = {
   op: NumberFilterOperator;
-  value?: number[];
+  value?: number | number[];
 };
 
 export enum NumberFilterOperator {
@@ -17,7 +17,7 @@ export enum NumberFilterOperator {
   Between = 'bet',
   BetweenOrEquals = 'beteq',
   NotBetween = 'nbet',
-  NotBetweenOrEquals = 'neqbet',
+  NotBetweenOrEquals = 'nbeteq',
 }
 
 const betweenFilters = [
@@ -46,29 +46,29 @@ export const createNumberFilter = ({
   const filterFn: DataGridFilterFn<any, FilterState> = (row, columnId, filter) => {
     const rowValue = Number(row.getValue(columnId));
     const op = filter.op || NumberFilterOperator.Equals;
-    const firstFilterValue = Number(filter.value[0]);
-    const secondFilterValue = Number(filter.value[1]);
+    const leftFilterValue = Array.isArray(filter.value) ? Number(filter.value[0]) : Number(filter.value);
+    const rightFilterValue = Array.isArray(filter.value) ? Number(filter.value[1]) : 0;
     switch (op) {
       case NumberFilterOperator.Equals:
-        return rowValue === firstFilterValue;
+        return rowValue === leftFilterValue;
       case NumberFilterOperator.NotEquals:
-        return rowValue !== firstFilterValue;
+        return rowValue !== leftFilterValue;
       case NumberFilterOperator.GreaterThan:
-        return rowValue > firstFilterValue;
+        return rowValue > leftFilterValue;
       case NumberFilterOperator.GreaterThanOrEquals:
-        return rowValue >= firstFilterValue;
+        return rowValue >= leftFilterValue;
       case NumberFilterOperator.LowerThan:
-        return rowValue < firstFilterValue;
+        return rowValue < leftFilterValue;
       case NumberFilterOperator.LowerThanOrEquals:
-        return rowValue <= firstFilterValue;
+        return rowValue <= leftFilterValue;
       case NumberFilterOperator.Between:
-        return rowValue > firstFilterValue && rowValue < secondFilterValue;
+        return rowValue > leftFilterValue && rowValue < rightFilterValue;
       case NumberFilterOperator.BetweenOrEquals:
-        return rowValue >= firstFilterValue && rowValue <= secondFilterValue;
+        return rowValue >= leftFilterValue && rowValue <= rightFilterValue;
       case NumberFilterOperator.NotBetween:
-        return rowValue > secondFilterValue || rowValue < firstFilterValue;
+        return !(rowValue > leftFilterValue && rowValue < rightFilterValue);
       case NumberFilterOperator.NotBetweenOrEquals:
-        return rowValue >= secondFilterValue || rowValue <= firstFilterValue;
+        return !(rowValue >= leftFilterValue && rowValue <= rightFilterValue);
       default:
         return true;
     }
@@ -79,7 +79,19 @@ export const createNumberFilter = ({
     value: [0, 0],
   });
   filterFn.element = function NumberFilter({ filter, onFilterChange }: DataGridFilterProps<FilterState>) {
-    if (!filter.value) filter.value = [0, 0];
+    const handleFilterChange = (op: NumberFilterOperator) => {
+      if (isBetweenFilter(op)) {
+        onFilterChange({
+          op,
+          value: Array.isArray(filter.value) ? filter.value : 0,
+        });
+      } else {
+        onFilterChange({
+          op,
+          value: Array.isArray(filter.value) ? 0 : filter.value,
+        });
+      }
+    };
     return (
       <>
         {title && <Text>{title}</Text>}
@@ -91,26 +103,37 @@ export const createNumberFilter = ({
               label: (labels && labels[value]) || label,
             }))}
             value={filter.op || NumberFilterOperator.Equals}
-            onChange={(op) => onFilterChange({ ...filter, op: op as NumberFilterOperator })}
+            onChange={handleFilterChange}
           />
         )}
 
-        <NumberInput
-          value={filter.value[0]}
-          onChange={(value) => {
-            onFilterChange({ ...filter, value: [value ?? 0, filter.value?.at(1) ?? 0] });
-          }}
-          placeholder={placeholder}
-          rightSection={<Filter />}
-        />
-        {isBetweenFilter(filter.op) && (
+        <Group noWrap grow>
           <NumberInput
-            value={filter.value[1]}
-            onChange={(value) => onFilterChange({ ...filter, value: [filter.value?.at(0) ?? 0, value ?? 0] })}
+            value={Array.isArray(filter.value) ? filter.value[0] : filter.value}
+            onChange={(value) => {
+              onFilterChange({
+                ...filter,
+                value: Array.isArray(filter.value) ? [value ?? 0, filter.value.at(1) ?? 0] : value ?? 0,
+              });
+            }}
             placeholder={placeholder}
-            rightSection={<Filter />}
+            rightSection={isBetweenFilter(filter.op) ? null : <Filter size={20} />}
+            hideControls
           />
-        )}
+          {isBetweenFilter(filter.op) && (
+            <NumberInput
+              value={Array.isArray(filter.value) ? filter.value[1] : 0}
+              onChange={(value) =>
+                onFilterChange({
+                  ...filter,
+                  value: Array.isArray(filter.value) ? [filter.value.at(0) ?? 0, value ?? 0] : 0,
+                })
+              }
+              placeholder={placeholder}
+              hideControls
+            />
+          )}
+        </Group>
       </>
     );
   };
