@@ -104,6 +104,7 @@ export const createNumberFilter = ({
             }))}
             value={filter.op || NumberFilterOperator.Equals}
             onChange={handleFilterChange}
+            withinPortal
           />
         )}
 

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useImperativeHandle, useState } from 'react';
+import { RefCallback, useCallback, useEffect, useImperativeHandle, useState } from 'react';
 import { LoadingOverlay, ScrollArea, Stack, Table as MantineTable, Text } from '@mantine/core';
 import {
   ColumnFiltersState,
@@ -13,6 +13,8 @@ import {
   SortingState,
   useReactTable,
   RowData,
+  RowSelectionState,
+  Table,
 } from '@tanstack/react-table';
 import { BoxOff } from 'tabler-icons-react';
 import { useResizeObserver } from '@mantine/hooks';
@@ -24,6 +26,12 @@ import { ColumnSorter } from './ColumnSorter';
 import { ColumnFilter } from './ColumnFilter';
 import { DEFAULT_INITIAL_SIZE, Pagination } from './Pagination';
 import { DataGridProps } from './types';
+import { getRowSelectionColumn } from './RowSelection';
+
+export function useDataGrid<TData extends RowData>(): [Table<TData> | null, RefCallback<Table<TData>>] {
+  const [state, setState] = useState<Table<TData> | null>(null);
+  return [state, setState];
+}
 
 export function DataGrid<TData extends RowData>({
   // data
@@ -49,6 +57,7 @@ export function DataGrid<TData extends RowData>({
   withSorting,
   withPagination,
   withColumnResizing,
+  withRowSelection,
   noFlexLayout,
   pageSizes,
   paginationMode = 'default',
@@ -58,6 +67,7 @@ export function DataGrid<TData extends RowData>({
   onSearch,
   onFilter,
   onSort,
+  onRowSelectionChange,
   // table ref
   tableRef,
   // common props
@@ -91,12 +101,16 @@ export function DataGrid<TData extends RowData>({
 
   const table = useReactTable<TData>({
     data,
-    columns,
+    columns: withRowSelection ? [getRowSelectionColumn(), ...columns] : columns,
+    initialState,
+    state,
+
     enableGlobalFilter: !!withGlobalFilter,
     globalFilterFn,
     enableColumnFilters: !!withColumnFilters,
     enableSorting: !!withSorting,
     enableColumnResizing: !!withColumnResizing,
+    enableRowSelection: !!withRowSelection,
     columnResizeMode: 'onChange',
     manualPagination: !!total, // when external data, handle pagination manually
 
@@ -108,9 +122,6 @@ export function DataGrid<TData extends RowData>({
     debugTable: debug,
     debugHeaders: debug,
     debugColumns: debug,
-
-    initialState,
-    state,
   });
   useImperativeHandle(tableRef, () => table);
 
@@ -179,6 +190,20 @@ export function DataGrid<TData extends RowData>({
     [onPageChange]
   );
 
+  const handleRowSelectionChange: OnChangeFn<RowSelectionState> = useCallback(
+    (arg0) => {
+      table.setState((state) => {
+        const next = functionalUpdate(arg0, state.rowSelection);
+        onRowSelectionChange && onRowSelectionChange(next);
+        return {
+          ...state,
+          rowSelection: next,
+        };
+      });
+    },
+    [onRowSelectionChange]
+  );
+
   const pageCount = withPagination && total ? Math.ceil(total / table.getState().pagination.pageSize) : undefined;
 
   table.setOptions((prev) => ({
@@ -188,6 +213,7 @@ export function DataGrid<TData extends RowData>({
     onColumnFiltersChange: handleColumnFiltersChange,
     onSortingChange: handleSortingChange,
     onPaginationChange: handlePaginationChange,
+    onRowSelectionChange: handleRowSelectionChange,
   }));
 
   useEffect(() => {

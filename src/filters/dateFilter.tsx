@@ -122,6 +122,7 @@ export const createDateFilter = ({ title, fixedOperator, labels, placeholder = '
             }))}
             value={filter.op || DateFilterOperator.Equals}
             onChange={(op: DateFilterOperator) => onFilterChange({ ...filter, op })}
+            withinPortal
           />
         )}
 

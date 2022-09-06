@@ -226,6 +226,17 @@ export default function Properties() {
               },
             ],
           },
+          {
+            group: 'Row Selection',
+            children: [
+              { name: 'withRowSelection', type: 'boolean', description: 'Enables row selection' },
+              {
+                name: 'onRowSelectionChange',
+                type: 'OnChangeCallback<RowSelectionState>',
+                description: 'Callback when row selection changed',
+              },
+            ],
+          },
         ]}
       />
     </Stack>
