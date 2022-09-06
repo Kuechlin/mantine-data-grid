@@ -6,6 +6,7 @@ import EmptyExample from './EmptyExample';
 import InitialStateExample from './InitialStateExample';
 import LocaleExample from './LocaleExample';
 import OnRowClickExample from './OnRowExample';
+import RowSelectionExample from './RowSelectionExample';
 import StateExample from './StateExample';
 import StylesExample from './StylesExample';
 
@@ -66,5 +67,10 @@ export const examples = {
     label: 'Locale i18n',
     path: '/example/locale',
     element: LocaleExample,
+  }),
+  rowSelection: ex({
+    label: 'Row selection',
+    path: '/example/rowselection',
+    element: RowSelectionExample,
   }),
 };

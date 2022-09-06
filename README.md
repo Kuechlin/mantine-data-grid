@@ -86,6 +86,7 @@ function Demo() {
   - [x] Fixed Header
   - [ ] Column pinning
 - [ ] Column Ordering
+- [x] Row Selection
 - [x] Pagination
 - [x] Styles Api
 - [x] Docs

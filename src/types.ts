@@ -9,6 +9,7 @@ import {
   PaginationState,
   Row,
   RowData,
+  RowSelectionState,
   SortingState,
   Table,
   TableState,
@@ -112,6 +113,13 @@ export interface DataGridProps<TData extends RowData>
    * Callback when sorting changed
    */
   onSort?: OnChangeCallback<DataGridSortingState>;
+
+  /** Enables row selection */
+  withRowSelection?: boolean;
+  /**
+   * Callback when selected rows change
+   */
+  onRowSelectionChange?: OnChangeCallback<RowSelectionState>;
 
   /**
    * The initial table state
