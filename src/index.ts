@@ -1,4 +1,4 @@
-export { DataGrid } from './DataGrid';
+export { DataGrid, useDataGrid } from './DataGrid';
 export * from './filters';
 export type {
   DataGridFilterFn,
@@ -9,3 +9,6 @@ export type {
   OnChangeCallback,
   DataGridProps,
 } from './types';
+
+export { ExternalColumnFilter } from './ColumnFilter';
+export type { ExternalColumnFilterProps } from './ColumnFilter';

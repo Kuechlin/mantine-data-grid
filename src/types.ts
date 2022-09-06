@@ -1,5 +1,5 @@
 import { ComponentPropsWithoutRef, ComponentType, HTMLAttributes, ReactElement, ReactNode, Ref } from 'react';
-import { DefaultProps, MantineNumberSize, Selectors } from '@mantine/core';
+import { DefaultProps, MantineColor, MantineNumberSize, Selectors } from '@mantine/core';
 import {
   Cell,
   ColumnDef,
@@ -28,8 +28,8 @@ export type DataGridLocale = {
   pageSize?: ReactNode;
   globalSearch?: string;
 };
-
 export type PaginationMode = 'default' | 'compact';
+
 export interface DataGridProps<TData extends RowData>
   extends DefaultProps<DataGridStylesNames, object>,
     ComponentPropsWithoutRef<'div'> {
@@ -144,7 +144,7 @@ export interface DataGridProps<TData extends RowData>
   /**
    * Change Icon Color on Sort & Filter
    */
-  iconColor?: string;
+  iconColor?: MantineColor;
 
   /**
    * Empty table element

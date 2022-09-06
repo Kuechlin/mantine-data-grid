@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useImperativeHandle, useState } from 'react';
+import { RefCallback, useCallback, useEffect, useImperativeHandle, useState } from 'react';
 import { LoadingOverlay, ScrollArea, Stack, Table as MantineTable, Text } from '@mantine/core';
 import {
   ColumnFiltersState,
@@ -14,6 +14,7 @@ import {
   useReactTable,
   RowData,
   RowSelectionState,
+  Table,
 } from '@tanstack/react-table';
 import { BoxOff } from 'tabler-icons-react';
 import { useResizeObserver } from '@mantine/hooks';
@@ -26,6 +27,11 @@ import { ColumnFilter } from './ColumnFilter';
 import { DEFAULT_INITIAL_SIZE, Pagination } from './Pagination';
 import { DataGridProps } from './types';
 import { getRowSelectionColumn } from './RowSelection';
+
+export function useDataGrid<TData extends RowData>(): [Table<TData> | null, RefCallback<Table<TData>>] {
+  const [state, setState] = useState<Table<TData> | null>(null);
+  return [state, setState];
+}
 
 export function DataGrid<TData extends RowData>({
   // data
@@ -96,6 +102,9 @@ export function DataGrid<TData extends RowData>({
   const table = useReactTable<TData>({
     data,
     columns: withRowSelection ? [getRowSelectionColumn(), ...columns] : columns,
+    initialState,
+    state,
+
     enableGlobalFilter: !!withGlobalFilter,
     globalFilterFn,
     enableColumnFilters: !!withColumnFilters,
@@ -113,9 +122,6 @@ export function DataGrid<TData extends RowData>({
     debugTable: debug,
     debugHeaders: debug,
     debugColumns: debug,
-
-    initialState,
-    state,
   });
   useImperativeHandle(tableRef, () => table);
 

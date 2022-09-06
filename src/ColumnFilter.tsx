@@ -1,6 +1,6 @@
 import { ActionIcon, Button, Group, Menu, Stack } from '@mantine/core';
 import { Column } from '@tanstack/react-table';
-import { useState } from 'react';
+import { createElement, useState } from 'react';
 import { Check, Filter, X } from 'tabler-icons-react';
 import { isDataGridFilter } from './types';
 
@@ -75,4 +75,24 @@ export const ColumnFilter = ({ column, className, color }: ColumnFilterProps) =>
       </Menu.Dropdown>
     </Menu>
   );
+};
+
+export interface ExternalColumnFilterProps {
+  column: Column<any, any>;
+}
+
+export const ExternalColumnFilter = ({ column }: ExternalColumnFilterProps) => {
+  const filterFn = column.columnDef.filterFn;
+  const [value, setValue] = useState(
+    column.getFilterValue() || (isDataGridFilter(filterFn) ? filterFn.init() : { value: null })
+  );
+
+  if (!isDataGridFilter(filterFn)) return null;
+
+  const handleChange = (value: any) => {
+    column.setFilterValue(value);
+    setValue(value);
+  };
+
+  return createElement(filterFn.element, { filter: value, onFilterChange: handleChange });
 };

@@ -6,9 +6,11 @@ import EmptyExample from './EmptyExample';
 import InitialStateExample from './InitialStateExample';
 import LocaleExample from './LocaleExample';
 import OnRowClickExample from './OnRowExample';
+import OverrideExample from './ExternalFilterExample';
 import RowSelectionExample from './RowSelectionExample';
 import StateExample from './StateExample';
 import StylesExample from './StylesExample';
+import ExternalFilterExample from './ExternalFilterExample';
 
 export type Example = {
   label: string;
@@ -72,5 +74,10 @@ export const examples = {
     label: 'Row selection',
     path: '/example/rowselection',
     element: RowSelectionExample,
+  }),
+  override: ex({
+    label: 'External filter',
+    path: '/example/externalfilter',
+    element: ExternalFilterExample,
   }),
 };

@@ -68,6 +68,7 @@ export const createStringFilter = ({
             }))}
             value={filter.op || StringFilterOperator.Includes}
             onChange={(op) => onFilterChange({ ...filter, op: op as StringFilterOperator })}
+            withinPortal
           />
         )}
 
