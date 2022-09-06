@@ -37,7 +37,7 @@ const filters = [
         type: 'Partial<Record<StringFilterOperator, string>>',
         description: 'Lables for filter operators',
       },
-      { name: 'placeholder', type: 'string', description: 'Placeholder in input element, default is "Filter value"' },
+      { name: 'placeholder', type: 'string', description: 'Placeholder in input element, defaults to "Filter value"' },
     ],
     example: `
 import { createStringFilter } from 'mantine-data-grid';
@@ -64,16 +64,27 @@ const stringFilter = createStringFilter({
       {
         name: 'labels',
         type: 'Partial<Record<NumberFilterOperator, string>>',
-        description: 'Lables for filter operators',
+        description: 'Labels for filter operators',
       },
-      { name: 'placeholder', type: 'string', description: 'Placeholder in input element, default is "Filter value"' },
+      { name: 'placeholder', type: 'string', description: 'Placeholder in input element, defaults to "Filter value"' },
     ],
     example: `
 import { createNumberFilter } from 'mantine-data-grid';
 
-const numberFilter = createStringFilter({
+const numberFilter = createNumberFilter({
   title: 'Numbers',
   fixedOperator: NumberFilterOperator.Equals,
+  labels: {
+    bet: "Zwischen",
+    beteq: "Von bis",
+    nbet: "Nicht zwischen",
+    nbeteq: "Nicht von bis",
+    eq: "Gleich",
+    gt: "Größer als",
+    gte: "Größer gleich",
+    lt: "Kleiner als",
+    lte: "Kleiner gleich",
+    neq: "Nicht gleich"}
   placeholder: 'Enter number',
 });
 `,
@@ -88,7 +99,7 @@ const numberFilter = createStringFilter({
         type: 'Partial<Record<DateFilterOperator, string>>',
         description: 'Lables for filter operators',
       },
-      { name: 'placeholder', type: 'string', description: 'Placeholder in input element, default is "Filter value"' },
+      { name: 'placeholder', type: 'string', description: 'Placeholder in input element, defaults to "Filter value"' },
     ],
     example: `
 import { createDateFilter } from 'mantine-data-grid';
@@ -106,7 +117,7 @@ const numberFilter = createDateFilter({
     title: 'Boolean filter',
     options: [
       { name: 'title', type: 'string', description: 'Title in filter dropdown' },
-      { name: 'variant', type: "'segmented' | 'radio'", description: "Input variant, default is 'segmented'" },
+      { name: 'variant', type: "'segmented' | 'radio'", description: "Input variant, defaults to 'segmented'" },
       { name: 'trueLabel', type: 'string', description: 'true label' },
       { name: 'falseLabel', type: 'string', description: 'false label' },
     ],
