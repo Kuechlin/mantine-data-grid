@@ -16,9 +16,16 @@ export enum NumberFilterOperator {
   LowerThanOrEquals = 'lte',
   Between = 'bet',
   BetweenOrEquals = 'beteq',
+  NotBetween = 'nbet',
+  NotBetweenOrEquals = 'neqbet',
 }
 
-const betweenFilters = [NumberFilterOperator.Between, NumberFilterOperator.BetweenOrEquals];
+const betweenFilters = [
+  NumberFilterOperator.Between,
+  NumberFilterOperator.BetweenOrEquals,
+  NumberFilterOperator.NotBetweenOrEquals,
+  NumberFilterOperator.NotBetween,
+];
 
 const isBetweenFilter = (op: NumberFilterOperator) => {
   return betweenFilters.includes(op);
@@ -58,6 +65,10 @@ export const createNumberFilter = ({
         return rowValue > firstFilterValue && rowValue < secondFilterValue;
       case NumberFilterOperator.BetweenOrEquals:
         return rowValue >= firstFilterValue && rowValue <= secondFilterValue;
+      case NumberFilterOperator.NotBetween:
+        return rowValue > secondFilterValue || rowValue < firstFilterValue;
+      case NumberFilterOperator.NotBetweenOrEquals:
+        return rowValue >= secondFilterValue || rowValue <= firstFilterValue;
       default:
         return true;
     }
