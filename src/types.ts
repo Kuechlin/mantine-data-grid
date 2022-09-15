@@ -89,6 +89,11 @@ export interface DataGridProps<TData extends RowData>
   paginationMode?: PaginationMode;
 
   /**
+   * If set to true, pagination will be reset to the first page when page-altering state changes eg. data is updated, filters change, grouping changes, etc.
+   */
+  autoResetPageIndex?: boolean;
+
+  /**
    * Callback when page index or page size changed
    * */
   onPageChange?: OnChangeCallback<DataGridPaginationState>;
