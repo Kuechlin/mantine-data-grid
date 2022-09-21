@@ -14,7 +14,7 @@ export default function CodeDemo({ code, children }: { code: string; children: R
         {children}
       </Tabs.Panel>
       <Tabs.Panel value="code" pt="sm">
-        <Prism withLineNumbers language="tsx" children={code} />
+        <Prism withLineNumbers language="tsx" children={code.replace('../../../src', 'mantine-data-grid')} />
       </Tabs.Panel>
     </Tabs>
   );
