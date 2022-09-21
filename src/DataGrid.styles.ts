@@ -18,8 +18,8 @@ const ellipsis: CSSObject = {
 export default createStyles(
   (theme, { height, width, noEllipsis, withFixedHeader, paginationMode = 'default' }: DataGridStylesParams) => ({
     wrapper: {
-      height: height ? height : undefined,
-      width: width ? width : undefined,
+      height: height ? height + 'px' : undefined,
+      width: width ? width + 'px' : undefined,
       overflow: 'hidden',
     },
     scrollArea: {
