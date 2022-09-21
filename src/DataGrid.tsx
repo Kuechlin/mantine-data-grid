@@ -17,7 +17,6 @@ import {
   Table,
 } from '@tanstack/react-table';
 import { BoxOff } from 'tabler-icons-react';
-import { useResizeObserver } from '@mantine/hooks';
 
 import useStyles from './DataGrid.styles';
 
@@ -95,8 +94,7 @@ export function DataGrid<TData extends RowData>({
       name: 'DataGrid',
     }
   );
-  const [viewportRef, viewportRect] = useResizeObserver();
-  const [tableWidth, setTableWidth] = useState(0);
+  const [tableWidth, setTableWidth] = useState<number | string>(width ?? '100%');
 
   const color = iconColor || theme.primaryColor;
 
@@ -129,14 +127,13 @@ export function DataGrid<TData extends RowData>({
 
   useEffect(() => {
     if (noFlexLayout) {
-      setTableWidth(table.getTotalSize());
+      setTableWidth(table.getTotalSize() + 'px');
+    } else if (width) {
+      setTableWidth(width + 'px');
     } else {
-      const tableWidth = table.getTotalSize();
-      const viewportWidth = viewportRect.width || -1;
-      const nextWidth = tableWidth > viewportWidth ? tableWidth : viewportWidth;
-      setTableWidth(nextWidth);
+      setTableWidth('100%');
     }
-  }, [viewportRect.width, noFlexLayout, table.getTotalSize()]);
+  }, [width, noFlexLayout, table.getTotalSize()]);
 
   const handleGlobalFilterChange: OnChangeFn<string> = useCallback(
     (arg0) =>
@@ -229,7 +226,7 @@ export function DataGrid<TData extends RowData>({
   return (
     <Stack {...others} spacing={verticalSpacing} className={classes.wrapper}>
       {withGlobalFilter && <GlobalFilter table={table} className={classes.globalFilter} locale={locale} />}
-      <ScrollArea className={classes.scrollArea} viewportRef={viewportRef}>
+      <ScrollArea className={classes.scrollArea}>
         <LoadingOverlay visible={loading || false} overlayOpacity={0.8} />
         <MantineTable
           striped={striped}
