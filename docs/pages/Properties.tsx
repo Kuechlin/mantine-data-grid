@@ -179,6 +179,12 @@ export default function Properties() {
                 type: '"default" | "compact"',
                 description: '"compact" mode will only show pagination step without page size and current page info',
               },
+              {
+                name: 'autoResetPageIndex',
+                type: 'boolean',
+                description:
+                  'If set to false, pagination will NOT be reset to the first page when page-altering state changes eg. data is updated, filters change, grouping changes, etc.',
+              },
             ],
           },
           {

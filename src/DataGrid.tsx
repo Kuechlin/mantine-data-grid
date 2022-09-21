@@ -114,7 +114,7 @@ export function DataGrid<TData extends RowData>({
     enableRowSelection: !!withRowSelection,
     columnResizeMode: 'onChange',
     manualPagination: !!total, // when external data, handle pagination manually
-    autoResetPageIndex: !!autoResetPageIndex,
+    autoResetPageIndex: autoResetPageIndex,
 
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
