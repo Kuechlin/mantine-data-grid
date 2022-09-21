@@ -4,6 +4,7 @@ import { Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Header from './components/Header';
 import { examples, pages } from './pages';
+import CodeDemo from './components/CodeDemo';
 
 export default function App() {
   const [colorScheme, setColorScheme] = useState<ColorScheme>('dark');
@@ -18,8 +19,16 @@ export default function App() {
             {pages.map(({ path, element: Element }, i) => (
               <Route key={i} path={path} element={<Element />} />
             ))}
-            {Object.values(examples).map(({ path, element: Example }, i) => (
-              <Route key={i} path={path} element={<Example />} />
+            {Object.values(examples).map(({ path, element: Example, code }, i) => (
+              <Route
+                key={i}
+                path={path}
+                element={
+                  <CodeDemo code={code}>
+                    <Example />
+                  </CodeDemo>
+                }
+              />
             ))}
           </Routes>
         </AppShell>
