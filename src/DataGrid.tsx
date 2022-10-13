@@ -217,11 +217,11 @@ export function DataGrid<TData extends RowData>({
 
   useEffect(() => {
     if (withPagination) {
-      table.setPageSize(initialState?.pagination?.pageSize || DEFAULT_INITIAL_SIZE);
+      table.setPageSize(initialState?.pagination?.pageSize ?? DEFAULT_INITIAL_SIZE);
     } else {
       table.setPageSize(data.length);
     }
-  }, [withPagination]);
+  }, [table, withPagination, data.length, initialState?.pagination?.pageSize]);
 
   return (
     <Stack {...others} spacing={verticalSpacing} className={classes.wrapper}>

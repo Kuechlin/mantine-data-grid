@@ -27,6 +27,10 @@ import LocaleExample from './LocaleExample';
 // @ts-ignore
 import LocaleExampleCode from './LocaleExample.tsx?raw';
 
+import MinimalExample from './MinimalExample';
+// @ts-ignore
+import MinimalExampleCode from './MinimalExample.tsx?raw';
+
 import OnRowClickExample from './OnRowExample';
 // @ts-ignore
 import OnRowClickExampleCode from './OnRowExample.tsx?raw';
@@ -61,6 +65,12 @@ export const examples = {
     path: '/example',
     element: DefaultExample,
     code: DefaultExampleCode,
+  }),
+  minimal: ex({
+    label: 'Minimal example',
+    path: '/example/minimal',
+    element: MinimalExample,
+    code: MinimalExampleCode,
   }),
   customFilter: ex({
     label: 'Custom Filter',
