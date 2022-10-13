@@ -1,4 +1,13 @@
-import { Button, Avatar, Navbar as MantineNavbar, Stack, Text, NavLink, useMantineColorScheme } from '@mantine/core';
+import {
+  Button,
+  Avatar,
+  Navbar as MantineNavbar,
+  Stack,
+  Text,
+  NavLink,
+  useMantineColorScheme,
+  ScrollArea,
+} from '@mantine/core';
 import { Link, useLocation } from 'react-router-dom';
 import { pages, examples } from '../pages';
 
@@ -30,16 +39,18 @@ export default function Navbar() {
           Examples
         </Text>
       </Stack>
-      {Object.values(examples).map((item) => (
-        <NavLink
-          key={item.path}
-          component={Link}
-          to={item.path}
-          label={item.label}
-          active={location.pathname === item.path}
-          pl="xl"
-        />
-      ))}
+      <ScrollArea>
+        {Object.values(examples).map((item) => (
+          <NavLink
+            key={item.path}
+            component={Link}
+            to={item.path}
+            label={item.label}
+            active={location.pathname === item.path}
+            pl="xl"
+          />
+        ))}
+      </ScrollArea>
     </MantineNavbar>
   );
 }
