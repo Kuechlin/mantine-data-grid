@@ -1,6 +1,6 @@
 {
   "name": "mantine-data-grid",
-  "version": "0.0.19",
+  "version": "0.0.20",
   "homepage": "https://kuechlin.github.io/mantine-data-grid/",
   "repository": {
     "type": "git",
@@ -57,6 +57,7 @@
     "eslint-import-resolver-typescript": "^3.5.1",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-react-hooks": "^4.6.0",
     "husky": "^8.0.1",
     "lint-staged": "^13.0.3",
     "prettier": "^2.7.1",

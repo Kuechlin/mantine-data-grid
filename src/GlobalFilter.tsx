@@ -24,7 +24,7 @@ export function GlobalFilter<TData>({ table, className, locale }: GlobalFilterPr
     }, 200);
 
     return () => clearTimeout(timeout);
-  }, [value]);
+  }, [table, value]);
 
   return (
     <TextInput
