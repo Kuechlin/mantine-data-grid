@@ -1,6 +1,5 @@
-import { Stack, Table, Title, Text, createStyles, Group, SimpleGrid, Card, Divider } from '@mantine/core';
+import { Card, Divider, Stack, Title } from '@mantine/core';
 import { Prism } from '@mantine/prism';
-import { Fragment } from 'react';
 import { PropertyTable } from '../components/PropertyTable';
 
 export default function Filters() {

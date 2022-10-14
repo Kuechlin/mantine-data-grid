@@ -55,7 +55,7 @@ export default function AsyncExample() {
 
   useEffect(() => {
     load({ pageIndex: 0, pageSize: 10 });
-  }, []);
+  });
 
   return (
     <DataGrid<Data>

@@ -1,4 +1,4 @@
-import { Group, Select, Text, Pagination as MantinePagination, Box, MantineNumberSize } from '@mantine/core';
+import { Box, Group, MantineNumberSize, Pagination as MantinePagination, Select, Text } from '@mantine/core';
 import { Table } from '@tanstack/react-table';
 import { DataGridLocale, PaginationMode } from './types';
 
