@@ -9,14 +9,16 @@ import {
   getSortedRowModel,
   OnChangeFn,
   PaginationState,
+  Row,
   RowData,
   RowSelectionState,
   SortingState,
   Table,
   useReactTable,
 } from '@tanstack/react-table';
-import { RefCallback, useCallback, useEffect, useImperativeHandle, useState } from 'react';
+import { RefCallback, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { BoxOff } from 'tabler-icons-react';
+import { useVirtualizer } from '@tanstack/react-virtual';
 
 import useStyles from './DataGrid.styles';
 
@@ -225,10 +227,24 @@ export function DataGrid<TData extends RowData>({
     }
   }, [table, withPagination, data.length, initialState?.pagination?.pageSize]);
 
+  const tableContainerRef = useRef<HTMLDivElement>(null);
+
+  const { rows } = table.getRowModel();
+  const rowVirtualizer = useVirtualizer<HTMLDivElement | null, TData>({
+    getScrollElement: () => tableContainerRef.current,
+    count: rows.length,
+    estimateSize: () => 42,
+  });
+  const virtualRows = rowVirtualizer.getVirtualItems();
+  const totalSize = rowVirtualizer.getTotalSize();
+
+  const paddingTop = virtualRows.length > 0 ? virtualRows?.[0]?.start || 0 : 0;
+  const paddingBottom = virtualRows.length > 0 ? totalSize - (virtualRows?.[virtualRows.length - 1]?.end || 0) : 0;
+
   return (
     <Stack {...others} spacing={verticalSpacing} className={classes.wrapper}>
       {withGlobalFilter && <GlobalFilter table={table} className={classes.globalFilter} locale={locale} />}
-      <ScrollArea className={classes.scrollArea}>
+      <ScrollArea viewportRef={tableContainerRef} className={classes.scrollArea}>
         <LoadingOverlay visible={loading || false} overlayOpacity={0.8} />
         <MantineTable
           striped={striped}
@@ -283,8 +299,14 @@ export function DataGrid<TData extends RowData>({
             ))}
           </thead>
           <tbody className={classes.tbody} role="rowgroup">
-            {table.getRowModel().rows.length > 0 ? (
-              table.getRowModel().rows.map((row) => {
+            {paddingTop > 0 && (
+              <tr>
+                <td style={{ height: `${paddingTop}px` }} />
+              </tr>
+            )}
+            {virtualRows.length > 0 ? (
+              virtualRows.map((virtualRow) => {
+                const row = rows[virtualRow.index] as Row<TData>;
                 const rowProps = onRow ? onRow(row) : {};
                 return (
                   <tr {...rowProps} key={row.id} className={cx(classes.tr, rowProps.className)} role="row">
@@ -323,6 +345,11 @@ export function DataGrid<TData extends RowData>({
                     )}
                   </Stack>
                 </td>
+              </tr>
+            )}
+            {paddingBottom > 0 && (
+              <tr>
+                <td style={{ height: `${paddingBottom}px` }} />
               </tr>
             )}
           </tbody>
