@@ -20,26 +20,7 @@ import { CSS } from '@dnd-kit/utilities';
 import { DataGrid, DataGridProps } from '../../../src';
 import { Data, demoData } from '../../demoData';
 
-type FetchResponse = {
-  list: Data[];
-  total: number;
-};
-
-function fetchData(page: number, pageSize: number, search: string): Promise<FetchResponse> {
-  return new Promise((resolve) =>
-    setTimeout(() => {
-      const data = demoData.filter(
-        (x) => x.text.includes(search) || x.cat.includes(search) || x.fish.includes(search) || x.city.includes(search)
-      );
-      resolve({
-        list: data.slice(page * pageSize, page * pageSize + pageSize),
-        total: data.length + 2,
-      });
-    }, 1000)
-  );
-}
-
-export default function MinimalExample() {
+export default function ColumnDragDropExample() {
   const columns: TableOptions<Data>['columns'] = [
     { id: 'cat', accessorFn: (row) => row.cat },
     { id: 'fish', accessorFn: (row) => row.fish },
