@@ -7,6 +7,10 @@ import AsyncExample from './AsyncExample';
 // @ts-ignore
 import AsyncExampleCode from './AsyncExample.tsx?raw';
 
+import ColumnDragDropExample from './ColumnDragDropExample';
+// @ts-ignore
+import ColumnDragDropExampleCode from './ColumnDragDropExample.tsx?raw';
+
 import CustomFilterExample from './CustomFilterExample';
 // @ts-ignore
 import CustomFilterExampleCode from './CustomFilterExample.tsx?raw';
@@ -137,5 +141,11 @@ export const examples = {
     path: '/example/externalfilter',
     element: ExternalFilterExample,
     code: ExternalFilterExampleCode,
+  }),
+  columnDragDrop: ex({
+    label: 'Column Drag&Drop example',
+    path: '/example/column-drag-drop',
+    element: ColumnDragDropExample,
+    code: ColumnDragDropExampleCode,
   }),
 };

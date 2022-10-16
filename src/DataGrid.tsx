@@ -78,6 +78,9 @@ export function DataGrid<TData extends RowData>({
   iconColor,
   empty,
   locale,
+  tableOptions,
+  HeaderWrapper,
+  HeaderRowWrapper,
   ...others
 }: DataGridProps<TData>) {
   const { classes, theme, cx } = useStyles(
@@ -99,11 +102,9 @@ export function DataGrid<TData extends RowData>({
   const color = iconColor || theme.primaryColor;
 
   const table = useReactTable<TData>({
-    data,
-    columns: withRowSelection ? [getRowSelectionColumn(), ...columns] : columns,
+    // overridable props
     initialState,
     state,
-
     enableGlobalFilter: !!withGlobalFilter,
     globalFilterFn,
     enableColumnFilters: !!withColumnFilters,
@@ -113,15 +114,20 @@ export function DataGrid<TData extends RowData>({
     columnResizeMode: 'onChange',
     manualPagination: !!total, // when external data, handle pagination manually
     autoResetPageIndex: autoResetPageIndex,
-
+    //
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
-
+    //
     debugTable: debug,
     debugHeaders: debug,
     debugColumns: debug,
+    // override props if needed
+    ...tableOptions,
+    //
+    data,
+    columns: withRowSelection ? [getRowSelectionColumn(), ...columns] : columns,
   });
   useImperativeHandle(tableRef, () => table);
 
@@ -225,6 +231,8 @@ export function DataGrid<TData extends RowData>({
     }
   }, [table, withPagination, data.length, initialState?.pagination?.pageSize]);
 
+  const HeaderWrapperComponent = HeaderWrapper ?? 'thead';
+
   return (
     <Stack {...others} spacing={verticalSpacing} className={classes.wrapper}>
       {withGlobalFilter && <GlobalFilter table={table} className={classes.globalFilter} locale={locale} />}
@@ -241,47 +249,50 @@ export function DataGrid<TData extends RowData>({
             width: tableWidth,
           }}
         >
-          <thead className={classes.thead} role="rowgroup">
+          <HeaderWrapperComponent className={classes.thead} role="rowgroup" table={table}>
             {table.getHeaderGroups().map((group) => (
               <tr key={group.id} className={classes.tr} role="row">
-                {group.headers.map((header) => (
-                  <th
-                    key={header.id}
-                    style={{
-                      width: header.getSize(),
-                    }}
-                    className={classes.th}
-                    colSpan={header.colSpan}
-                    role="columnheader"
-                  >
-                    {!header.isPlaceholder && (
-                      <div className={classes.headerCell}>
-                        <div className={classes.headerCellContent}>
-                          {flexRender(header.column.columnDef.header, header.getContext())}
-                        </div>
-                        <div className={classes.headerCellButtons}>
-                          {header.column.getCanSort() && (
-                            <ColumnSorter className={classes.sorter} column={header.column} color={color} />
+                {group.headers.map((header) => {
+                  const HeaderRowWrapperComponent = HeaderRowWrapper ?? 'th';
+
+                  return (
+                    <HeaderRowWrapperComponent
+                      key={header.id}
+                      header={header}
+                      style={{ width: header.getSize() }}
+                      className={classes.th}
+                      colSpan={header.colSpan}
+                      role="columnheader"
+                    >
+                      {!header.isPlaceholder && (
+                        <div className={classes.headerCell}>
+                          <div className={classes.headerCellContent}>
+                            {flexRender(header.column.columnDef.header, header.getContext())}
+                          </div>
+                          <div className={classes.headerCellButtons}>
+                            {header.column.getCanSort() && (
+                              <ColumnSorter className={classes.sorter} column={header.column} color={color} />
+                            )}
+                            {header.column.getCanFilter() && (
+                              <ColumnFilter className={classes.filter} column={header.column} color={color} />
+                            )}
+                          </div>
+                          {header.column.getCanResize() && (
+                            <div
+                              className={classes.resizer}
+                              onClick={(e) => e.stopPropagation()}
+                              onMouseDown={header.getResizeHandler()}
+                              onTouchStart={header.getResizeHandler()}
+                            />
                           )}
-                          {header.column.getCanFilter() && (
-                            <ColumnFilter className={classes.filter} column={header.column} color={color} />
-                          )}
                         </div>
-                        {header.column.getCanResize() && (
-                          <div
-                            className={classes.resizer}
-                            onClick={(e) => e.stopPropagation()}
-                            onMouseDown={header.getResizeHandler()}
-                            onTouchStart={header.getResizeHandler()}
-                          />
-                        )}
-                      </div>
-                    )}
-                  </th>
-                ))}
+                      )}
+                    </HeaderRowWrapperComponent>
+                  );
+                })}
               </tr>
             ))}
-          </thead>
+          </HeaderWrapperComponent>
           <tbody className={classes.tbody} role="rowgroup">
             {table.getRowModel().rows.length > 0 ? (
               table.getRowModel().rows.map((row) => {

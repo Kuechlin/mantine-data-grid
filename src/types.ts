@@ -1,10 +1,20 @@
-import { ComponentPropsWithoutRef, ComponentType, HTMLAttributes, ReactElement, ReactNode, Ref } from 'react';
+import {
+  ComponentPropsWithoutRef,
+  ComponentType,
+  CSSProperties,
+  HTMLAttributes,
+  PropsWithChildren,
+  ReactElement,
+  ReactNode,
+  Ref,
+} from 'react';
 import { DefaultProps, MantineColor, MantineNumberSize, Selectors } from '@mantine/core';
 import {
   Cell,
   ColumnDef,
   ColumnFiltersState,
   FilterFn,
+  Header,
   InitialTableState,
   PaginationState,
   Row,
@@ -12,6 +22,7 @@ import {
   RowSelectionState,
   SortingState,
   Table,
+  TableOptions,
   TableState,
 } from '@tanstack/react-table';
 import useStyles from './DataGrid.styles';
@@ -37,6 +48,8 @@ export interface DataGridProps<TData extends RowData>
   columns: ColumnDef<TData, unknown>[];
   /** Grid Data */
   data: TData[];
+  /** react-table options */
+  tableOptions?: Omit<TableOptions<TData>, 'getCoreRowModel' | 'data' | 'columns' | 'initialState' | 'state'>;
   /**
    * Total number of items for external data
    */
@@ -160,6 +173,21 @@ export interface DataGridProps<TData extends RowData>
    * The i18n text including pagination text, pageSize text, globalSearch placeholder, etc
    */
   locale?: DataGridLocale;
+
+  /** defaults to rendering <thead> */
+  HeaderWrapper?: (
+    props: PropsWithChildren & { table: Table<TData>; className: string; role: 'rowgroup' }
+  ) => JSX.Element;
+  /** defaults to rendering <th> */
+  HeaderRowWrapper?: (
+    props: PropsWithChildren & {
+      header: Header<TData, unknown>;
+      style: CSSProperties;
+      className: string;
+      colSpan: number;
+      role: 'columnheader';
+    }
+  ) => JSX.Element;
 }
 
 export type DataGridFilterFn<TData extends RowData, TFilter = unknown> = FilterFn<TData> & {
