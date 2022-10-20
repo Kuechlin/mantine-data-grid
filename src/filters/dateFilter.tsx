@@ -1,7 +1,13 @@
 import { Select, Text } from '@mantine/core';
 import { DatePicker, DateRangePicker } from '@mantine/dates';
+import dayjs from 'dayjs';
 import { Filter } from 'tabler-icons-react';
+import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
+import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 import { DataGridFilterFn, DataGridFilterProps } from '../types';
+
+dayjs.extend(isSameOrBefore);
+dayjs.extend(isSameOrAfter);
 
 type FilterState = {
   op: DateFilterOperator;
@@ -48,7 +54,10 @@ function toString(value: Date | null | [Date | null, Date | null]): FilterState[
 const DateInput = ({ filter, onFilterChange, placeholder }: DateInputProps) => (
   <DatePicker
     value={Array.isArray(filter.value) ? null : toValue(filter.value)}
-    onChange={(value) => onFilterChange({ ...filter, value: toString(value) })}
+    onChange={(value) => {
+      console.log(value);
+      onFilterChange({ ...filter, value: toString(value) });
+    }}
     placeholder={placeholder}
     rightSection={<Filter size={20} />}
     allowFreeInput
@@ -73,7 +82,7 @@ export type DateFilterOptions = {
 export const createDateFilter = ({ title, fixedOperator, labels, placeholder = 'Filter value' }: DateFilterOptions) => {
   const filterFn: DataGridFilterFn<any, FilterState> = (row, columnId, filter: FilterState) => {
     if (!filter.value) return true;
-    const rowValue = new Date(row.getValue(columnId));
+    const rowValue = dayjs(row.getValue(columnId));
     const op = filter.op || DateFilterOperator.Equals;
     const value = toValue(filter.value);
     if (
@@ -83,21 +92,21 @@ export const createDateFilter = ({ title, fixedOperator, labels, placeholder = '
       value[0] instanceof Date &&
       value[1] instanceof Date
     ) {
-      return value[0] <= rowValue && rowValue <= value[1];
+      return dayjs(value[0]).isSameOrBefore(rowValue, 'day') && rowValue.isSameOrBefore(dayjs(value[1]), 'day');
     } else if (value instanceof Date) {
       switch (op) {
         case DateFilterOperator.Equals:
-          return rowValue === value;
+          return rowValue.isSame(value, 'day');
         case DateFilterOperator.NotEquals:
-          return rowValue !== value;
+          return !rowValue.isSame(value, 'day');
         case DateFilterOperator.GreaterThan:
-          return rowValue > value;
+          return rowValue.isAfter(value, 'day');
         case DateFilterOperator.GreaterThanOrEquals:
-          return rowValue >= value;
+          return rowValue.isSameOrAfter(value);
         case DateFilterOperator.LowerThan:
-          return rowValue < value;
+          return rowValue.isBefore(value, 'day');
         case DateFilterOperator.LowerThanOrEquals:
-          return rowValue <= value;
+          return rowValue.isSameOrBefore(value, 'day');
       }
     }
     return true;
