@@ -37,6 +37,7 @@ export function GlobalFilter<TData>({ table, className, locale }: GlobalFilterPr
   );
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const globalFilterFn: FilterFn<any> = (row, columnId: string, filterValue: string) => {
   const value = row.getValue<string>(columnId);
   if (!value) return false;
