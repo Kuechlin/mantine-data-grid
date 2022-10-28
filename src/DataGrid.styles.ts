@@ -29,6 +29,8 @@ export default createStyles(
     table: {
       borderCollapse: 'separate',
       borderSpacing: 0,
+      borderLeft: 'none',
+      borderRight: 'none',
     },
     thead: {
       position: 'relative',

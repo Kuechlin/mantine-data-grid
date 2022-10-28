@@ -18,16 +18,16 @@ import {
 import { useState } from 'react';
 
 import {
+  createBooleanFilter,
   createDateFilter,
+  createNumberFilter,
+  createStringFilter,
   DataGrid,
   DataGridFilterFn,
   DataGridFiltersState,
   DataGridPaginationState,
   DataGridSortingState,
-  createBooleanFilter,
   highlightFilterValue,
-  createNumberFilter,
-  createStringFilter,
   StringFilterOperator,
 } from '../../src';
 import { Data, demoData } from '../demoData';
@@ -102,6 +102,8 @@ export default function Demo() {
     noFlexLayout: false,
     withColumnResizing: true,
     striped: true,
+    withBorder: false,
+    withColumnBorders: false,
     highlightOnHover: true,
     loading: false,
     showEmpty: false,
@@ -150,6 +152,8 @@ export default function Demo() {
           withColumnResizing={state.withColumnResizing}
           noFlexLayout={state.noFlexLayout}
           striped={state.striped}
+          withBorder={state.withBorder}
+          withColumnBorders={state.withColumnBorders}
           highlightOnHover={state.highlightOnHover}
           loading={state.loading}
           iconColor={state.iconColor}
@@ -322,6 +326,24 @@ export default function Demo() {
             onChange={(e) =>
               update({
                 striped: e.target.checked,
+              })
+            }
+          />
+          <Switch
+            label="With Border"
+            checked={state.withBorder}
+            onChange={(e) =>
+              update({
+                withBorder: e.target.checked,
+              })
+            }
+          />
+          <Switch
+            label="With Column Borders"
+            checked={state.withColumnBorders}
+            onChange={(e) =>
+              update({
+                withColumnBorders: e.target.checked,
               })
             }
           />

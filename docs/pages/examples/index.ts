@@ -51,6 +51,14 @@ import ExternalFilterExample from './ExternalFilterExample';
 // @ts-ignore
 import ExternalFilterExampleCode from './ExternalFilterExample.tsx?raw';
 
+import ColumnDragDropExample from './ColumnDragDropExample';
+// @ts-ignore
+import ColumnDragDropExampleCode from './ColumnDragDropExample.tsx?raw';
+
+import CustomPaginationExample from './CustomPaginationExample';
+// @ts-ignore
+import CustomPaginationExampleCode from './CustomPaginationExample.tsx?raw';
+
 export type Example = {
   label: string;
   path: string;
@@ -137,5 +145,17 @@ export const examples = {
     path: '/example/externalfilter',
     element: ExternalFilterExample,
     code: ExternalFilterExampleCode,
+  }),
+  columnDragDrop: ex({
+    label: 'Column Drag&Drop',
+    path: '/example/column-drag-drop',
+    element: ColumnDragDropExample,
+    code: ColumnDragDropExampleCode,
+  }),
+  customPagination: ex({
+    label: 'Custom Pagination',
+    path: '/example/pagination',
+    element: CustomPaginationExample,
+    code: CustomPaginationExampleCode,
   }),
 };
