@@ -1,4 +1,3 @@
-import { ComponentPropsWithoutRef, ComponentType, HTMLAttributes, ReactElement, ReactNode, Ref } from 'react';
 import { DefaultProps, MantineColor, MantineNumberSize, Selectors } from '@mantine/core';
 import {
   Cell,
@@ -14,6 +13,7 @@ import {
   Table,
   TableState,
 } from '@tanstack/react-table';
+import { ComponentPropsWithoutRef, ComponentType, HTMLAttributes, ReactElement, ReactNode, Ref } from 'react';
 import useStyles from './DataGrid.styles';
 
 export type DataGridStylesNames = Selectors<typeof useStyles>;
@@ -51,8 +51,6 @@ export interface DataGridProps<TData extends RowData>
   width?: string | number;
   /** Enable fixed header */
   withFixedHeader?: boolean;
-  /** Text overflow ellipsis is disabled*/
-  noEllipsis?: boolean;
   /** If true react-table debug log is enabled */
   debug?: boolean;
   /** If true every odd row of table will have gray background color */
