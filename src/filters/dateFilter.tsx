@@ -1,9 +1,9 @@
 import { Checkbox, Select, Text } from '@mantine/core';
-import { DatePicker, DateRangePicker, DateRangePickerValue, TimeInput, TimeRangeInput } from '@mantine/dates';
+import { DatePicker, DateRangePicker, TimeInput, TimeRangeInput } from '@mantine/dates';
 import dayjs from 'dayjs';
-import { Filter } from 'tabler-icons-react';
-import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
+import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
+import { Filter } from 'tabler-icons-react';
 import { DataGridFilterFn, DataGridFilterProps } from '../types';
 
 dayjs.extend(isSameOrBefore);
@@ -185,6 +185,7 @@ export const createDateFilter = ({
             value={filter.op || DateFilterOperator.Equals}
             onChange={(op: DateFilterOperator) => onFilterChange({ ...filter, op })}
             withinPortal
+            aria-label="Filter Operator select"
           />
         )}
 
@@ -201,6 +202,7 @@ export const createDateFilter = ({
               placeholder={placeholder}
               onFilterChange={onFilterChange}
               withTime={filter.withTime ?? false}
+              aria-label="Filter value"
             />
           </>
         ) : (
@@ -209,6 +211,7 @@ export const createDateFilter = ({
             placeholder={placeholder}
             onFilterChange={onFilterChange}
             withTime={filter.withTime ?? false}
+            aria-label="Filter value"
           />
         )}
       </>

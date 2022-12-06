@@ -78,9 +78,9 @@ export const createBooleanFilter = ({
       <>
         {title && <Text>{title}</Text>}
         {variant === 'segmented' ? (
-          <BooleanSegmentedInput trueLabel={trueLabel} falseLabel={falseLabel} {...props} />
+          <BooleanSegmentedInput trueLabel={trueLabel} falseLabel={falseLabel} {...props} aria-label="Filter value" />
         ) : (
-          <BooleanRadioInput trueLabel={trueLabel} falseLabel={falseLabel} {...props} />
+          <BooleanRadioInput trueLabel={trueLabel} falseLabel={falseLabel} {...props} aria-label="Filter value" />
         )}
       </>
     );
