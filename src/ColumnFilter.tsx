@@ -67,8 +67,8 @@ export const ColumnFilter = ({ column, className, color }: ColumnFilterProps) =>
             <Element filter={state.value} onFilterChange={change} />
 
             <Group position="apart">
-              <Button children={<X />} color="gray" onClick={clear} compact />
-              <Button children={<Check />} onClick={save} compact variant="outline" />
+              <Button children={<X />} color="gray" onClick={clear} compact type="reset" />
+              <Button children={<Check />} onClick={save} compact variant="outline" type="submit" />
             </Group>
           </Stack>
         )}
