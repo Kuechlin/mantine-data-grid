@@ -257,7 +257,7 @@ export function DataGrid<TData extends RowData>({
 
   const paddingTop = virtualRows?.[0]?.start || 0;
   const paddingBottom = totalSize - (virtualRows?.[virtualRows.length - 1]?.end || 0);
-  const colSpan = rows?.[0].getVisibleCells().length ?? 1;
+  const colSpan = rows?.[0]?.getVisibleCells().length ?? 1;
 
   return (
     <Stack {...others} spacing={verticalSpacing} className={classes.wrapper}>
