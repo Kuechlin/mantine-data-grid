@@ -19,14 +19,20 @@ import {
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { RefCallback, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { BoxOff } from 'tabler-icons-react';
-
-import useStyles from './DataGrid.styles';
-
 import { ColumnFilter } from './ColumnFilter';
 import { ColumnSorter } from './ColumnSorter';
+import useStyles from './DataGrid.styles';
 import { GlobalFilter, globalFilterFn } from './GlobalFilter';
-import { DEFAULT_INITIAL_SIZE, Pagination } from './Pagination';
+import { DEFAULT_INITIAL_SIZE, Pagination as DefaultPagination } from './Pagination';
 import { getRowSelectionColumn } from './RowSelection';
+import {
+  DefaultBodyCell,
+  DefaultBodyRow,
+  DefaultBodyWrapper,
+  DefaultHeaderCell,
+  DefaultHeaderRow,
+  DefaultHeaderWrapper,
+} from './TableComponents';
 import { DataGridProps } from './types';
 
 export function useDataGrid<TData extends RowData>(): [Table<TData> | null, RefCallback<Table<TData>>] {
@@ -46,6 +52,8 @@ export function DataGrid<TData extends RowData>({
   width,
   withFixedHeader,
   striped,
+  withBorder,
+  withColumnBorders,
   highlightOnHover,
   horizontalSpacing,
   verticalSpacing = 'xs',
@@ -79,8 +87,17 @@ export function DataGrid<TData extends RowData>({
   iconColor,
   empty,
   locale,
+  // component overrides
+  components: { headerWrapper, headerRow, headerCell, bodyWrapper, bodyRow, bodyCell, pagination } = {},
   ...others
 }: DataGridProps<TData>) {
+  const HeaderWrapper = headerWrapper ?? DefaultHeaderWrapper;
+  const HeaderRow = headerRow ?? DefaultHeaderRow;
+  const HeaderCell = headerCell ?? DefaultHeaderCell;
+  const BodyWrapper = bodyWrapper ?? DefaultBodyWrapper;
+  const BodyRow = bodyRow ?? DefaultBodyRow;
+  const BodyCell = bodyCell ?? DefaultBodyCell;
+  const Pagination = pagination ?? DefaultPagination;
   const { classes, theme, cx } = useStyles(
     {
       height,
@@ -217,13 +234,14 @@ export function DataGrid<TData extends RowData>({
     onRowSelectionChange: handleRowSelectionChange,
   }));
 
+  const defaultPageSize = Number(pageSizes?.[0] ?? DEFAULT_INITIAL_SIZE);
   useEffect(() => {
     if (withPagination) {
-      table.setPageSize(initialState?.pagination?.pageSize ?? DEFAULT_INITIAL_SIZE);
+      table.setPageSize(initialState?.pagination?.pageSize ?? defaultPageSize);
     } else {
       table.setPageSize(data.length);
     }
-  }, [table, withPagination, data.length, initialState?.pagination?.pageSize]);
+  }, [table, withPagination, data.length, initialState?.pagination?.pageSize, defaultPageSize]);
 
   const tableContainerRef = useRef<HTMLDivElement>(null);
 
@@ -244,7 +262,19 @@ export function DataGrid<TData extends RowData>({
   return (
     <Stack {...others} spacing={verticalSpacing} className={classes.wrapper}>
       {withGlobalFilter && <GlobalFilter table={table} className={classes.globalFilter} locale={locale} />}
-      <ScrollArea viewportRef={tableContainerRef} className={classes.scrollArea}>
+      <ScrollArea
+        viewportRef={tableContainerRef}
+        className={classes.scrollArea}
+        styles={(theme) => {
+          const border = `1px solid ${theme.colorScheme === 'dark' ? theme.colors.dark[4] : theme.colors.gray[3]}`;
+          return {
+            viewport: {
+              borderLeft: withBorder ? border : '',
+              borderRight: withBorder ? border : '',
+            },
+          };
+        }}
+      >
         <LoadingOverlay visible={loading || false} overlayOpacity={0.8} />
         <MantineTable
           striped={striped}
@@ -256,13 +286,17 @@ export function DataGrid<TData extends RowData>({
           style={{
             width: tableWidth,
           }}
+          withBorder={withBorder}
+          withColumnBorders={withColumnBorders}
         >
-          <thead className={classes.thead} role="rowgroup">
+          <HeaderWrapper table={table} className={classes.thead} role="rowgroup">
             {table.getHeaderGroups().map((group) => (
-              <tr key={group.id} className={classes.tr} role="row">
+              <HeaderRow key={group.id} table={table} headerGroup={group} className={classes.tr} role="row">
                 {group.headers.map((header) => (
-                  <th
+                  <HeaderCell
                     key={header.id}
+                    table={table}
+                    header={header}
                     style={{
                       width: header.getSize(),
                     }}
@@ -293,25 +327,34 @@ export function DataGrid<TData extends RowData>({
                         )}
                       </div>
                     )}
-                  </th>
+                  </HeaderCell>
                 ))}
-              </tr>
+              </HeaderRow>
             ))}
-          </thead>
-          <tbody className={classes.tbody} role="rowgroup">
+          </HeaderWrapper>
+          <BodyWrapper table={table} className={classes.tbody} role="rowgroup">
             {paddingTop > 0 && virtualizerPlaceholder(paddingTop, colSpan, rowVirtualizer.range.startIndex % 2 === 0)}
             {virtualRows.length > 0 ? (
               virtualRows.map((virtualRow) => {
                 const row = rows[virtualRow.index] as Row<TData>;
                 const rowProps = onRow ? onRow(row) : {};
                 return (
-                  <tr {...rowProps} key={row.id} className={cx(classes.tr, rowProps.className)} role="row">
+                  <BodyRow
+                    {...rowProps}
+                    key={row.id}
+                    table={table}
+                    row={row}
+                    className={cx(classes.tr, rowProps.className)}
+                    role="row"
+                  >
                     {row.getVisibleCells().map((cell) => {
                       const cellProps = onCell ? onCell(cell) : {};
                       return (
-                        <td
+                        <BodyCell
                           {...cellProps}
                           key={cell.id}
+                          table={table}
+                          cell={cell}
                           style={{
                             width: cell.column.getSize(),
                           }}
@@ -323,10 +366,10 @@ export function DataGrid<TData extends RowData>({
                               {flexRender(cell.column.columnDef.cell, cell.getContext())}
                             </div>
                           </div>
-                        </td>
+                        </BodyCell>
                       );
                     })}
-                  </tr>
+                  </BodyRow>
                 );
               })
             ) : (
@@ -344,7 +387,7 @@ export function DataGrid<TData extends RowData>({
               </tr>
             )}
             {paddingBottom > 0 && virtualizerPlaceholder(paddingBottom, colSpan)}
-          </tbody>
+          </BodyWrapper>
         </MantineTable>
       </ScrollArea>
 

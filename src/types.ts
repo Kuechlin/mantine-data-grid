@@ -3,6 +3,7 @@ import {
   Cell,
   ColumnDef,
   ColumnFiltersState,
+  ColumnOrderState,
   FilterFn,
   InitialTableState,
   PaginationState,
@@ -15,6 +16,15 @@ import {
 } from '@tanstack/react-table';
 import { ComponentPropsWithoutRef, ComponentType, HTMLAttributes, ReactElement, ReactNode, Ref } from 'react';
 import useStyles from './DataGrid.styles';
+import { PaginationProps } from './Pagination';
+import {
+  DataGridBodyCellProps,
+  DataGridBodyRowProps,
+  DataGridBodyWrapperProps,
+  DataGridHeaderCellProps,
+  DataGridHeaderRowProps,
+  DataGridHeaderWrapperProps,
+} from './TableComponents';
 
 export type DataGridStylesNames = Selectors<typeof useStyles>;
 
@@ -23,6 +33,7 @@ export type OnChangeCallback<T> = (arg0: T) => void;
 export type DataGridSortingState = SortingState;
 export type DataGridPaginationState = PaginationState;
 export type DataGridFiltersState = ColumnFiltersState;
+export type DataGridColumnOrderState = ColumnOrderState;
 export type DataGridLocale = {
   pagination?: (firstRowNum: number, lastRowNum: number, maxRows: number) => ReactNode;
   pageSize?: ReactNode;
@@ -55,6 +66,10 @@ export interface DataGridProps<TData extends RowData>
   debug?: boolean;
   /** If true every odd row of table will have gray background color */
   striped?: boolean;
+  /** If true table has a border */
+  withBorder?: boolean;
+  /** If true columns have a border */
+  withColumnBorders?: boolean;
   /** If true row will have hover color */
   highlightOnHover?: boolean;
   /** Horizontal cells spacing from theme.spacing or number to set value in px */
@@ -158,6 +173,11 @@ export interface DataGridProps<TData extends RowData>
    * The i18n text including pagination text, pageSize text, globalSearch placeholder, etc
    */
   locale?: DataGridLocale;
+
+  /**
+   * Component overrides
+   */
+  components?: Partial<DataGridComponents<TData>>;
 }
 
 export type DataGridFilterFn<TData extends RowData, TFilter = unknown> = FilterFn<TData> & {
@@ -172,4 +192,15 @@ export function isDataGridFilter(val: unknown): val is DataGridFilterFn<unknown>
 export type DataGridFilterProps<T = unknown> = {
   filter: T;
   onFilterChange(value: T): void;
+};
+
+// component types
+export type DataGridComponents<TData> = {
+  headerWrapper: ComponentType<DataGridHeaderWrapperProps<TData>>;
+  headerRow: ComponentType<DataGridHeaderRowProps<TData>>;
+  headerCell: ComponentType<DataGridHeaderCellProps<TData>>;
+  bodyWrapper: ComponentType<DataGridBodyWrapperProps<TData>>;
+  bodyRow: ComponentType<DataGridBodyRowProps<TData>>;
+  bodyCell: ComponentType<DataGridBodyCellProps<TData>>;
+  pagination: ComponentType<PaginationProps<TData>>;
 };

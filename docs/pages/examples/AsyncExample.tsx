@@ -55,7 +55,8 @@ export default function AsyncExample() {
 
   useEffect(() => {
     load({ pageIndex: 0, pageSize: 10 });
-  });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <DataGrid<Data>

@@ -39,7 +39,7 @@ export default function Navbar() {
           Examples
         </Text>
       </Stack>
-      <ScrollArea>
+      <ScrollArea sx={{ paddingBottom: '80px' }}>
         {Object.values(examples).map((item) => (
           <NavLink
             key={item.path}

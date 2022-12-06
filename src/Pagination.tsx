@@ -6,7 +6,7 @@ export const DEFAULT_PAGE_SIZES = ['10', '25', '50', '100'];
 export const DEFAULT_INITIAL_PAGE = 0;
 export const DEFAULT_INITIAL_SIZE = 10;
 
-type PaginationProps<TData> = {
+export type PaginationProps<TData> = {
   table: Table<TData>;
   classes: string[];
   pageSizes?: string[];
