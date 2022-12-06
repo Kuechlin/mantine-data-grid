@@ -1,4 +1,4 @@
-import { Stack, Title, Text } from '@mantine/core';
+import { Stack, Text, Title } from '@mantine/core';
 import { PropertyTable } from '../components/PropertyTable';
 import { See } from '../components/See';
 
@@ -108,11 +108,6 @@ export default function Properties() {
                 name: 'noFlexLayout',
                 type: 'boolean',
                 description: 'Disable flex layout',
-              },
-              {
-                name: 'noEllipsis',
-                type: 'boolean',
-                description: 'Disable Text overflow ellipsis',
               },
               {
                 name: 'debug',
