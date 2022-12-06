@@ -16,7 +16,7 @@ const ellipsis: CSSObject = {
 };
 
 export default createStyles(
-  (theme, { height, width, noEllipsis, withFixedHeader, paginationMode = 'default' }: DataGridStylesParams) => ({
+  (theme, { height, width, withFixedHeader, paginationMode = 'default' }: DataGridStylesParams) => ({
     wrapper: {
       height: height ? height + 'px' : undefined,
       width: width ? width + 'px' : undefined,
@@ -62,9 +62,7 @@ export default createStyles(
       height: 'inherit',
       justifyContent: 'space-between',
     },
-    headerCellContent: {
-      ...(!noEllipsis && ellipsis),
-    },
+    headerCellContent: ellipsis,
     headerCellButtons: {
       display: 'inline-flex',
       gap: '4px',
@@ -75,9 +73,7 @@ export default createStyles(
       width: 'inherit',
       justifyContent: 'space-between',
     },
-    dataCellContent: {
-      ...(!noEllipsis && ellipsis),
-    },
+    dataCellContent: ellipsis,
     resizer: {
       position: 'absolute',
       top: 0,

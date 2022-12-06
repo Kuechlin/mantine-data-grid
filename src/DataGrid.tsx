@@ -9,13 +9,15 @@ import {
   getSortedRowModel,
   OnChangeFn,
   PaginationState,
+  Row,
   RowData,
   RowSelectionState,
   SortingState,
   Table,
   useReactTable,
 } from '@tanstack/react-table';
-import { RefCallback, useCallback, useEffect, useImperativeHandle, useState } from 'react';
+import { useVirtualizer } from '@tanstack/react-virtual';
+import { RefCallback, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { BoxOff } from 'tabler-icons-react';
 import { ColumnFilter } from './ColumnFilter';
 import { ColumnSorter } from './ColumnSorter';
@@ -49,7 +51,6 @@ export function DataGrid<TData extends RowData>({
   height,
   width,
   withFixedHeader,
-  noEllipsis,
   striped,
   withBorder,
   withColumnBorders,
@@ -101,7 +102,6 @@ export function DataGrid<TData extends RowData>({
     {
       height,
       width,
-      noEllipsis,
       withFixedHeader,
       paginationMode,
     },
@@ -243,10 +243,27 @@ export function DataGrid<TData extends RowData>({
     }
   }, [table, withPagination, data.length, initialState?.pagination?.pageSize, defaultPageSize]);
 
+  const tableContainerRef = useRef<HTMLDivElement>(null);
+
+  const { rows } = table.getRowModel();
+  const rowVirtualizer = useVirtualizer<HTMLDivElement, HTMLTableRowElement>({
+    getScrollElement: () => tableContainerRef.current,
+    count: rows.length,
+    estimateSize: () => 42,
+    overscan: 4,
+  });
+  const virtualRows = rowVirtualizer.getVirtualItems();
+  const totalSize = rowVirtualizer.getTotalSize();
+
+  const paddingTop = virtualRows?.[0]?.start || 0;
+  const paddingBottom = totalSize - (virtualRows?.[virtualRows.length - 1]?.end || 0);
+  const colSpan = rows?.[0].getVisibleCells().length ?? 1;
+
   return (
     <Stack {...others} spacing={verticalSpacing} className={classes.wrapper}>
       {withGlobalFilter && <GlobalFilter table={table} className={classes.globalFilter} locale={locale} />}
       <ScrollArea
+        viewportRef={tableContainerRef}
         className={classes.scrollArea}
         styles={(theme) => {
           const border = `1px solid ${theme.colorScheme === 'dark' ? theme.colors.dark[4] : theme.colors.gray[3]}`;
@@ -316,8 +333,10 @@ export function DataGrid<TData extends RowData>({
             ))}
           </HeaderWrapper>
           <BodyWrapper table={table} className={classes.tbody} role="rowgroup">
-            {table.getRowModel().rows.length > 0 ? (
-              table.getRowModel().rows.map((row) => {
+            {paddingTop > 0 && virtualizerPlaceholder(paddingTop, colSpan, rowVirtualizer.range.startIndex % 2 === 0)}
+            {virtualRows.length > 0 ? (
+              virtualRows.map((virtualRow) => {
+                const row = rows[virtualRow.index] as Row<TData>;
                 const rowProps = onRow ? onRow(row) : {};
                 return (
                   <BodyRow
@@ -367,6 +386,7 @@ export function DataGrid<TData extends RowData>({
                 </td>
               </tr>
             )}
+            {paddingBottom > 0 && virtualizerPlaceholder(paddingBottom, colSpan)}
           </BodyWrapper>
         </MantineTable>
       </ScrollArea>
@@ -386,3 +406,19 @@ export function DataGrid<TData extends RowData>({
     </Stack>
   );
 }
+
+const virtualizerPlaceholder = (padding: number, colSpan: number, isEven = false) =>
+  isEven ? (
+    <>
+      <tr>
+        <td style={{ height: `${padding / 2}px`, padding: 0 }} colSpan={colSpan} />
+      </tr>
+      <tr>
+        <td style={{ height: `${padding / 2}px`, padding: 0 }} colSpan={colSpan} />
+      </tr>
+    </>
+  ) : (
+    <tr>
+      <td style={{ height: `${padding}px`, padding: 0 }} colSpan={colSpan} />
+    </tr>
+  );

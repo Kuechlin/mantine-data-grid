@@ -94,7 +94,6 @@ export default function Demo() {
     height: '',
     width: '',
     withFixedHeader: false,
-    noEllipsis: false,
     withGlobalFilter: true,
     withPagination: true,
     withColumnFilters: true,
@@ -144,7 +143,6 @@ export default function Demo() {
           height={state.height}
           width={state.width}
           withFixedHeader={state.withFixedHeader}
-          noEllipsis={state.noEllipsis}
           withGlobalFilter={state.withGlobalFilter}
           withPagination={state.withPagination}
           withColumnFilters={state.withColumnFilters}
@@ -308,15 +306,6 @@ export default function Demo() {
             onChange={(e) =>
               update({
                 withFixedHeader: e.target.checked,
-              })
-            }
-          />
-          <Switch
-            label="No Text ellipsis"
-            checked={state.noEllipsis}
-            onChange={(e) =>
-              update({
-                noEllipsis: e.target.checked,
               })
             }
           />

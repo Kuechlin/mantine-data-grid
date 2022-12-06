@@ -62,8 +62,6 @@ export interface DataGridProps<TData extends RowData>
   width?: string | number;
   /** Enable fixed header */
   withFixedHeader?: boolean;
-  /** Text overflow ellipsis is disabled*/
-  noEllipsis?: boolean;
   /** If true react-table debug log is enabled */
   debug?: boolean;
   /** If true every odd row of table will have gray background color */
