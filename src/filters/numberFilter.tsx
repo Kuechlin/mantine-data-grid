@@ -105,6 +105,7 @@ export const createNumberFilter = ({
             value={filter.op || NumberFilterOperator.Equals}
             onChange={handleFilterChange}
             withinPortal
+            aria-label="Filter Operator select"
           />
         )}
 
@@ -120,6 +121,7 @@ export const createNumberFilter = ({
             placeholder={placeholder}
             rightSection={isBetweenFilter(filter.op) ? null : <Filter size={20} />}
             hideControls
+            aria-label="Filter value"
           />
           {isBetweenFilter(filter.op) && (
             <NumberInput
@@ -132,6 +134,7 @@ export const createNumberFilter = ({
               }
               placeholder={placeholder}
               hideControls
+              aria-label="Filter value"
             />
           )}
         </Group>

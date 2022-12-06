@@ -237,11 +237,18 @@ export function DataGrid<TData extends RowData>({
   const defaultPageSize = Number(pageSizes?.[0] ?? DEFAULT_INITIAL_SIZE);
   useEffect(() => {
     if (withPagination) {
-      table.setPageSize(initialState?.pagination?.pageSize ?? defaultPageSize);
+      table.setPageSize(state?.pagination?.pageSize ?? initialState?.pagination?.pageSize ?? defaultPageSize);
     } else {
       table.setPageSize(data.length);
     }
-  }, [table, withPagination, data.length, initialState?.pagination?.pageSize, defaultPageSize]);
+  }, [
+    table,
+    withPagination,
+    data.length,
+    initialState?.pagination?.pageSize,
+    defaultPageSize,
+    state?.pagination?.pageSize,
+  ]);
 
   const tableContainerRef = useRef<HTMLDivElement>(null);
 
@@ -257,7 +264,7 @@ export function DataGrid<TData extends RowData>({
 
   const paddingTop = virtualRows?.[0]?.start || 0;
   const paddingBottom = totalSize - (virtualRows?.[virtualRows.length - 1]?.end || 0);
-  const colSpan = rows?.[0].getVisibleCells().length ?? 1;
+  const colSpan = rows?.[0]?.getVisibleCells().length ?? 1;
 
   return (
     <Stack {...others} spacing={verticalSpacing} className={classes.wrapper}>
@@ -319,7 +326,7 @@ export function DataGrid<TData extends RowData>({
                         </div>
                         {header.column.getCanResize() && (
                           <div
-                            className={classes.resizer}
+                            className={cx(classes.resizer, { [classes.isResizing]: header.column.getIsResizing() })}
                             onClick={(e) => e.stopPropagation()}
                             onMouseDown={header.getResizeHandler()}
                             onTouchStart={header.getResizeHandler()}

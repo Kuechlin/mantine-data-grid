@@ -69,6 +69,7 @@ export const createStringFilter = ({
             value={filter.op || StringFilterOperator.Includes}
             onChange={(op) => onFilterChange({ ...filter, op: op as StringFilterOperator })}
             withinPortal
+            aria-label="Filter Operator select"
           />
         )}
 
@@ -77,6 +78,7 @@ export const createStringFilter = ({
           onChange={(e) => onFilterChange({ ...filter, value: e.target.value })}
           placeholder={placeholder}
           rightSection={<Filter size={20} />}
+          aria-label="Filter value"
         />
       </>
     );

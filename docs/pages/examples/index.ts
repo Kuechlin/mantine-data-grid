@@ -59,6 +59,10 @@ import CustomPaginationExample from './CustomPaginationExample';
 // @ts-ignore
 import CustomPaginationExampleCode from './CustomPaginationExample.tsx?raw';
 
+import EditableExample from './EditableExample';
+// @ts-ignore
+import EditableExampleCode from './EditableExample.tsx?raw';
+
 export type Example = {
   label: string;
   path: string;
@@ -157,5 +161,11 @@ export const examples = {
     path: '/example/pagination',
     element: CustomPaginationExample,
     code: CustomPaginationExampleCode,
+  }),
+  editable: ex({
+    label: 'Editable Cell',
+    path: '/example/editable',
+    element: EditableExample,
+    code: EditableExampleCode,
   }),
 };

@@ -86,6 +86,10 @@ export default createStyles(
         backgroundColor: theme.colors.dark[5],
       },
     },
+    isResizing: {
+      userSelect: 'none',
+      backgroundColor: theme.fn.primaryColor(theme.colorScheme),
+    },
     sorter: {},
     filter: {},
     globalFilter: {},
