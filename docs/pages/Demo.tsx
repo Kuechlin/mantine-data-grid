@@ -136,7 +136,7 @@ export default function Demo() {
       <Grid.Col span={10} p="md">
         <DataGrid<Data>
           debug
-          data={state.showEmpty ? [] : state.withPagination ? demoData : demoData.slice(0, 25)}
+          data={state.showEmpty ? [] : state.withPagination ? demoData : demoData.slice(0, 30)}
           horizontalSpacing={state.horizontalSpacing}
           verticalSpacing={state.verticalSpacing}
           fontSize={state.fontSize}

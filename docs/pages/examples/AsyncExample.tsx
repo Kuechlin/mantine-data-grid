@@ -34,6 +34,7 @@ function fetchData(page: number, pageSize: number, search: string): Promise<Fetc
 export default function AsyncExample() {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<FetchResponse>({ list: [], total: 0 });
+  const [pagination, setPagination] = useState<DataGridPaginationState>({ pageIndex: 0, pageSize: 10 });
   const [searchValue, setSearchValue] = useState<string>('');
 
   const load: OnChangeCallback<DataGridPaginationState> = async ({ pageIndex, pageSize }) => {
@@ -41,20 +42,21 @@ export default function AsyncExample() {
     setLoading(true);
     const res = await fetchData(pageIndex, pageSize, searchValue);
     setData(res);
+    setPagination({ pageIndex, pageSize });
     setLoading(false);
   };
 
   const search: OnChangeCallback<string> = async (val) => {
     console.log(`search`);
     setLoading(true);
-    const res = await fetchData(0, 10, val);
+    const res = await fetchData(0, pagination.pageSize, val);
     setData(res);
     setSearchValue(val);
     setLoading(false);
   };
 
   useEffect(() => {
-    load({ pageIndex: 0, pageSize: 10 });
+    load(pagination);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -67,6 +69,7 @@ export default function AsyncExample() {
       withPagination
       withGlobalFilter
       loading={loading}
+      state={{ pagination }}
       columns={[
         {
           accessorKey: 'id',

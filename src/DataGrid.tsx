@@ -237,11 +237,18 @@ export function DataGrid<TData extends RowData>({
   const defaultPageSize = Number(pageSizes?.[0] ?? DEFAULT_INITIAL_SIZE);
   useEffect(() => {
     if (withPagination) {
-      table.setPageSize(initialState?.pagination?.pageSize ?? defaultPageSize);
+      table.setPageSize(state?.pagination?.pageSize ?? initialState?.pagination?.pageSize ?? defaultPageSize);
     } else {
       table.setPageSize(data.length);
     }
-  }, [table, withPagination, data.length, initialState?.pagination?.pageSize, defaultPageSize]);
+  }, [
+    table,
+    withPagination,
+    data.length,
+    initialState?.pagination?.pageSize,
+    defaultPageSize,
+    state?.pagination?.pageSize,
+  ]);
 
   const tableContainerRef = useRef<HTMLDivElement>(null);
 
