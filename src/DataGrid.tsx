@@ -326,7 +326,7 @@ export function DataGrid<TData extends RowData>({
                         </div>
                         {header.column.getCanResize() && (
                           <div
-                            className={classes.resizer}
+                            className={cx(classes.resizer, { [classes.isResizing]: header.column.getIsResizing() })}
                             onClick={(e) => e.stopPropagation()}
                             onMouseDown={header.getResizeHandler()}
                             onTouchStart={header.getResizeHandler()}
