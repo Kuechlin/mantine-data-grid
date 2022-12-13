@@ -83,7 +83,7 @@ export const createNumberFilter = ({
       if (isBetweenFilter(op)) {
         onFilterChange({
           op,
-          value: Array.isArray(filter.value) ? filter.value : 0,
+          value: Array.isArray(filter.value) ? filter.value : [0, 0],
         });
       } else {
         onFilterChange({
