@@ -314,7 +314,7 @@ export function DataGrid<TData extends RowData>({
                     role="columnheader"
                   >
                     {!header.isPlaceholder && (
-                      <div className={classes.headerCell}>
+                      <>
                         <div className={classes.headerCellContent}>
                           {flexRender(header.column.columnDef.header, header.getContext())}
                         </div>
@@ -339,7 +339,7 @@ export function DataGrid<TData extends RowData>({
                             onTouchStart={header.getResizeHandler()}
                           />
                         )}
-                      </div>
+                      </>
                     )}
                   </HeaderCell>
                 ))}
@@ -376,10 +376,8 @@ export function DataGrid<TData extends RowData>({
                           className={cx(classes.td, cellProps.className)}
                           role="cell"
                         >
-                          <div className={classes.dataCell}>
-                            <div className={classes.dataCellContent}>
-                              {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                            </div>
+                          <div className={classes.dataCellContent}>
+                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
                           </div>
                         </BodyCell>
                       );

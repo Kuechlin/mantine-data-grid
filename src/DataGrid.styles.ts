@@ -56,22 +56,13 @@ export default createStyles(
     tr: {
       display: 'flex',
     },
-    th: { position: 'relative' },
-    td: {},
-    headerCell: {
-      display: 'flex',
-      height: 'inherit',
-      justifyContent: 'space-between',
-    },
+    th: { position: 'relative', display: 'flex', height: 'inherit', justifyContent: 'space-between' },
+    td: { display: 'flex', justifyContent: 'space-between' },
     headerCellContent: ellipsis,
     headerCellButtons: {
       display: 'inline-flex',
       gap: '4px',
       alignItems: 'center',
-    },
-    dataCell: {
-      display: 'flex',
-      justifyContent: 'space-between',
     },
     dataCellContent: ellipsis,
     resizer: {
