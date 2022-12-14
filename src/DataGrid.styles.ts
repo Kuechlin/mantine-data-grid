@@ -53,12 +53,13 @@ export default createStyles(
     tbody: {
       minHeight: '160px',
     },
-    tr: {},
+    tr: {
+      display: 'flex',
+    },
     th: { position: 'relative' },
     td: {},
     headerCell: {
       display: 'flex',
-      width: 'inherit',
       height: 'inherit',
       justifyContent: 'space-between',
     },
@@ -70,7 +71,6 @@ export default createStyles(
     },
     dataCell: {
       display: 'flex',
-      width: 'inherit',
       justifyContent: 'space-between',
     },
     dataCellContent: ellipsis,
