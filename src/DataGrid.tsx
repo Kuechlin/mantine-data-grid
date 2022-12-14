@@ -22,6 +22,7 @@ import { BoxOff } from 'tabler-icons-react';
 import { ColumnFilter } from './ColumnFilter';
 import { ColumnSorter } from './ColumnSorter';
 import useStyles from './DataGrid.styles';
+import { isDataGridFilter } from './filters';
 import { GlobalFilter, globalFilterFn } from './GlobalFilter';
 import { DEFAULT_INITIAL_SIZE, Pagination as DefaultPagination } from './Pagination';
 import { getRowSelectionColumn } from './RowSelection';
@@ -320,8 +321,13 @@ export function DataGrid<TData extends RowData>({
                           {header.column.getCanSort() && (
                             <ColumnSorter className={classes.sorter} column={header.column} color={color} />
                           )}
-                          {header.column.getCanFilter() && (
-                            <ColumnFilter className={classes.filter} column={header.column} color={color} />
+                          {header.column.getCanFilter() && isDataGridFilter(header.column.columnDef.filterFn) && (
+                            <ColumnFilter
+                              className={classes.filter}
+                              filterFn={header.column.columnDef.filterFn}
+                              column={header.column}
+                              color={color}
+                            />
                           )}
                         </div>
                         {header.column.getCanResize() && (

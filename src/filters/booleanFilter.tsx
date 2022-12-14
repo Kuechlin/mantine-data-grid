@@ -1,92 +1,67 @@
-import { Radio, SegmentedControl, Text } from '@mantine/core';
-import { DataGridFilterFn, DataGridFilterProps } from '../types';
-
-type FilterState = {
-  op: BooleanFilterOperator;
-  value: boolean;
-};
-
-export enum BooleanFilterOperator {
-  Equals = 'eq',
-}
+import { Radio, SegmentedControl } from '@mantine/core';
+import { createOperatorFilter, OperatorFilterOptions } from './createOperatorFilter';
+import { DataGridFilterInput, DataGridFilterOperator } from './types';
 
 const toValue = (value: boolean) => (value ? 'true' : 'false');
 const toState = (value: string): boolean => (value === 'true' ? true : false);
 
-type BooleanInputProps = DataGridFilterProps<FilterState> & {
-  trueLabel: string;
-  falseLabel: string;
-};
-
-const BooleanSegmentedInput = ({ filter, onFilterChange, trueLabel, falseLabel }: BooleanInputProps) => (
-  <SegmentedControl
-    value={toValue(filter.value)}
-    onChange={(value) => onFilterChange({ ...filter, value: toState(value) })}
-    data={[
-      { label: trueLabel, value: 'true' },
-      { label: falseLabel, value: 'false' },
-    ]}
-    fullWidth
-    styles={{
-      active: {
-        // fix visual bug when opening filter dropdown
-        height: 'calc(100% - 8px) !important',
-      },
-    }}
-  />
-);
-const BooleanRadioInput = ({ filter, onFilterChange, trueLabel, falseLabel }: BooleanInputProps) => (
-  <Radio.Group value={toValue(filter.value)} onChange={(value) => onFilterChange({ ...filter, value: toState(value) })}>
-    <Radio value="true" label={trueLabel} />
-    <Radio value="false" label={falseLabel} />
-  </Radio.Group>
-);
-
-export type BooleanFilterOptions = {
-  title?: string;
+type BooleanInputOptions = {
   variant?: 'segmented' | 'radio';
   trueLabel?: string;
   falseLabel?: string;
 };
-export const createBooleanFilter = ({
-  title,
+
+export function createBooleanFilterInput({
   variant = 'segmented',
   trueLabel = 'true',
   falseLabel = 'false',
-}: BooleanFilterOptions) => {
-  const filterFn: DataGridFilterFn<any, FilterState> = (row, columnId, filter: FilterState) => {
-    const rowValue = Boolean(row.getValue(columnId));
-    const op = filter.op || BooleanFilterOperator.Equals;
-    const filterValue = Boolean(filter.value);
-    switch (op) {
-      case BooleanFilterOperator.Equals:
-        return rowValue === filterValue;
-      default:
-        return true;
-    }
+}: BooleanInputOptions): DataGridFilterInput<boolean> {
+  return function BooleanFilterInput({ value, onChange, ...rest }) {
+    if (variant === 'segmented')
+      return (
+        <SegmentedControl
+          {...rest}
+          value={toValue(value)}
+          onChange={(value) => onChange(toState(value))}
+          data={[
+            { label: trueLabel, value: 'true' },
+            { label: falseLabel, value: 'false' },
+          ]}
+          fullWidth
+          styles={{
+            active: {
+              // fix visual bug when opening filter dropdown
+              height: 'calc(100% - 8px) !important',
+            },
+          }}
+        />
+      );
+    else
+      return (
+        <Radio.Group {...rest} value={toValue(value)} onChange={(value) => onChange(toState(value))}>
+          <Radio value="true" label={trueLabel} />
+          <Radio value="false" label={falseLabel} />
+        </Radio.Group>
+      );
   };
+}
 
-  filterFn.autoRemove = (val) => !val;
-
-  filterFn.init = () => ({
-    op: BooleanFilterOperator.Equals,
-    value: true,
-  });
-
-  filterFn.element = function BooleanFilter(props) {
-    return (
-      <>
-        {title && <Text>{title}</Text>}
-        {variant === 'segmented' ? (
-          <BooleanSegmentedInput trueLabel={trueLabel} falseLabel={falseLabel} {...props} aria-label="Filter value" />
-        ) : (
-          <BooleanRadioInput trueLabel={trueLabel} falseLabel={falseLabel} {...props} aria-label="Filter value" />
-        )}
-      </>
-    );
-  };
-
-  return filterFn;
+export const booleanOperators = {
+  equals: (options?: BooleanInputOptions): DataGridFilterOperator<boolean, boolean> => ({
+    op: 'eq',
+    label: 'equals',
+    filterFn: (rowValue, filterValue) => rowValue === filterValue,
+    element: createBooleanFilterInput(options ?? {}),
+  }),
 };
 
-export const booleanFilterFn = createBooleanFilter({});
+export function createBooleanFilter(options?: Partial<OperatorFilterOptions<boolean, boolean>> & BooleanInputOptions) {
+  const { variant, trueLabel, falseLabel, ...rest } = options ?? {};
+  return createOperatorFilter({
+    init: () => true,
+    operators: [booleanOperators.equals({ variant, trueLabel, falseLabel })],
+    ...rest,
+  });
+}
+
+export const booleanFilterFn = createBooleanFilter();

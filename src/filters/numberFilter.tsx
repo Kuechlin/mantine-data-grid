@@ -1,147 +1,125 @@
-import { Group, NumberInput, Select, Text } from '@mantine/core';
+import { Group, NumberInput } from '@mantine/core';
 import { Filter } from 'tabler-icons-react';
-import { DataGridFilterFn, DataGridFilterProps } from '../types';
+import { createOperatorFilter, OperatorFilterOptions } from './createOperatorFilter';
+import { DataGridFilterInput, DataGridFilterOperator } from './types';
 
-type FilterState = {
-  op: NumberFilterOperator;
-  value?: number | number[];
+type NumberFilterValue = number | [number, number];
+
+export const NumberFilterInput: DataGridFilterInput<NumberFilterValue> = ({ onChange, value, ...rest }) =>
+  Array.isArray(value) ? (
+    <Group noWrap grow>
+      <NumberInput {...rest} value={value[0]} onChange={(val) => onChange([val ?? 0, value[1]])} hideControls />
+      <NumberInput {...rest} value={value[1]} onChange={(val) => onChange([value[0], val ?? 0])} hideControls />
+    </Group>
+  ) : (
+    <NumberInput
+      {...rest}
+      value={value}
+      onChange={(val) => onChange(val ?? 0)}
+      rightSection={<Filter size={20} />}
+      hideControls
+    />
+  );
+
+const getLeftValue = (value: NumberFilterValue) => (Array.isArray(value) ? value[0] : Number.MIN_VALUE);
+const getRightValue = (value: NumberFilterValue) => (Array.isArray(value) ? value[1] : Number.MAX_VALUE);
+
+export const numberOperators = {
+  equals: (label = 'equals'): DataGridFilterOperator<number, NumberFilterValue> => ({
+    op: 'eq',
+    label,
+    filterFn: (rowValue, filterValue) => rowValue === getLeftValue(filterValue),
+    element: NumberFilterInput,
+  }),
+  notEquals: (label = 'not equals'): DataGridFilterOperator<number, NumberFilterValue> => ({
+    op: 'neq',
+    label,
+    filterFn: (rowValue, filterValue) => rowValue !== getLeftValue(filterValue),
+    element: NumberFilterInput,
+  }),
+  greaterThan: (label = 'greater than'): DataGridFilterOperator<number, NumberFilterValue> => ({
+    op: 'gt',
+    label,
+    filterFn: (rowValue, filterValue) => rowValue > getLeftValue(filterValue),
+    element: NumberFilterInput,
+  }),
+  greaterThanOrEquals: (label = 'greater than or equals'): DataGridFilterOperator<number, NumberFilterValue> => ({
+    op: 'gte',
+    label,
+    filterFn: (rowValue, filterValue) => rowValue >= getLeftValue(filterValue),
+    element: NumberFilterInput,
+  }),
+  lowerThan: (label = 'lower than'): DataGridFilterOperator<number, NumberFilterValue> => ({
+    op: 'lt',
+    label,
+    filterFn: (rowValue, filterValue) => rowValue < getLeftValue(filterValue),
+    element: NumberFilterInput,
+  }),
+  lowerThanOrEquals: (label = 'lower than or equals'): DataGridFilterOperator<number, NumberFilterValue> => ({
+    op: 'lte',
+    label,
+    filterFn: (rowValue, filterValue) => rowValue <= getLeftValue(filterValue),
+    element: NumberFilterInput,
+  }),
+  between: (label = 'between'): DataGridFilterOperator<number, NumberFilterValue> => ({
+    op: 'bet',
+    label,
+    filterFn: (rowValue, filterValue) => rowValue > getLeftValue(filterValue) && rowValue < getRightValue(filterValue),
+    element: NumberFilterInput,
+  }),
+  betweenOrEquals: (label = 'between or equals'): DataGridFilterOperator<number, NumberFilterValue> => ({
+    op: 'beteq',
+    label,
+    filterFn: (rowValue, filterValue) =>
+      rowValue >= getLeftValue(filterValue) && rowValue <= getRightValue(filterValue),
+    element: NumberFilterInput,
+  }),
+  notBetween: (label = 'not between'): DataGridFilterOperator<number, NumberFilterValue> => ({
+    op: 'nbet',
+    label,
+    filterFn: (rowValue, filterValue) =>
+      !(rowValue > getLeftValue(filterValue) && rowValue < getRightValue(filterValue)),
+    element: NumberFilterInput,
+  }),
+  notBetweenOrEquals: (label = 'not between or equals'): DataGridFilterOperator<number, NumberFilterValue> => ({
+    op: 'nbeteq',
+    label,
+    filterFn: (rowValue, filterValue) =>
+      !(rowValue >= getLeftValue(filterValue) && rowValue <= getRightValue(filterValue)),
+    element: NumberFilterInput,
+  }),
 };
 
-export enum NumberFilterOperator {
-  Equals = 'eq',
-  NotEquals = 'neq',
-  GreaterThan = 'gt',
-  GreaterThanOrEquals = 'gte',
-  LowerThan = 'lt',
-  LowerThanOrEquals = 'lte',
-  Between = 'bet',
-  BetweenOrEquals = 'beteq',
-  NotBetween = 'nbet',
-  NotBetweenOrEquals = 'nbeteq',
-}
-
-const betweenFilters = [
-  NumberFilterOperator.Between,
-  NumberFilterOperator.BetweenOrEquals,
-  NumberFilterOperator.NotBetweenOrEquals,
-  NumberFilterOperator.NotBetween,
-];
-
-const isBetweenFilter = (op: NumberFilterOperator) => {
+const betweenFilters = ['bet', 'beteq', 'nbet', 'nbeteq'];
+const isBetweenFilter = (op: string) => {
   return betweenFilters.includes(op);
 };
 
-export type NumberFilterOptions = {
-  title?: string;
-  fixedOperator?: NumberFilterOperator;
-  labels?: Partial<Record<NumberFilterOperator, string>>;
-  placeholder?: string;
+export const initNumberFilterValue = (op: string, last?: NumberFilterValue): NumberFilterValue => {
+  if (isBetweenFilter(op)) {
+    return last && Array.isArray(last) ? last : [0, 0];
+  } else {
+    return last && !Array.isArray(last) ? last : 0;
+  }
 };
-export const createNumberFilter = ({
-  title,
-  fixedOperator,
-  labels,
-  placeholder = 'Filter value',
-}: NumberFilterOptions) => {
-  const filterFn: DataGridFilterFn<any, FilterState> = (row, columnId, filter) => {
-    const rowValue = Number(row.getValue(columnId));
-    const op = filter.op || NumberFilterOperator.Equals;
-    const leftFilterValue = Array.isArray(filter.value) ? Number(filter.value[0]) : Number(filter.value);
-    const rightFilterValue = Array.isArray(filter.value) ? Number(filter.value[1]) : 0;
-    switch (op) {
-      case NumberFilterOperator.Equals:
-        return rowValue === leftFilterValue;
-      case NumberFilterOperator.NotEquals:
-        return rowValue !== leftFilterValue;
-      case NumberFilterOperator.GreaterThan:
-        return rowValue > leftFilterValue;
-      case NumberFilterOperator.GreaterThanOrEquals:
-        return rowValue >= leftFilterValue;
-      case NumberFilterOperator.LowerThan:
-        return rowValue < leftFilterValue;
-      case NumberFilterOperator.LowerThanOrEquals:
-        return rowValue <= leftFilterValue;
-      case NumberFilterOperator.Between:
-        return rowValue > leftFilterValue && rowValue < rightFilterValue;
-      case NumberFilterOperator.BetweenOrEquals:
-        return rowValue >= leftFilterValue && rowValue <= rightFilterValue;
-      case NumberFilterOperator.NotBetween:
-        return !(rowValue > leftFilterValue && rowValue < rightFilterValue);
-      case NumberFilterOperator.NotBetweenOrEquals:
-        return !(rowValue >= leftFilterValue && rowValue <= rightFilterValue);
-      default:
-        return true;
-    }
-  };
-  filterFn.autoRemove = (val) => !val;
-  filterFn.init = () => ({
-    op: fixedOperator || NumberFilterOperator.GreaterThan,
-    value: [0, 0],
+
+export function createNumberFilter(options?: Partial<OperatorFilterOptions<number, NumberFilterValue>>) {
+  return createOperatorFilter<number, NumberFilterValue>({
+    init: initNumberFilterValue,
+    operators: [
+      numberOperators.equals(),
+      numberOperators.notEquals(),
+      numberOperators.greaterThan(),
+      numberOperators.greaterThanOrEquals(),
+      numberOperators.lowerThan(),
+      numberOperators.lowerThanOrEquals(),
+      numberOperators.between(),
+      numberOperators.betweenOrEquals(),
+      numberOperators.notBetween(),
+      numberOperators.notBetweenOrEquals(),
+    ],
+    ...options,
   });
-  filterFn.element = function NumberFilter({ filter, onFilterChange }: DataGridFilterProps<FilterState>) {
-    const handleFilterChange = (op: NumberFilterOperator) => {
-      if (isBetweenFilter(op)) {
-        onFilterChange({
-          op,
-          value: Array.isArray(filter.value) ? filter.value : [0, 0],
-        });
-      } else {
-        onFilterChange({
-          op,
-          value: Array.isArray(filter.value) ? 0 : filter.value,
-        });
-      }
-    };
-    return (
-      <>
-        {title && <Text>{title}</Text>}
+}
 
-        {!fixedOperator && (
-          <Select
-            data={Object.entries(NumberFilterOperator).map(([label, value]) => ({
-              value,
-              label: (labels && labels[value]) || label,
-            }))}
-            value={filter.op || NumberFilterOperator.Equals}
-            onChange={handleFilterChange}
-            withinPortal
-            aria-label="Filter Operator select"
-          />
-        )}
-
-        <Group noWrap grow>
-          <NumberInput
-            value={Array.isArray(filter.value) ? filter.value[0] : filter.value}
-            onChange={(value) => {
-              onFilterChange({
-                ...filter,
-                value: Array.isArray(filter.value) ? [value ?? 0, filter.value.at(1) ?? 0] : value ?? 0,
-              });
-            }}
-            placeholder={placeholder}
-            rightSection={isBetweenFilter(filter.op) ? null : <Filter size={20} />}
-            hideControls
-            aria-label="Filter value"
-          />
-          {isBetweenFilter(filter.op) && (
-            <NumberInput
-              value={Array.isArray(filter.value) ? filter.value[1] : 0}
-              onChange={(value) =>
-                onFilterChange({
-                  ...filter,
-                  value: Array.isArray(filter.value) ? [filter.value.at(0) ?? 0, value ?? 0] : 0,
-                })
-              }
-              placeholder={placeholder}
-              hideControls
-              aria-label="Filter value"
-            />
-          )}
-        </Group>
-      </>
-    );
-  };
-  return filterFn;
-};
-
-export const numberFilterFn = createNumberFilter({});
+export const numberFilterFn = createNumberFilter();

@@ -1,110 +1,71 @@
-import { Highlight, Select, Text, TextInput } from '@mantine/core';
-import { CellContext, RowData } from '@tanstack/react-table';
+import { TextInput } from '@mantine/core';
 import { Filter } from 'tabler-icons-react';
-import { DataGridFilterFn, DataGridFilterProps } from '../types';
+import { createOperatorFilter, OperatorFilterOptions } from './createOperatorFilter';
+import { DataGridFilterInput, DataGridFilterOperator } from './types';
 
-type FilterState = {
-  op: StringFilterOperator;
-  value: string;
+const format = (val: string) => String(val).toLowerCase();
+
+export const StringFilterInput: DataGridFilterInput<string> = ({ onChange, ...rest }) => (
+  <TextInput
+    {...rest}
+    onChange={(e) => onChange(e.target.value)}
+    rightSection={<Filter size={20} />}
+    aria-label="Filter value"
+  />
+);
+
+export const stringOperators = {
+  includes: (label = 'includes'): DataGridFilterOperator<string, string> => ({
+    op: 'in',
+    label,
+    filterFn: (rowValue, filterValue) => format(rowValue).includes(format(filterValue)),
+    element: StringFilterInput,
+  }),
+  notIncludes: (label = 'not includes'): DataGridFilterOperator<string, string> => ({
+    op: 'nin',
+    label,
+    filterFn: (rowValue, filterValue) => !format(rowValue).includes(format(filterValue)),
+    element: StringFilterInput,
+  }),
+  equals: (label = 'equals'): DataGridFilterOperator<string, string> => ({
+    op: 'eq',
+    label,
+    filterFn: (rowValue, filterValue) => format(rowValue) === format(filterValue),
+    element: StringFilterInput,
+  }),
+  notEquals: (label = 'not equals'): DataGridFilterOperator<string, string> => ({
+    op: 'neq',
+    label,
+    filterFn: (rowValue, filterValue) => format(rowValue) !== format(filterValue),
+    element: StringFilterInput,
+  }),
+  startsWith: (label = 'starts with'): DataGridFilterOperator<string, string> => ({
+    op: 'start',
+    label,
+    filterFn: (rowValue, filterValue) => format(rowValue).startsWith(format(filterValue)),
+    element: StringFilterInput,
+  }),
+  endsWith: (label = 'ends with'): DataGridFilterOperator<string, string> => ({
+    op: 'end',
+    label,
+    filterFn: (rowValue, filterValue) => format(rowValue).endsWith(format(filterValue)),
+    element: StringFilterInput,
+  }),
 };
 
-export enum StringFilterOperator {
-  Includes = 'in',
-  NotIncludes = 'nin',
-  Equals = 'eq',
-  NotEquals = 'neq',
-  StartsWith = 'start',
-  EndsWith = 'end',
+export function createStringFilter(options?: Partial<OperatorFilterOptions<string, string>>) {
+  return createOperatorFilter({
+    init: (_op, last) => last ?? '',
+    operators: [
+      stringOperators.includes(),
+      stringOperators.notIncludes(),
+      stringOperators.equals(),
+      stringOperators.notEquals(),
+      stringOperators.startsWith(),
+      stringOperators.endsWith(),
+    ],
+    ...options,
+  });
 }
 
-export type StringFilterOptions = {
-  title?: string;
-  fixedOperator?: StringFilterOperator;
-  labels?: Partial<Record<StringFilterOperator, string>>;
-  placeholder?: string;
-};
-export const createStringFilter = ({
-  title,
-  fixedOperator,
-  labels,
-  placeholder = 'Filter value',
-}: StringFilterOptions) => {
-  const filterFn: DataGridFilterFn<any, FilterState> = (row, columnId, filter) => {
-    const rowValue = String(row.getValue(columnId)).toLowerCase();
-    const op = filter.op || StringFilterOperator.Includes;
-    const filterValue = String(filter.value).toLowerCase();
-    switch (op) {
-      case StringFilterOperator.Includes:
-        return rowValue.includes(filterValue);
-      case StringFilterOperator.NotIncludes:
-        return !rowValue.includes(filterValue);
-      case StringFilterOperator.Equals:
-        return rowValue === filterValue;
-      case StringFilterOperator.NotEquals:
-        return rowValue !== filterValue;
-      case StringFilterOperator.StartsWith:
-        return rowValue.startsWith(filterValue);
-      case StringFilterOperator.EndsWith:
-        return rowValue.endsWith(filterValue);
-      default:
-        return true;
-    }
-  };
-  filterFn.autoRemove = (val) => !val;
-  filterFn.init = () => ({
-    op: fixedOperator || StringFilterOperator.Includes,
-    value: '',
-  });
-  filterFn.element = function ({ filter, onFilterChange }: DataGridFilterProps<FilterState>) {
-    return (
-      <>
-        {title && <Text>{title}</Text>}
-
-        {!fixedOperator && (
-          <Select
-            data={Object.entries(StringFilterOperator).map(([label, value]) => ({
-              value,
-              label: (labels && labels[value]) || label,
-            }))}
-            value={filter.op || StringFilterOperator.Includes}
-            onChange={(op) => onFilterChange({ ...filter, op: op as StringFilterOperator })}
-            withinPortal
-            aria-label="Filter Operator select"
-          />
-        )}
-
-        <TextInput
-          value={filter.value}
-          onChange={(e) => onFilterChange({ ...filter, value: e.target.value })}
-          placeholder={placeholder}
-          rightSection={<Filter size={20} />}
-          aria-label="Filter value"
-        />
-      </>
-    );
-  };
-  return filterFn;
-};
-
-export const stringFilterFn = createStringFilter({});
-
-export const highlightFilterValue = <TData extends RowData>({
-  renderValue,
-  column,
-  table,
-}: CellContext<TData, any>) => {
-  const highlight = [];
-  const filter = column.getFilterValue() as FilterState;
-  if (filter && filter.value) {
-    highlight.push(filter.value);
-  }
-
-  const globalFilter = table.getState().globalFilter;
-  if (globalFilter) {
-    highlight.push(globalFilter);
-  }
-
-  return (
-    <Highlight highlight={highlight} children={renderValue()} style={{ display: 'inline', fontSize: 'inherit' }} />
-  );
-};
+export const stringFilterFn = createStringFilter();

@@ -20,16 +20,17 @@ import { useState } from 'react';
 import {
   createBooleanFilter,
   createDateFilter,
-  createNumberFilter,
   createStringFilter,
   DataGrid,
-  DataGridFilterFn,
   DataGridFiltersState,
   DataGridPaginationState,
   DataGridSortingState,
   highlightFilterValue,
-  StringFilterOperator,
+  numberFilterFn,
+  stringFilterFn,
+  stringOperators,
 } from '../../src';
+import { createOperatorFilter } from '../../src/filters/createOperatorFilter';
 import { Data, demoData } from '../demoData';
 
 const sizeMap = new Map<string | number, string | number>([
@@ -45,30 +46,31 @@ const sizeMap = new Map<string | number, string | number>([
   [100, 'xl'],
 ]);
 
-const catFilter: DataGridFilterFn<Data, string[]> = (row, columnId, filter) => {
-  const rowValue = String(row.getValue(columnId));
-  return Array.isArray(filter) ? filter.includes(rowValue) : false;
-};
-catFilter.autoRemove = (val) => !val;
-catFilter.init = () => [];
-catFilter.element = function ({ filter, onFilterChange }) {
-  return (
-    <MultiSelect
-      data={[
-        { value: 'Peterbald', label: 'Peterbald' },
-        { value: 'Chartreux', label: 'Chartreux' },
-        { value: 'Highlander', label: 'Highlander' },
-        { value: 'Savannah', label: 'Savannah' },
-        { value: 'Birman', label: 'Birman' },
-        { value: 'Burmese', label: 'Burmese' },
-        { value: 'Siberian', label: 'Siberian' },
-      ]}
-      value={filter || []}
-      onChange={onFilterChange}
-      placeholder="Filter value"
-    />
-  );
-};
+const catFilter = createOperatorFilter<string, string[]>({
+  init: () => [],
+  operators: [
+    {
+      op: 'select',
+      filterFn: (rowValue, filterValue) => filterValue.includes(rowValue),
+      element: ({ onChange, value, ...rest }) => (
+        <MultiSelect
+          {...rest}
+          data={[
+            { value: 'Peterbald', label: 'Peterbald' },
+            { value: 'Chartreux', label: 'Chartreux' },
+            { value: 'Highlander', label: 'Highlander' },
+            { value: 'Savannah', label: 'Savannah' },
+            { value: 'Birman', label: 'Birman' },
+            { value: 'Burmese', label: 'Burmese' },
+            { value: 'Siberian', label: 'Siberian' },
+          ]}
+          value={value}
+          onChange={onChange}
+        />
+      ),
+    },
+  ],
+});
 
 const useStyles = createStyles((theme) => ({
   gridWrapper: {
@@ -184,18 +186,18 @@ export default function Demo() {
                   accessorKey: 'fish',
                   filterFn: createStringFilter({
                     title: 'Filter with only includes operator',
-                    fixedOperator: StringFilterOperator.Includes,
+                    operators: [stringOperators.includes()],
                   }),
                 },
               ],
             },
             {
               accessorKey: 'city',
-              filterFn: createStringFilter({}),
+              filterFn: stringFilterFn,
             },
             {
               accessorKey: 'value',
-              filterFn: createNumberFilter({}),
+              filterFn: numberFilterFn,
             },
             {
               accessorKey: 'date',

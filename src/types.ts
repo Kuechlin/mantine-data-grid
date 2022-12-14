@@ -4,7 +4,6 @@ import {
   ColumnDef,
   ColumnFiltersState,
   ColumnOrderState,
-  FilterFn,
   InitialTableState,
   PaginationState,
   Row,
@@ -179,20 +178,6 @@ export interface DataGridProps<TData extends RowData>
    */
   components?: Partial<DataGridComponents<TData>>;
 }
-
-export type DataGridFilterFn<TData extends RowData, TFilter = unknown> = FilterFn<TData> & {
-  element: ComponentType<DataGridFilterProps<TFilter>>;
-  init(): TFilter;
-};
-
-export function isDataGridFilter(val: unknown): val is DataGridFilterFn<unknown> {
-  return typeof val === 'function' && 'element' in val && 'init' in val;
-}
-
-export type DataGridFilterProps<T = unknown> = {
-  filter: T;
-  onFilterChange(value: T): void;
-};
 
 // component types
 export type DataGridComponents<TData> = {
