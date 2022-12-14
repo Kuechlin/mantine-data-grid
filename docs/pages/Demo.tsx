@@ -100,6 +100,7 @@ export default function Demo() {
     withPagination: true,
     withColumnFilters: true,
     withSorting: true,
+    withRowSelection: true,
     noFlexLayout: false,
     withColumnResizing: true,
     striped: true,
@@ -150,6 +151,7 @@ export default function Demo() {
           withColumnFilters={state.withColumnFilters}
           withSorting={state.withSorting}
           withColumnResizing={state.withColumnResizing}
+          withRowSelection={state.withRowSelection}
           noFlexLayout={state.noFlexLayout}
           striped={state.striped}
           withBorder={state.withBorder}
@@ -167,7 +169,7 @@ export default function Demo() {
             {
               accessorKey: 'id',
               header: 'No',
-              size: 60,
+              minSize: 64,
             },
             {
               accessorKey: 'text',
@@ -176,6 +178,8 @@ export default function Demo() {
                 title: 'Filter with Title',
               }),
               size: 200,
+              minSize: 100,
+              maxSize: 400,
               cell: highlightFilterValue,
             },
             {
@@ -269,6 +273,15 @@ export default function Demo() {
             onChange={(e) =>
               update({
                 withColumnResizing: e.target.checked,
+              })
+            }
+          />
+          <Switch
+            label="With row selection"
+            checked={state.withRowSelection}
+            onChange={(e) =>
+              update({
+                withRowSelection: e.target.checked,
               })
             }
           />

@@ -308,6 +308,8 @@ export function DataGrid<TData extends RowData>({
                     style={{
                       flex: `${header.getSize()} 0 auto`,
                       width: header.getSize(),
+                      maxWidth: header.column.columnDef.maxSize,
+                      minWidth: header.column.columnDef.minSize,
                     }}
                     className={classes.th}
                     colSpan={header.colSpan}
@@ -372,6 +374,8 @@ export function DataGrid<TData extends RowData>({
                           style={{
                             flex: `${cell.column.getSize()} 0 auto`,
                             width: cell.column.getSize(),
+                            maxWidth: cell.column.columnDef.maxSize,
+                            minWidth: cell.column.columnDef.minSize,
                           }}
                           className={cx(classes.td, cellProps.className)}
                           role="cell"

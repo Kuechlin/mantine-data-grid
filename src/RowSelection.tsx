@@ -11,5 +11,8 @@ export const getRowSelectionColumn = <TData extends RowData>(): ColumnDef<TData,
     />
   ),
   cell: ({ row }) => <Checkbox checked={row.getIsSelected()} onChange={row.getToggleSelectedHandler()} />,
-  size: 24,
+  size: 40,
+  minSize: 40,
+  maxSize: 40,
+  enableResizing: false,
 });
