@@ -101,6 +101,7 @@ export default function Demo() {
     withColumnFilters: true,
     withSorting: true,
     withRowSelection: true,
+    withRowExpanding: true,
     noFlexLayout: false,
     withColumnResizing: true,
     striped: true,
@@ -152,6 +153,25 @@ export default function Demo() {
           withSorting={state.withSorting}
           withColumnResizing={state.withColumnResizing}
           withRowSelection={state.withRowSelection}
+          {...(state.withRowExpanding
+            ? {
+                withRowExpanding: true,
+                getRowCanExpand: () => true,
+                renderSubComponent: (row) => (
+                  <pre
+                    style={{
+                      width: row.getVisibleCells().reduce((prev, curr) => prev + curr.column.getSize(), 0),
+                      overflow: 'auto',
+                    }}
+                    children={JSON.stringify(row.original, null, 2)}
+                  />
+                ),
+                onRow: (row) => ({
+                  onClick: row.getToggleExpandedHandler(),
+                  style: { cursor: 'pointer' },
+                }),
+              }
+            : {})}
           noFlexLayout={state.noFlexLayout}
           striped={state.striped}
           withBorder={state.withBorder}
@@ -282,6 +302,15 @@ export default function Demo() {
             onChange={(e) =>
               update({
                 withRowSelection: e.target.checked,
+              })
+            }
+          />
+          <Switch
+            label="With row expanding"
+            checked={state.withRowExpanding}
+            onChange={(e) =>
+              update({
+                withRowExpanding: e.target.checked,
               })
             }
           />

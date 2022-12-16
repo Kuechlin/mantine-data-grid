@@ -96,6 +96,16 @@ export default function Properties() {
                   </>
                 ),
               },
+              {
+                name: 'components',
+                type: 'DataGridComponents<TData>',
+                description: 'Component overrides',
+              },
+              {
+                name: 'options',
+                type: 'DataGridOptionsOverride<TData>',
+                description: 'Table Options overrides',
+              },
             ],
           },
           {
@@ -235,6 +245,27 @@ export default function Properties() {
                 name: 'onRowSelectionChange',
                 type: 'OnChangeCallback<RowSelectionState>',
                 description: 'Callback when row selection changed',
+              },
+            ],
+          },
+          {
+            group: 'Row Expanding',
+            children: [
+              { name: 'withRowExpanding', type: 'boolean', description: 'Enables row expanding ' },
+              {
+                name: 'getRowCanExpand',
+                type: '(row: Row<TData>) => boolean',
+                description: 'Allows you to determining whether a row can be expanded.',
+              },
+              {
+                name: 'renderSubComponent',
+                type: '(row: Row<TData>) => ReactNode',
+                description: 'Render sub component for expanded row',
+              },
+              {
+                name: 'onExpandedChange',
+                type: 'OnChangeCallback<DataGridExpandedState>',
+                description: 'Callback when expanded rows change',
               },
             ],
           },

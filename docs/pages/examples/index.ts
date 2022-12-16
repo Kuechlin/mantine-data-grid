@@ -63,6 +63,10 @@ import EditableExample from './EditableExample';
 // @ts-ignore
 import EditableExampleCode from './EditableExample.tsx?raw';
 
+import RowExpandingExample from './RowExpandingExample';
+// @ts-ignore
+import RowExpandingExampleCode from './RowExpandingExample.tsx?raw';
+
 export type Example = {
   label: string;
   path: string;
@@ -107,12 +111,6 @@ export const examples = {
     path: '/example/on-row-click',
     element: OnRowClickExample,
     code: OnRowClickExampleCode,
-  }),
-  filters: ex({
-    label: 'Column Filters',
-    path: '/example/filters',
-    element: CustomFilterExample,
-    code: CustomFilterExampleCode,
   }),
   empty: ex({
     label: 'Empty Grid',
@@ -167,5 +165,11 @@ export const examples = {
     path: '/example/editable',
     element: EditableExample,
     code: EditableExampleCode,
+  }),
+  expanding: ex({
+    label: 'Row Expanding',
+    path: '/example/expanding',
+    element: RowExpandingExample,
+    code: RowExpandingExampleCode,
   }),
 };
