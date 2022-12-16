@@ -20,16 +20,17 @@ import { useState } from 'react';
 import {
   createBooleanFilter,
   createDateFilter,
-  createNumberFilter,
   createStringFilter,
   DataGrid,
-  DataGridFilterFn,
   DataGridFiltersState,
   DataGridPaginationState,
   DataGridSortingState,
   highlightFilterValue,
-  StringFilterOperator,
+  numberFilterFn,
+  stringFilterFn,
+  stringOperators,
 } from '../../src';
+import { createOperatorFilter } from '../../src/filters/createOperatorFilter';
 import { Data, demoData } from '../demoData';
 
 const sizeMap = new Map<string | number, string | number>([
@@ -45,30 +46,31 @@ const sizeMap = new Map<string | number, string | number>([
   [100, 'xl'],
 ]);
 
-const catFilter: DataGridFilterFn<Data, string[]> = (row, columnId, filter) => {
-  const rowValue = String(row.getValue(columnId));
-  return Array.isArray(filter) ? filter.includes(rowValue) : false;
-};
-catFilter.autoRemove = (val) => !val;
-catFilter.init = () => [];
-catFilter.element = function ({ filter, onFilterChange }) {
-  return (
-    <MultiSelect
-      data={[
-        { value: 'Peterbald', label: 'Peterbald' },
-        { value: 'Chartreux', label: 'Chartreux' },
-        { value: 'Highlander', label: 'Highlander' },
-        { value: 'Savannah', label: 'Savannah' },
-        { value: 'Birman', label: 'Birman' },
-        { value: 'Burmese', label: 'Burmese' },
-        { value: 'Siberian', label: 'Siberian' },
-      ]}
-      value={filter || []}
-      onChange={onFilterChange}
-      placeholder="Filter value"
-    />
-  );
-};
+const catFilter = createOperatorFilter<string, string[]>({
+  init: () => [],
+  operators: [
+    {
+      op: 'select',
+      filterFn: (rowValue, filterValue) => filterValue.includes(rowValue),
+      element: ({ onChange, value, ...rest }) => (
+        <MultiSelect
+          {...rest}
+          data={[
+            { value: 'Peterbald', label: 'Peterbald' },
+            { value: 'Chartreux', label: 'Chartreux' },
+            { value: 'Highlander', label: 'Highlander' },
+            { value: 'Savannah', label: 'Savannah' },
+            { value: 'Birman', label: 'Birman' },
+            { value: 'Burmese', label: 'Burmese' },
+            { value: 'Siberian', label: 'Siberian' },
+          ]}
+          value={value}
+          onChange={onChange}
+        />
+      ),
+    },
+  ],
+});
 
 const useStyles = createStyles((theme) => ({
   gridWrapper: {
@@ -98,6 +100,8 @@ export default function Demo() {
     withPagination: true,
     withColumnFilters: true,
     withSorting: true,
+    withRowSelection: true,
+    withRowExpanding: true,
     noFlexLayout: false,
     withColumnResizing: true,
     striped: true,
@@ -148,6 +152,26 @@ export default function Demo() {
           withColumnFilters={state.withColumnFilters}
           withSorting={state.withSorting}
           withColumnResizing={state.withColumnResizing}
+          withRowSelection={state.withRowSelection}
+          {...(state.withRowExpanding
+            ? {
+                withRowExpanding: true,
+                getRowCanExpand: () => true,
+                renderSubComponent: (row) => (
+                  <pre
+                    style={{
+                      width: row.getVisibleCells().reduce((prev, curr) => prev + curr.column.getSize(), 0),
+                      overflow: 'auto',
+                    }}
+                    children={JSON.stringify(row.original, null, 2)}
+                  />
+                ),
+                onRow: (row) => ({
+                  onClick: row.getToggleExpandedHandler(),
+                  style: { cursor: 'pointer' },
+                }),
+              }
+            : {})}
           noFlexLayout={state.noFlexLayout}
           striped={state.striped}
           withBorder={state.withBorder}
@@ -165,7 +189,7 @@ export default function Demo() {
             {
               accessorKey: 'id',
               header: 'No',
-              size: 60,
+              minSize: 64,
             },
             {
               accessorKey: 'text',
@@ -174,6 +198,8 @@ export default function Demo() {
                 title: 'Filter with Title',
               }),
               size: 200,
+              minSize: 100,
+              maxSize: 400,
               cell: highlightFilterValue,
             },
             {
@@ -184,18 +210,18 @@ export default function Demo() {
                   accessorKey: 'fish',
                   filterFn: createStringFilter({
                     title: 'Filter with only includes operator',
-                    fixedOperator: StringFilterOperator.Includes,
+                    operators: [stringOperators.includes()],
                   }),
                 },
               ],
             },
             {
               accessorKey: 'city',
-              filterFn: createStringFilter({}),
+              filterFn: stringFilterFn,
             },
             {
               accessorKey: 'value',
-              filterFn: createNumberFilter({}),
+              filterFn: numberFilterFn,
             },
             {
               accessorKey: 'date',
@@ -267,6 +293,24 @@ export default function Demo() {
             onChange={(e) =>
               update({
                 withColumnResizing: e.target.checked,
+              })
+            }
+          />
+          <Switch
+            label="With row selection"
+            checked={state.withRowSelection}
+            onChange={(e) =>
+              update({
+                withRowSelection: e.target.checked,
+              })
+            }
+          />
+          <Switch
+            label="With row expanding"
+            checked={state.withRowExpanding}
+            onChange={(e) =>
+              update({
+                withRowExpanding: e.target.checked,
               })
             }
           />

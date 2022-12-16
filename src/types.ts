@@ -4,7 +4,7 @@ import {
   ColumnDef,
   ColumnFiltersState,
   ColumnOrderState,
-  FilterFn,
+  ExpandedState,
   InitialTableState,
   PaginationState,
   Row,
@@ -12,6 +12,7 @@ import {
   RowSelectionState,
   SortingState,
   Table,
+  TableOptions,
   TableState,
 } from '@tanstack/react-table';
 import { ComponentPropsWithoutRef, ComponentType, HTMLAttributes, ReactElement, ReactNode, Ref } from 'react';
@@ -34,6 +35,8 @@ export type DataGridSortingState = SortingState;
 export type DataGridPaginationState = PaginationState;
 export type DataGridFiltersState = ColumnFiltersState;
 export type DataGridColumnOrderState = ColumnOrderState;
+export type DataGridRowSelectionState = RowSelectionState;
+export type DataGridExpandedState = ExpandedState;
 export type DataGridLocale = {
   pagination?: (firstRowNum: number, lastRowNum: number, maxRows: number) => ReactNode;
   pageSize?: ReactNode;
@@ -137,7 +140,22 @@ export interface DataGridProps<TData extends RowData>
   /**
    * Callback when selected rows change
    */
-  onRowSelectionChange?: OnChangeCallback<RowSelectionState>;
+  onRowSelectionChange?: OnChangeCallback<DataGridRowSelectionState>;
+
+  /** Enables row expanding */
+  withRowExpanding?: boolean;
+  /**
+   * Allows you to determining whether a row can be expanded.
+   */
+  getRowCanExpand?: (row: Row<TData>) => boolean;
+  /**
+   * Render sub component for expanded row
+   */
+  renderSubComponent?: (row: Row<TData>) => ReactNode;
+  /**
+   * Callback when expanded rows change
+   */
+  onExpandedChange?: OnChangeCallback<DataGridExpandedState>;
 
   /**
    * The initial table state
@@ -178,21 +196,29 @@ export interface DataGridProps<TData extends RowData>
    * Component overrides
    */
   components?: Partial<DataGridComponents<TData>>;
+
+  /**
+   * Table Options overrides
+   */
+  options?: DataGridOptionsOverride<TData>;
 }
 
-export type DataGridFilterFn<TData extends RowData, TFilter = unknown> = FilterFn<TData> & {
-  element: ComponentType<DataGridFilterProps<TFilter>>;
-  init(): TFilter;
-};
-
-export function isDataGridFilter(val: unknown): val is DataGridFilterFn<unknown> {
-  return typeof val === 'function' && 'element' in val && 'init' in val;
-}
-
-export type DataGridFilterProps<T = unknown> = {
-  filter: T;
-  onFilterChange(value: T): void;
-};
+export type DataGridOptionsOverride<TData> = Partial<
+  Omit<
+    TableOptions<TData>,
+    | 'data'
+    | 'columns'
+    | 'initialState'
+    | 'state'
+    | 'pageCount'
+    | 'onGlobalFilterChange'
+    | 'onColumnFiltersChange'
+    | 'onSortingChange'
+    | 'onPaginationChange'
+    | 'onRowSelectionChange'
+    | 'onExpandedChange'
+  >
+>;
 
 // component types
 export type DataGridComponents<TData> = {

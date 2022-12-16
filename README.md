@@ -63,6 +63,10 @@ function Demo() {
 }
 ```
 
+## Contributing
+
+Contribution to this project is welcom, feel free to submit a Pull Request.
+
 ## Run locally
 
     pnpm i
@@ -87,8 +91,10 @@ function Demo() {
   - [ ] Column pinning
 - [ ] Column Ordering
 - [x] Row Selection
+- [x] Row Expanding
 - [x] Pagination
 - [x] Styles Api
+- [x] Component Overrides
 - [x] Docs
 - [x] Create npm package
 - [ ] Add tests

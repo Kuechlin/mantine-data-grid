@@ -53,25 +53,16 @@ export default createStyles(
     tbody: {
       minHeight: '160px',
     },
-    tr: {},
-    th: { position: 'relative' },
-    td: {},
-    headerCell: {
+    tr: {
       display: 'flex',
-      width: 'inherit',
-      height: 'inherit',
-      justifyContent: 'space-between',
     },
+    th: { position: 'relative', display: 'flex', height: 'inherit', justifyContent: 'space-between' },
+    td: { display: 'flex', justifyContent: 'space-between' },
     headerCellContent: ellipsis,
     headerCellButtons: {
       display: 'inline-flex',
       gap: '4px',
       alignItems: 'center',
-    },
-    dataCell: {
-      display: 'flex',
-      width: 'inherit',
-      justifyContent: 'space-between',
     },
     dataCellContent: ellipsis,
     resizer: {

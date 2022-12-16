@@ -30,12 +30,7 @@ const filters = [
     title: 'String filter',
     options: [
       { name: 'title', type: 'string', description: 'Title in filter dropdown' },
-      { name: 'fixedOperator', type: 'StringFilterOperator', description: 'Fixed filter operator' },
-      {
-        name: 'labels',
-        type: 'Partial<Record<StringFilterOperator, string>>',
-        description: 'Lables for filter operators',
-      },
+      { name: 'operators', type: 'FilterOperator[]', description: 'Filter operators' },
       { name: 'placeholder', type: 'string', description: 'Placeholder in input element, defaults to "Filter value"' },
     ],
     example: `
@@ -43,15 +38,15 @@ import { createStringFilter } from 'mantine-data-grid';
 
 const stringFilter = createStringFilter({
   title: 'Suchen',
-  labels: {
-    eq: 'Ist gleich',
-    in: 'Enthält',
-    start: 'Startet mit',
-    end: 'Endet mit',
-    neq: 'Nicht gleich',
-    nin: 'Enthält nicht',
-  },
   placeholder: 'Text eingeben',
+  operators: [
+    stringOperators.includes('Enthält'),
+    stringOperators.notIncludes('Enthält nicht'),
+    stringOperators.equals('Ist gleich'),
+    stringOperators.notEquals('Nicht gleich'),
+    stringOperators.startsWith('Startet mit'),
+    stringOperators.endsWith('Endet mit'),
+  ],
 });
 `,
   },
@@ -59,32 +54,27 @@ const stringFilter = createStringFilter({
     title: 'Number filter',
     options: [
       { name: 'title', type: 'string', description: 'Title in filter dropdown' },
-      { name: 'fixedOperator', type: 'NumberFilterOperator', description: 'Fixed filter operator' },
-      {
-        name: 'labels',
-        type: 'Partial<Record<NumberFilterOperator, string>>',
-        description: 'Labels for filter operators',
-      },
+      { name: 'operators', type: 'FilterOperator[]', description: 'Filter operators' },
       { name: 'placeholder', type: 'string', description: 'Placeholder in input element, defaults to "Filter value"' },
     ],
     example: `
 import { createNumberFilter } from 'mantine-data-grid';
 
 const numberFilter = createNumberFilter({
-  title: 'Numbers',
-  fixedOperator: NumberFilterOperator.Equals,
-  labels: {
-    bet: "Zwischen",
-    beteq: "Von bis",
-    nbet: "Nicht zwischen",
-    nbeteq: "Nicht von bis",
-    eq: "Gleich",
-    gt: "Größer als",
-    gte: "Größer gleich",
-    lt: "Kleiner als",
-    lte: "Kleiner gleich",
-    neq: "Nicht gleich"}
-  placeholder: 'Enter number',
+  title: 'Filtern',
+  placeholder: 'Nummer eingeben',
+  operators: [
+    numberOperators.equals("Gleich"),
+    numberOperators.notEquals("Nicht gleich"),
+    numberOperators.greaterThan("Größer als"),
+    numberOperators.greaterThanOrEquals("Größer gleich"),
+    numberOperators.lowerThan("Kleiner als"),
+    numberOperators.lowerThanOrEquals("Kleiner gleich"),
+    numberOperators.between("Zwischen"),
+    numberOperators.betweenOrEquals("Von bis"),
+    numberOperators.notBetween("Nicht zwischen"),
+    numberOperators.notBetweenOrEquals("Nicht von bis"),
+  ],
 });
 `,
   },
@@ -92,23 +82,18 @@ const numberFilter = createNumberFilter({
     title: 'Date filter',
     options: [
       { name: 'title', type: 'string', description: 'Title in filter dropdown' },
-      { name: 'fixedOperator', type: 'DateFilterOperator', description: 'Fixed filter operator' },
-      {
-        name: 'labels',
-        type: 'Partial<Record<DateFilterOperator, string>>',
-        description: 'Lables for filter operators',
-      },
+      { name: 'operators', type: 'FilterOperator[]', description: 'Filter operators' },
       { name: 'placeholder', type: 'string', description: 'Placeholder in input element, defaults to "Filter value"' },
     ],
     example: `
 import { createDateFilter } from 'mantine-data-grid';
 
-const numberFilter = createDateFilter({
+const dateFilter = createDateFilter({
   title: 'Dates',
   placeholder: 'Enter Date',
-  labels: {
-    eq: 'Equals Exact'
-  }
+  operators: [
+    numberOperators.equals(),
+  ]
 });
 `,
   },

@@ -1,31 +1,33 @@
 import { MultiSelect } from '@mantine/core';
-import { DataGrid, DataGridFilterFn } from '../../../src';
-import { Data, demoData } from '../../demoData';
+import { DataGrid } from '../../../src';
+import { createOperatorFilter } from '../../../src/filters/createOperatorFilter';
+import { demoData } from '../../demoData';
 
-const catFilter: DataGridFilterFn<Data, string[]> = (row, columnId, filter) => {
-  const rowValue = String(row.getValue(columnId));
-  return Array.isArray(filter) ? filter.includes(rowValue) : false;
-};
-catFilter.autoRemove = (val) => !val;
-catFilter.init = () => [];
-catFilter.element = function ({ filter, onFilterChange }) {
-  return (
-    <MultiSelect
-      data={[
-        { value: 'Peterbald', label: 'Peterbald' },
-        { value: 'Chartreux', label: 'Chartreux' },
-        { value: 'Highlander', label: 'Highlander' },
-        { value: 'Savannah', label: 'Savannah' },
-        { value: 'Birman', label: 'Birman' },
-        { value: 'Burmese', label: 'Burmese' },
-        { value: 'Siberian', label: 'Siberian' },
-      ]}
-      value={filter || []}
-      onChange={onFilterChange}
-      placeholder="Filter value"
-    />
-  );
-};
+const catFilter = createOperatorFilter<string, string[]>({
+  init: () => [],
+  operators: [
+    {
+      op: 'select',
+      filterFn: (rowValue, filterValue) => filterValue.includes(rowValue),
+      element: ({ onChange, value, ...rest }) => (
+        <MultiSelect
+          {...rest}
+          data={[
+            { value: 'Peterbald', label: 'Peterbald' },
+            { value: 'Chartreux', label: 'Chartreux' },
+            { value: 'Highlander', label: 'Highlander' },
+            { value: 'Savannah', label: 'Savannah' },
+            { value: 'Birman', label: 'Birman' },
+            { value: 'Burmese', label: 'Burmese' },
+            { value: 'Siberian', label: 'Siberian' },
+          ]}
+          value={value}
+          onChange={onChange}
+        />
+      ),
+    },
+  ],
+});
 
 export default function CustomFilterExample() {
   return (

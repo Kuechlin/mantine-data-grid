@@ -1,16 +1,17 @@
-import { createStringFilter, DataGrid, highlightFilterValue } from '../../../src';
+import { createStringFilter, DataGrid, highlightFilterValue, stringOperators } from '../../../src';
 import { demoData } from '../../demoData';
 
 const stringFilterFn = createStringFilter({
-  labels: {
-    eq: 'Ist gleich',
-    in: 'Enthält',
-    start: 'Startet mit',
-    end: 'Endet mit',
-    neq: 'Nicht gleich',
-    nin: 'Enthält nicht',
-  },
+  title: 'Suchen',
   placeholder: 'Text eingeben',
+  operators: [
+    stringOperators.includes('Enthält'),
+    stringOperators.notIncludes('Enthält nicht'),
+    stringOperators.equals('Ist gleich'),
+    stringOperators.notEquals('Nicht gleich'),
+    stringOperators.startsWith('Startet mit'),
+    stringOperators.endsWith('Endet mit'),
+  ],
 });
 
 export default function LocaleExample() {

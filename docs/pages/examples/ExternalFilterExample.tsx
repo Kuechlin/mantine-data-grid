@@ -1,12 +1,12 @@
-import { Stack, Card, Text, Group } from '@mantine/core';
+import { Card, Group, Stack, Text } from '@mantine/core';
 import {
   booleanFilterFn,
   DataGrid,
   dateFilterFn,
+  ExternalColumnFilter,
   highlightFilterValue,
   numberFilterFn,
   stringFilterFn,
-  ExternalColumnFilter,
   useDataGrid,
 } from '../../../src';
 import { Data, demoData } from '../../demoData';
@@ -29,6 +29,9 @@ export default function ExternalFilterExample() {
       <DataGrid
         data={demoData.splice(0, 25)}
         tableRef={setRef}
+        options={{
+          enableFilters: true,
+        }}
         columns={[
           {
             accessorKey: 'text',
