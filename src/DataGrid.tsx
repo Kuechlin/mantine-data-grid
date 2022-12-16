@@ -1,9 +1,11 @@
 import { LoadingOverlay, ScrollArea, Stack, Table as MantineTable, Text } from '@mantine/core';
 import {
   ColumnFiltersState,
+  ExpandedState,
   flexRender,
   functionalUpdate,
   getCoreRowModel,
+  getExpandedRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
@@ -17,7 +19,7 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 import { useVirtualizer } from '@tanstack/react-virtual';
-import { RefCallback, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react';
+import { Fragment, RefCallback, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { BoxOff } from 'tabler-icons-react';
 import { ColumnFilter } from './ColumnFilter';
 import { ColumnSorter } from './ColumnSorter';
@@ -67,6 +69,9 @@ export function DataGrid<TData extends RowData>({
   withPagination,
   withColumnResizing,
   withRowSelection,
+  withRowExpanding,
+  renderSubComponent,
+  getRowCanExpand,
   autoResetPageIndex,
   noFlexLayout,
   pageSizes,
@@ -78,6 +83,7 @@ export function DataGrid<TData extends RowData>({
   onFilter,
   onSort,
   onRowSelectionChange,
+  onExpandedChange,
   // table ref
   tableRef,
   // common props
@@ -90,6 +96,9 @@ export function DataGrid<TData extends RowData>({
   locale,
   // component overrides
   components: { headerWrapper, headerRow, headerCell, bodyWrapper, bodyRow, bodyCell, pagination } = {},
+  // table option ovverides
+  options,
+  // rest
   ...others
 }: DataGridProps<TData>) {
   const HeaderWrapper = headerWrapper ?? DefaultHeaderWrapper;
@@ -128,18 +137,24 @@ export function DataGrid<TData extends RowData>({
     enableSorting: !!withSorting,
     enableColumnResizing: !!withColumnResizing,
     enableRowSelection: !!withRowSelection,
+    enableExpanding: !!withRowExpanding,
     columnResizeMode: 'onChange',
     manualPagination: !!total, // when external data, handle pagination manually
     autoResetPageIndex: autoResetPageIndex,
 
     getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel:
+      options?.enableFilters || withGlobalFilter || withColumnFilters ? getFilteredRowModel() : undefined,
+    getPaginationRowModel: options?.enableFilters || withPagination ? getPaginationRowModel() : undefined,
+    getSortedRowModel: options?.enableSorting || withSorting ? getSortedRowModel() : undefined,
+    getExpandedRowModel: options?.enableExpanding || withRowExpanding ? getExpandedRowModel() : undefined,
+    getRowCanExpand,
 
     debugTable: debug,
     debugHeaders: debug,
     debugColumns: debug,
+
+    ...options,
   });
   useImperativeHandle(tableRef, () => table);
 
@@ -223,6 +238,20 @@ export function DataGrid<TData extends RowData>({
     [table, onRowSelectionChange]
   );
 
+  const handleExpandedChange: OnChangeFn<ExpandedState> = useCallback(
+    (arg0) => {
+      table.setState((state) => {
+        const next = functionalUpdate(arg0, state.expanded);
+        onExpandedChange && onExpandedChange(next);
+        return {
+          ...state,
+          expanded: next,
+        };
+      });
+    },
+    [table, onExpandedChange]
+  );
+
   const pageCount = withPagination && total ? Math.ceil(total / table.getState().pagination.pageSize) : undefined;
 
   table.setOptions((prev) => ({
@@ -233,6 +262,7 @@ export function DataGrid<TData extends RowData>({
     onSortingChange: handleSortingChange,
     onPaginationChange: handlePaginationChange,
     onRowSelectionChange: handleRowSelectionChange,
+    onExpandedChange: handleExpandedChange,
   }));
 
   const defaultPageSize = Number(pageSizes?.[0] ?? DEFAULT_INITIAL_SIZE);
@@ -355,38 +385,44 @@ export function DataGrid<TData extends RowData>({
                 const row = rows[virtualRow.index] as Row<TData>;
                 const rowProps = onRow ? onRow(row) : {};
                 return (
-                  <BodyRow
-                    {...rowProps}
-                    key={row.id}
-                    table={table}
-                    row={row}
-                    className={cx(classes.tr, rowProps.className)}
-                    role="row"
-                  >
-                    {row.getVisibleCells().map((cell) => {
-                      const cellProps = onCell ? onCell(cell) : {};
-                      return (
-                        <BodyCell
-                          {...cellProps}
-                          key={cell.id}
-                          table={table}
-                          cell={cell}
-                          style={{
-                            flex: `${cell.column.getSize()} 0 auto`,
-                            width: cell.column.getSize(),
-                            maxWidth: cell.column.columnDef.maxSize,
-                            minWidth: cell.column.columnDef.minSize,
-                          }}
-                          className={cx(classes.td, cellProps.className)}
-                          role="cell"
-                        >
-                          <div className={classes.dataCellContent}>
-                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                          </div>
-                        </BodyCell>
-                      );
-                    })}
-                  </BodyRow>
+                  <Fragment key={row.id}>
+                    <BodyRow
+                      {...rowProps}
+                      table={table}
+                      row={row}
+                      className={cx(classes.tr, rowProps.className)}
+                      role="row"
+                    >
+                      {row.getVisibleCells().map((cell) => {
+                        const cellProps = onCell ? onCell(cell) : {};
+                        return (
+                          <BodyCell
+                            {...cellProps}
+                            key={cell.id}
+                            table={table}
+                            cell={cell}
+                            style={{
+                              flex: `${cell.column.getSize()} 0 auto`,
+                              width: cell.column.getSize(),
+                              maxWidth: cell.column.columnDef.maxSize,
+                              minWidth: cell.column.columnDef.minSize,
+                            }}
+                            className={cx(classes.td, cellProps.className)}
+                            role="cell"
+                          >
+                            <div className={classes.dataCellContent}>
+                              {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                            </div>
+                          </BodyCell>
+                        );
+                      })}
+                    </BodyRow>
+                    {renderSubComponent && row.getIsExpanded() && (
+                      <BodyRow table={table} row={row} className={cx(classes.tr, rowProps.className)} role="row">
+                        <td colSpan={row.getVisibleCells().length}>{renderSubComponent(row)}</td>
+                      </BodyRow>
+                    )}
+                  </Fragment>
                 );
               })
             ) : (
