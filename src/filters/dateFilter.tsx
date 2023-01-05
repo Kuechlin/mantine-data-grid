@@ -1,10 +1,13 @@
 import { DatePicker, DateRangePicker } from '@mantine/dates';
-import dayjs, { Dayjs, extend } from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
 import { Filter } from 'tabler-icons-react';
 import { createOperatorFilter, OperatorFilterOptions } from './createOperatorFilter';
 import { DataGridFilterInput, DataGridFilterOperator } from './types';
+
+// eslint-disable-next-line import/no-named-as-default-member
+const { extend } = dayjs;
 
 extend(isSameOrBefore);
 extend(isSameOrAfter);
