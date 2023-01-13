@@ -226,7 +226,8 @@ export function DataGrid<TData extends RowData>({
 
   const handleRowSelectionChange: OnChangeFn<RowSelectionState> = useCallback(
     (arg0) => {
-      table.setState((state) => {
+      table.setState(() => {
+        const state = table.getState();
         const next = functionalUpdate(arg0, state.rowSelection);
         onRowSelectionChange && onRowSelectionChange(next);
         return {
@@ -427,15 +428,13 @@ export function DataGrid<TData extends RowData>({
               })
             ) : (
               <tr className={classes.tr} role="row">
-                <td colSpan={table.getVisibleLeafColumns().length}>
-                  <Stack align="center" spacing="xs">
-                    {empty || (
-                      <>
-                        <BoxOff size={64} />
-                        <Text weight="bold">No Data</Text>
-                      </>
-                    )}
-                  </Stack>
+                <td style={{ width: '100%' }}>
+                  {empty || (
+                    <Stack align="center" spacing="xs">
+                      <BoxOff size={64} />
+                      <Text weight="bold">No Data</Text>
+                    </Stack>
+                  )}
                 </td>
               </tr>
             )}

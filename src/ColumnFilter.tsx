@@ -47,7 +47,6 @@ export const ColumnFilter = function ColumnFilter({ column, className, color, fi
       transition="scale-y"
       shadow="xl"
       onClose={handleClose}
-      closeOnClickOutside={false}
       width="256px"
       withinPortal
     >
