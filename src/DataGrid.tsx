@@ -226,7 +226,8 @@ export function DataGrid<TData extends RowData>({
 
   const handleRowSelectionChange: OnChangeFn<RowSelectionState> = useCallback(
     (arg0) => {
-      table.setState((state) => {
+      table.setState(() => {
+        const state = table.getState();
         const next = functionalUpdate(arg0, state.rowSelection);
         onRowSelectionChange && onRowSelectionChange(next);
         return {
