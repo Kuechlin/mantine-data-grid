@@ -39,6 +39,10 @@ import RowSelectionExample from './RowSelectionExample';
 // @ts-ignore
 import RowSelectionExampleCode from './RowSelectionExample.tsx?raw';
 
+import SingleRowSelectionExample from './SingleRowSelectionExample';
+// @ts-ignore
+import SingleRowSelectionExampleCode from './SingleRowSelectionExample.tsx?raw';
+
 import StateExample from './StateExample';
 // @ts-ignore
 import StateExampleCode from './StateExample.tsx?raw';
@@ -141,6 +145,12 @@ export const examples = {
     path: '/example/rowselection',
     element: RowSelectionExample,
     code: RowSelectionExampleCode,
+  }),
+  singleRowSelection: ex({
+    label: 'Single Row selection',
+    path: '/example/singlerowselection',
+    element: SingleRowSelectionExample,
+    code: SingleRowSelectionExampleCode,
   }),
   override: ex({
     label: 'External filter',
