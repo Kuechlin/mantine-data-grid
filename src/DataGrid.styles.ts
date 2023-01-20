@@ -48,6 +48,7 @@ export default createStyles(
         top: 0,
         backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
         transition: 'box-shadow 150ms ease',
+        zIndex: 2,
       }),
     },
     tbody: {
