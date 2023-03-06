@@ -1,4 +1,4 @@
-import { DatePicker, DateRangePicker } from '@mantine/dates';
+import { DatePickerInput } from '@mantine/dates';
 import dayjs, { Dayjs } from 'dayjs';
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
@@ -41,7 +41,8 @@ export function createDateFilterInput(withTime = false): DataGridFilterInput<Dat
     if (Array.isArray(value)) {
       return (
         <>
-          <DateRangePicker
+          <DatePickerInput
+            type="range"
             {...rest}
             value={[parseDate(value[0]), parseDate(value[1])]}
             onChange={(value) => onChange([toString(value[0]), toString(value[1])])}
@@ -60,12 +61,11 @@ export function createDateFilterInput(withTime = false): DataGridFilterInput<Dat
     } else {
       return (
         <>
-          <DatePicker
+          <DatePickerInput
             {...rest}
             value={parseDate(value)}
             onChange={(value) => onChange(toString(value))}
             rightSection={<Filter size={20} />}
-            allowFreeInput
           />
           {/*withTime && (
             <TimeInput
