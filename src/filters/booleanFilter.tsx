@@ -29,7 +29,7 @@ export function createBooleanFilterInput({
           ]}
           fullWidth
           styles={{
-            active: {
+            indicator: {
               // fix visual bug when opening filter dropdown
               height: 'calc(100% - 8px) !important',
             },

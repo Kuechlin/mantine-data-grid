@@ -44,7 +44,9 @@ export const ColumnFilter = function ColumnFilter({ column, className, color, fi
       opened={state.open}
       position="bottom"
       withArrow
-      transition="scale-y"
+      transitionProps={{
+        transition: 'scale-y',
+      }}
       shadow="xl"
       onClose={handleClose}
       width="256px"

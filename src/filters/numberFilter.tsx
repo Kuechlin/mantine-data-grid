@@ -8,14 +8,14 @@ type NumberFilterValue = number | [number, number];
 export const NumberFilterInput: DataGridFilterInput<NumberFilterValue> = ({ onChange, value, ...rest }) =>
   Array.isArray(value) ? (
     <Group noWrap grow>
-      <NumberInput {...rest} value={value[0]} onChange={(val) => onChange([val ?? 0, value[1]])} hideControls />
-      <NumberInput {...rest} value={value[1]} onChange={(val) => onChange([value[0], val ?? 0])} hideControls />
+      <NumberInput {...rest} value={value[0]} onChange={(val) => onChange([Number(val) ?? 0, value[1]])} hideControls />
+      <NumberInput {...rest} value={value[1]} onChange={(val) => onChange([value[0], Number(val) ?? 0])} hideControls />
     </Group>
   ) : (
     <NumberInput
       {...rest}
       value={value}
-      onChange={(val) => onChange(val ?? 0)}
+      onChange={(val) => onChange(Number(val) ?? 0)}
       rightSection={<Filter size={20} />}
       hideControls
     />

@@ -82,7 +82,6 @@ export function Pagination<TData>({
               minWidth: '36px',
             },
           })}
-          page={table.getState().pagination.pageIndex + 1}
           total={table.getPageCount()}
           onChange={handlePageChange}
           className={classes[3]}
