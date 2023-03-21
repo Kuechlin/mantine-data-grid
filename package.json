@@ -32,14 +32,14 @@
   },
   "dependencies": {
     "@emotion/react": "^11.10.6",
-    "@mantine/core": "^6.0.0",
-    "@mantine/dates": "^6.0.0",
-    "@mantine/hooks": "^6.0.0",
+    "@mantine/core": "^6.0.2",
+    "@mantine/dates": "^6.0.2",
+    "@mantine/hooks": "^6.0.2",
     "@tanstack/react-table": "8.7.9",
     "@tanstack/react-virtual": "3.0.0-beta.26",
-    "dayjs": "1.11.7",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "dayjs": "^1.11.7",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
     "tabler-icons-react": "^1.56.0"
   },
   "devDependencies": {
@@ -50,7 +50,7 @@
     "@dnd-kit/sortable": "7.0.2",
     "@dnd-kit/utilities": "3.2.1",
     "@faker-js/faker": "7.6.0",
-    "@mantine/prism": "6.0.0",
+    "@mantine/prism": "^6.0.2",
     "@types/node": "18.14.6",
     "@types/react": "18.0.28",
     "@types/react-dom": "18.0.11",
@@ -73,9 +73,6 @@
     "vite": "4.1.4"
   },
   "peerDependencies": {
-    "@mantine/core": "^5.10.0",
-    "@mantine/dates": "^5.10.0",
-    "@mantine/hooks": "^5.10.0",
     "dayjs": "^1.11.7",
     "react": "^18.0.0",
     "react-dom": "^18.0.0"
