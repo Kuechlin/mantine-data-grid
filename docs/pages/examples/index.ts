@@ -75,6 +75,10 @@ import NestedExample from './NestedExample';
 // @ts-ignore
 import NestedExampleCode from './NestedExample.tsx?raw';
 
+import ResetFilterExample from './ResetFilterExample';
+// @ts-ignore
+import ResetFilterExampleCode from './ResetFilterExample.tsx?raw';
+
 export type Example = {
   label: string;
   path: string;
@@ -191,5 +195,11 @@ export const examples = {
     path: '/example/nested',
     element: NestedExample,
     code: NestedExampleCode,
+  }),
+  reset: ex({
+    label: 'Reset Filter',
+    path: '/example/reset',
+    element: ResetFilterExample,
+    code: ResetFilterExampleCode,
   }),
 };
