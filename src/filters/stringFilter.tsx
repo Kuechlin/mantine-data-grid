@@ -1,5 +1,5 @@
 import { TextInput } from '@mantine/core';
-import { Filter } from 'tabler-icons-react';
+import { IconFilter } from '@tabler/icons-react';
 import { createOperatorFilter, OperatorFilterOptions } from './createOperatorFilter';
 import { DataGridFilterInput, DataGridFilterOperator } from './types';
 
@@ -9,7 +9,7 @@ export const StringFilterInput: DataGridFilterInput<string> = ({ onChange, ...re
   <TextInput
     {...rest}
     onChange={(e) => onChange(e.target.value)}
-    rightSection={<Filter size={20} />}
+    rightSection={<IconFilter size={20} />}
     aria-label="Filter value"
   />
 );

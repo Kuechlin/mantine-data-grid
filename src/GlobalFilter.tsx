@@ -1,7 +1,7 @@
 import { TextInput } from '@mantine/core';
+import { IconSearch } from '@tabler/icons-react';
 import { FilterFn, Table } from '@tanstack/react-table';
 import { isValidElement, useEffect, useState } from 'react';
-import { Search } from 'tabler-icons-react';
 import { renderToString } from 'react-dom/server';
 import { DataGridLocale } from './types';
 
@@ -32,7 +32,7 @@ export function GlobalFilter<TData>({ table, className, locale }: GlobalFilterPr
       value={value}
       onChange={(e) => setValue(e.target.value)}
       placeholder={locale?.globalSearch || 'Search...'}
-      rightSection={<Search />}
+      rightSection={<IconSearch />}
       className={className}
     />
   );

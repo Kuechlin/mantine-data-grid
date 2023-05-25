@@ -1,7 +1,7 @@
 import { resolve } from 'path';
-import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { visualizer } from 'rollup-plugin-visualizer';
+import { defineConfig } from 'vite';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -15,12 +15,20 @@ export default defineConfig({
     rollupOptions: {
       // make sure to externalize deps that shouldn't be bundled
       // into your library
-      external: ['dayjs', 'react', 'react-dom', '@mantine/core', '@mantine/dates', '@mantine/hooks'],
+      external: [
+        'dayjs',
+        'react',
+        'react/jsx-runtime',
+        'react-dom/server',
+        '@mantine/core',
+        '@mantine/dates',
+        '@mantine/hooks',
+      ],
       output: {
-        // Provide global variables to use in the UMD build
-        // for externalized deps
         globals: {
           react: 'React',
+          'react-dom/server': 'ReactDom',
+          dayjs: 'dayjs',
         },
       },
     },

@@ -1,14 +1,8 @@
-import { LoadingOverlay, ScrollArea, Stack, Table as MantineTable, Text } from '@mantine/core';
+import { LoadingOverlay, Table as MantineTable, ScrollArea, Stack, Text } from '@mantine/core';
+import { IconBoxOff } from '@tabler/icons-react';
 import {
   ColumnFiltersState,
   ExpandedState,
-  flexRender,
-  functionalUpdate,
-  getCoreRowModel,
-  getExpandedRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
   OnChangeFn,
   PaginationState,
   Row,
@@ -16,15 +10,21 @@ import {
   RowSelectionState,
   SortingState,
   Table,
+  TableState,
+  flexRender,
+  functionalUpdate,
+  getCoreRowModel,
+  getExpandedRowModel,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { Fragment, RefCallback, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react';
-import { BoxOff } from 'tabler-icons-react';
-import { ColumnFilter } from './ColumnFilter';
-import { ColumnSorter } from './ColumnSorter';
+import { DefaultColumnFilter } from './ColumnFilter';
+import { DefaultColumnSorter } from './ColumnSorter';
 import useStyles from './DataGrid.styles';
-import { isDataGridFilter } from './filters';
 import { GlobalFilter, globalFilterFn } from './GlobalFilter';
 import { DEFAULT_INITIAL_SIZE, Pagination as DefaultPagination } from './Pagination';
 import { getRowSelectionColumn } from './RowSelection';
@@ -36,6 +36,7 @@ import {
   DefaultHeaderRow,
   DefaultHeaderWrapper,
 } from './TableComponents';
+import { isDataGridFilter } from './filters';
 import { DataGridProps } from './types';
 
 export function useDataGrid<TData extends RowData>(): [Table<TData> | null, RefCallback<Table<TData>>] {
@@ -95,7 +96,17 @@ export function DataGrid<TData extends RowData>({
   empty,
   locale,
   // component overrides
-  components: { headerWrapper, headerRow, headerCell, bodyWrapper, bodyRow, bodyCell, pagination } = {},
+  components: {
+    headerWrapper,
+    headerRow,
+    headerCell,
+    bodyWrapper,
+    bodyRow,
+    bodyCell,
+    pagination,
+    columnFilter,
+    columnSorter,
+  } = {},
   // table option ovverides
   options,
   // rest
@@ -108,6 +119,8 @@ export function DataGrid<TData extends RowData>({
   const BodyRow = bodyRow ?? DefaultBodyRow;
   const BodyCell = bodyCell ?? DefaultBodyCell;
   const Pagination = pagination ?? DefaultPagination;
+  const ColumnFilter = columnFilter ?? DefaultColumnFilter;
+  const ColumnSorter = columnSorter ?? DefaultColumnSorter;
   const { classes, theme, cx } = useStyles(
     {
       height,
@@ -170,88 +183,59 @@ export function DataGrid<TData extends RowData>({
     }
   }, [table, width, noFlexLayout, tableSize]);
 
-  const handleGlobalFilterChange: OnChangeFn<string> = useCallback(
-    (arg0) =>
-      table.setState((state) => {
-        const next = functionalUpdate(arg0, state.globalFilter || '');
-        onSearch && onSearch(next);
-        return {
-          ...state,
-          globalFilter: next,
-        };
-      }),
-    [table, onSearch]
+  const handleChange = useCallback(
+    function change<T extends keyof TableState>(
+      key: T,
+      handler?: (value: TableState[T]) => void
+    ): OnChangeFn<TableState[T]> {
+      return (arg0) => {
+        if (state && state[key]) {
+          const next = functionalUpdate(arg0, state[key]);
+          handler && handler(next);
+        } else {
+          table.setState((state) => {
+            const next = functionalUpdate(arg0, state[key]);
+            handler && handler(next);
+            return {
+              ...state,
+              [key]: next,
+            };
+          });
+        }
+      };
+    },
+    [state, table]
   );
 
-  const handleSortingChange: OnChangeFn<SortingState> = useCallback(
-    (arg0) =>
-      table.setState((state) => {
-        const next = functionalUpdate(arg0, state.sorting);
-        onSort && onSort(next);
-        return {
-          ...state,
-          sorting: next,
-        };
-      }),
-    [table, onSort]
-  );
+  const handleGlobalFilterChange: OnChangeFn<string> = useCallback(handleChange('globalFilter', onSearch), [
+    handleChange,
+    onSearch,
+  ]);
+
+  const handleSortingChange: OnChangeFn<SortingState> = useCallback(handleChange('sorting', onSort), [
+    handleChange,
+    onSort,
+  ]);
 
   const handleColumnFiltersChange: OnChangeFn<ColumnFiltersState> = useCallback(
-    (arg0) =>
-      table.setState((state) => {
-        const next = functionalUpdate(arg0, state.columnFilters);
-        onFilter && onFilter(next);
-        return {
-          ...state,
-          columnFilters: next,
-        };
-      }),
-    [table, onFilter]
+    handleChange('columnFilters', onFilter),
+    [handleChange, onFilter]
   );
 
-  const handlePaginationChange: OnChangeFn<PaginationState> = useCallback(
-    (arg0) => {
-      const pagination = table.getState().pagination;
-      const next = functionalUpdate(arg0, pagination);
-      if (next.pageIndex !== pagination.pageIndex || next.pageSize !== pagination.pageSize) {
-        onPageChange && onPageChange(next);
-        table.setState((state) => ({
-          ...state,
-          pagination: next,
-        }));
-      }
-    },
-    [table, onPageChange]
-  );
+  const handlePaginationChange: OnChangeFn<PaginationState> = useCallback(handleChange('pagination', onPageChange), [
+    handleChange,
+    onPageChange,
+  ]);
 
   const handleRowSelectionChange: OnChangeFn<RowSelectionState> = useCallback(
-    (arg0) => {
-      table.setState(() => {
-        const state = table.getState();
-        const next = functionalUpdate(arg0, state.rowSelection);
-        onRowSelectionChange && onRowSelectionChange(next);
-        return {
-          ...state,
-          rowSelection: next,
-        };
-      });
-    },
-    [table, onRowSelectionChange]
+    handleChange('rowSelection', onRowSelectionChange),
+    [handleChange, onRowSelectionChange]
   );
 
-  const handleExpandedChange: OnChangeFn<ExpandedState> = useCallback(
-    (arg0) => {
-      table.setState((state) => {
-        const next = functionalUpdate(arg0, state.expanded);
-        onExpandedChange && onExpandedChange(next);
-        return {
-          ...state,
-          expanded: next,
-        };
-      });
-    },
-    [table, onExpandedChange]
-  );
+  const handleExpandedChange: OnChangeFn<ExpandedState> = useCallback(handleChange('expanded', onExpandedChange), [
+    handleChange,
+    onExpandedChange,
+  ]);
 
   const pageCount = withPagination && total ? Math.ceil(total / table.getState().pagination.pageSize) : undefined;
 
@@ -431,7 +415,7 @@ export function DataGrid<TData extends RowData>({
                 <td style={{ width: '100%' }}>
                   {empty || (
                     <Stack align="center" spacing="xs">
-                      <BoxOff size={64} />
+                      <IconBoxOff size={64} />
                       <Text weight="bold">No Data</Text>
                     </Stack>
                   )}

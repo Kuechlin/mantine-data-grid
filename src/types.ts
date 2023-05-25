@@ -16,6 +16,8 @@ import {
   TableState,
 } from '@tanstack/react-table';
 import { ComponentPropsWithoutRef, ComponentType, HTMLAttributes, ReactElement, ReactNode, Ref } from 'react';
+import { ColumnFilterProps } from './ColumnFilter';
+import { ColumnSorterProps } from './ColumnSorter';
 import useStyles from './DataGrid.styles';
 import { PaginationProps } from './Pagination';
 import {
@@ -229,4 +231,6 @@ export type DataGridComponents<TData> = {
   bodyRow: ComponentType<DataGridBodyRowProps<TData>>;
   bodyCell: ComponentType<DataGridBodyCellProps<TData>>;
   pagination: ComponentType<PaginationProps<TData>>;
+  columnFilter: ComponentType<ColumnFilterProps>;
+  columnSorter: ComponentType<ColumnSorterProps>;
 };

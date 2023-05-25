@@ -1,8 +1,8 @@
 import { DatePickerInput } from '@mantine/dates';
+import { IconFilter } from '@tabler/icons-react';
 import dayjs, { Dayjs } from 'dayjs';
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
-import { Filter } from 'tabler-icons-react';
 import { createOperatorFilter, OperatorFilterOptions } from './createOperatorFilter';
 import { DataGridFilterInput, DataGridFilterOperator } from './types';
 
@@ -46,7 +46,7 @@ export function createDateFilterInput(withTime = false): DataGridFilterInput<Dat
             {...rest}
             value={[parseDate(value[0]), parseDate(value[1])]}
             onChange={(value) => onChange([toString(value[0]), toString(value[1])])}
-            rightSection={<Filter size={20} />}
+            rightSection={<IconFilter size={20} />}
           />
           {/*withTime && (
             <TimeRangeInput
@@ -65,7 +65,7 @@ export function createDateFilterInput(withTime = false): DataGridFilterInput<Dat
             {...rest}
             value={parseDate(value)}
             onChange={(value) => onChange(toString(value))}
-            rightSection={<Filter size={20} />}
+            rightSection={<IconFilter size={20} />}
           />
           {/*withTime && (
             <TimeInput
