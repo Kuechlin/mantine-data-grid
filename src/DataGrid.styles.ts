@@ -90,7 +90,7 @@ export default createStyles(
       justifyContent: 'center',
       alignItems: 'center',
 
-      [`@media (min-width: ${theme.breakpoints.xl}px)`]: {
+      [`@media (min-width: ${theme.breakpoints.xl})`]: {
         justifyContent: paginationMode === 'default' ? 'space-between' : 'flex-end',
       },
     },
@@ -98,7 +98,7 @@ export default createStyles(
     pagination_info: {
       display: 'none',
 
-      [`@media (min-width: ${theme.breakpoints.xl}px)`]: {
+      [`@media (min-width: ${theme.breakpoints.xl})`]: {
         display: 'inline-block',
       },
     },
@@ -106,7 +106,7 @@ export default createStyles(
     pagination_size: {
       display: 'none',
 
-      [`@media (min-width: ${theme.breakpoints.xl}px)`]: {
+      [`@media (min-width: ${theme.breakpoints.xl})`]: {
         display: 'flex',
         alignItems: 'center',
         gap: `${theme.spacing.xs}px`,
