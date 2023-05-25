@@ -9,22 +9,22 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@emotion/react": "^11.10.5",
-    "@emotion/server": "^11.10.0",
-    "@faker-js/faker": "^7.6.0",
-    "@mantine/core": "5.6.3",
-    "@mantine/dates": "^5.10.0",
-    "@mantine/hooks": "^5.10.0",
-    "@mantine/next": "^5.10.0",
-    "@next/font": "13.1.2",
-    "@types/node": "18.11.18",
-    "@types/react": "18.0.26",
-    "@types/react-dom": "18.0.10",
+    "@emotion/react": "^11.11.0",
+    "@emotion/server": "^11.11.0",
+    "@faker-js/faker": "^8.0.1",
+    "@mantine/core": "6.0.11",
+    "@mantine/dates": "^6.0.11",
+    "@mantine/hooks": "^6.0.11",
+    "@mantine/next": "^6.0.11",
+    "@next/font": "13.4.3",
+    "@types/node": "20.2.3",
+    "@types/react": "18.2.7",
+    "@types/react-dom": "18.2.4",
     "dayjs": "^1.11.7",
-    "mantine-data-grid": "0.1.1",
-    "next": "13.1.2",
+    "mantine-data-grid": "0.2.2",
+    "next": "13.4.3",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "typescript": "4.9.4"
+    "typescript": "5.0.4"
   }
 }
