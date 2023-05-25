@@ -1,7 +1,8 @@
 import { TextInput } from '@mantine/core';
 import { FilterFn, Table } from '@tanstack/react-table';
-import { useEffect, useState } from 'react';
+import { isValidElement, useEffect, useState } from 'react';
 import { Search } from 'tabler-icons-react';
+import { renderToString } from 'react-dom/server';
 import { DataGridLocale } from './types';
 
 type GlobalFilterProps<TData> = {
@@ -41,5 +42,14 @@ export function GlobalFilter<TData>({ table, className, locale }: GlobalFilterPr
 export const globalFilterFn: FilterFn<any> = (row, columnId: string, filterValue: string) => {
   const value = row.getValue<string>(columnId);
   if (!value) return false;
+
+  // if is a react element, then render it to string, so it can be searched
+  if (isValidElement(value)) {
+    const htmlString = renderToString(value);
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(htmlString, 'text/html');
+    return (doc.body.textContent || doc.body.innerText).toLowerCase().includes(filterValue.toLowerCase());
+  }
+
   return value.toString().toLowerCase().includes(filterValue.toString().toLowerCase());
 };
