@@ -1,6 +1,6 @@
 import { Group, NumberInput } from '@mantine/core';
-import { Filter } from 'tabler-icons-react';
-import { createOperatorFilter, OperatorFilterOptions } from './createOperatorFilter';
+import { IconFilter } from '@tabler/icons-react';
+import { OperatorFilterOptions, createOperatorFilter } from './createOperatorFilter';
 import { DataGridFilterInput, DataGridFilterOperator } from './types';
 
 type NumberFilterValue = number | [number, number];
@@ -16,7 +16,7 @@ export const NumberFilterInput: DataGridFilterInput<NumberFilterValue> = ({ onCh
       {...rest}
       value={value}
       onChange={(val) => onChange(Number(val) ?? 0)}
-      rightSection={<Filter size={20} />}
+      rightSection={<IconFilter size={20} />}
       hideControls
     />
   );

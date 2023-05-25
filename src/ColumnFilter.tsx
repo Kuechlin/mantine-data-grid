@@ -1,8 +1,8 @@
 import { ActionIcon, Button, Group, Menu, Stack } from '@mantine/core';
 import { useSetState } from '@mantine/hooks';
+import { IconCheck, IconFilter, IconX } from '@tabler/icons-react';
 import { Column } from '@tanstack/react-table';
 import { createElement, useState } from 'react';
-import { Check, Filter, X } from 'tabler-icons-react';
 import { DataGridFilterFn, isDataGridFilter } from './filters/types';
 
 export interface ColumnFilterProps {
@@ -55,7 +55,7 @@ export const ColumnFilter = function ColumnFilter({ column, className, color, fi
       <Menu.Target>
         <ActionIcon
           size="xs"
-          children={<Filter size={16} />}
+          children={<IconFilter size={16} />}
           onClick={handleOpen}
           className={className}
           variant={column.getIsFiltered() ? 'light' : 'transparent'}
@@ -69,7 +69,7 @@ export const ColumnFilter = function ColumnFilter({ column, className, color, fi
 
             <Group position="apart">
               <Button
-                children={<X />}
+                children={<IconX />}
                 color="gray"
                 onClick={handleClear}
                 compact
@@ -77,7 +77,7 @@ export const ColumnFilter = function ColumnFilter({ column, className, color, fi
                 aria-label="Reste Filter"
               />
               <Button
-                children={<Check />}
+                children={<IconCheck />}
                 onClick={handleSave}
                 compact
                 variant="outline"

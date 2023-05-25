@@ -1,6 +1,6 @@
 import { ActionIcon } from '@mantine/core';
+import { IconChevronDown, IconSelector } from '@tabler/icons-react';
 import { Column } from '@tanstack/react-table';
-import { ChevronDown, Selector } from 'tabler-icons-react';
 
 export interface ColumnSorterProps {
   column: Column<any, any>;
@@ -21,7 +21,7 @@ export const ColumnSorter = ({ column, className, color }: ColumnSorterProps) =>
       }}
       variant={sorted ? 'light' : 'transparent'}
       color={sorted ? color : 'gray'}
-      children={sorted ? <ChevronDown size={16} /> : <Selector size={16} />}
+      children={sorted ? <IconChevronDown size={16} /> : <IconSelector size={16} />}
     />
   );
 };
