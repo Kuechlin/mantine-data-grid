@@ -8,7 +8,7 @@ export interface ColumnSorterProps {
   color: string;
 }
 
-export const ColumnSorter = ({ column, className, color }: ColumnSorterProps) => {
+export const DefaultColumnSorter = ({ column, className, color }: ColumnSorterProps) => {
   const sorted = column.getIsSorted();
   return (
     <ActionIcon

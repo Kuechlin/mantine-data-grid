@@ -12,7 +12,7 @@ export interface ColumnFilterProps {
   color: string;
 }
 
-export const ColumnFilter = function ColumnFilter({ column, className, color, filterFn }: ColumnFilterProps) {
+export const DefaultColumnFilter = function ColumnFilter({ column, className, color, filterFn }: ColumnFilterProps) {
   const [state, setState] = useSetState({ open: false, value: null as unknown });
 
   const handleOpen = () =>

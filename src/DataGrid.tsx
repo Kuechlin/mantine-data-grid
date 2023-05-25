@@ -22,8 +22,8 @@ import {
 } from '@tanstack/react-table';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { Fragment, RefCallback, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react';
-import { ColumnFilter } from './ColumnFilter';
-import { ColumnSorter } from './ColumnSorter';
+import { DefaultColumnFilter } from './ColumnFilter';
+import { DefaultColumnSorter } from './ColumnSorter';
 import useStyles from './DataGrid.styles';
 import { GlobalFilter, globalFilterFn } from './GlobalFilter';
 import { DEFAULT_INITIAL_SIZE, Pagination as DefaultPagination } from './Pagination';
@@ -96,7 +96,17 @@ export function DataGrid<TData extends RowData>({
   empty,
   locale,
   // component overrides
-  components: { headerWrapper, headerRow, headerCell, bodyWrapper, bodyRow, bodyCell, pagination } = {},
+  components: {
+    headerWrapper,
+    headerRow,
+    headerCell,
+    bodyWrapper,
+    bodyRow,
+    bodyCell,
+    pagination,
+    columnFilter,
+    columnSorter,
+  } = {},
   // table option ovverides
   options,
   // rest
@@ -109,6 +119,8 @@ export function DataGrid<TData extends RowData>({
   const BodyRow = bodyRow ?? DefaultBodyRow;
   const BodyCell = bodyCell ?? DefaultBodyCell;
   const Pagination = pagination ?? DefaultPagination;
+  const ColumnFilter = columnFilter ?? DefaultColumnFilter;
+  const ColumnSorter = columnSorter ?? DefaultColumnSorter;
   const { classes, theme, cx } = useStyles(
     {
       height,
