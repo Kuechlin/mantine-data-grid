@@ -28,8 +28,8 @@ export default function OnRowClickExample() {
   return (
     <>
       <Group>
-        <Notification disallowClose title="click on row to highlight" />
-        <Notification disallowClose title="hover over column fish to highlight cell" />
+        <Notification withCloseButton={false} title="click on row to highlight" />
+        <Notification withCloseButton={false} title="hover over column fish to highlight cell" />
       </Group>
       <DataGrid
         data={demoData.slice(0, 10)}
