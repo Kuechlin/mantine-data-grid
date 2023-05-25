@@ -71,6 +71,10 @@ import RowExpandingExample from './RowExpandingExample';
 // @ts-ignore
 import RowExpandingExampleCode from './RowExpandingExample.tsx?raw';
 
+import NestedExample from './NestedExample';
+// @ts-ignore
+import NestedExampleCode from './NestedExample.tsx?raw';
+
 export type Example = {
   label: string;
   path: string;
@@ -181,5 +185,11 @@ export const examples = {
     path: '/example/expanding',
     element: RowExpandingExample,
     code: RowExpandingExampleCode,
+  }),
+  nested: ex({
+    label: 'Nested Data example',
+    path: '/example/nested',
+    element: NestedExample,
+    code: NestedExampleCode,
   }),
 };

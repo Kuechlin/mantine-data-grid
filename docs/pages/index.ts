@@ -1,5 +1,5 @@
+import { IconBook, IconFilter, IconPaint, IconRocket, IconStar } from '@tabler/icons-react';
 import { ComponentType } from 'react';
-import { Book, Filter, Paint, Rocket, Star } from 'tabler-icons-react';
 import Demo from './Demo';
 import Filters from './Filters';
 import GettingStarted from './GettingStarted';
@@ -19,35 +19,35 @@ export type Page = {
 export const pages: Page[] = [
   {
     color: 'orange',
-    icon: Star,
+    icon: IconStar,
     label: 'Demo',
     path: '/',
     element: Demo,
   },
   {
     color: 'teal',
-    icon: Rocket,
+    icon: IconRocket,
     label: 'Getting started',
     path: '/getting-started',
     element: GettingStarted,
   },
   {
     color: 'red',
-    icon: Book,
+    icon: IconBook,
     label: 'Properties',
     path: '/properties',
     element: Properties,
   },
   {
     color: 'indigo',
-    icon: Paint,
+    icon: IconPaint,
     label: 'Styles',
     path: '/styles',
     element: Styles,
   },
   {
     color: 'yellow',
-    icon: Filter,
+    icon: IconFilter,
     label: 'Filters',
     path: '/filters',
     element: Filters,

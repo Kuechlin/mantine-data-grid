@@ -1,6 +1,6 @@
-import { Title, Group, Header as HeaderMantine, Avatar, useMantineColorScheme, ActionIcon } from '@mantine/core';
+import { ActionIcon, Avatar, Group, Header as HeaderMantine, Title, useMantineColorScheme } from '@mantine/core';
 
-import { BrandGithub, MoonStars, Sun, Table } from 'tabler-icons-react';
+import { IconBrandGithub, IconMoonStars, IconSun, IconTable } from '@tabler/icons-react';
 
 export default function Header() {
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
@@ -9,7 +9,7 @@ export default function Header() {
     <HeaderMantine height={68}>
       <Group position="apart" align="center" p="xs">
         <Group align="center">
-          <Avatar children={<Table size={32} />} color="blue" radius="xl" size={48} />
+          <Avatar children={<IconTable size={32} />} color="blue" radius="xl" size={48} />
           <Title>Mantine Data Grid</Title>
         </Group>
         <Group align="center">
@@ -25,11 +25,11 @@ export default function Header() {
             target="_blank"
             rel="noopener noreferrer"
           >
-            <BrandGithub size={16} />
+            <IconBrandGithub size={16} />
           </ActionIcon>
 
           <ActionIcon variant="default" onClick={() => toggleColorScheme()} size="lg">
-            {colorScheme === 'dark' ? <Sun size={16} /> : <MoonStars size={16} />}
+            {colorScheme === 'dark' ? <IconSun size={16} /> : <IconMoonStars size={16} />}
           </ActionIcon>
         </Group>
       </Group>

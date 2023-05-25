@@ -1,13 +1,13 @@
+import { Badge } from '@mantine/core';
 import { useEffect, useState } from 'react';
-import { Badge } from 'tabler-icons-react';
 import {
-  booleanFilterFn,
   DataGrid,
   DataGridPaginationState,
+  OnChangeCallback,
+  booleanFilterFn,
   dateFilterFn,
   highlightFilterValue,
   numberFilterFn,
-  OnChangeCallback,
   stringFilterFn,
 } from '../../../src';
 import { Data, demoData } from '../../demoData';

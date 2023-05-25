@@ -16,7 +16,7 @@ import {
 import { restrictToHorizontalAxis } from '@dnd-kit/modifiers';
 import { arrayMove, horizontalListSortingStrategy, SortableContext, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { GridDots } from 'tabler-icons-react';
+import { IconGridDots } from '@tabler/icons-react';
 import { DataGrid, DataGridHeaderCellProps } from '../../../src';
 import { Data, demoData } from '../../demoData';
 
@@ -63,7 +63,7 @@ export default function ColumnDragDropExample() {
             <Group position="apart">
               {activeId}
               <ActionIcon ml="auto">
-                <GridDots />
+                <IconGridDots />
               </ActionIcon>
             </Group>
           </Card>
@@ -110,7 +110,7 @@ const DraggableColumnHeader = ({ children, header, ...props }: DataGridHeaderCel
       <Box sx={{ display: 'flex' }}>
         {children}
         <ActionIcon ml="auto">
-          <GridDots {...attributes} {...listeners} />
+          <IconGridDots {...attributes} {...listeners} />
         </ActionIcon>
       </Box>
     </th>
