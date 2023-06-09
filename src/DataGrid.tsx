@@ -1,14 +1,9 @@
 import { LoadingOverlay, Table as MantineTable, ScrollArea, Stack, Text } from '@mantine/core';
 import { IconBoxOff } from '@tabler/icons-react';
 import {
-  ColumnFiltersState,
-  ExpandedState,
   OnChangeFn,
-  PaginationState,
   Row,
   RowData,
-  RowSelectionState,
-  SortingState,
   Table,
   TableState,
   flexRender,
@@ -207,48 +202,30 @@ export function DataGrid<TData extends RowData>({
     [state, table]
   );
 
-  const handleGlobalFilterChange: OnChangeFn<string> = useCallback(handleChange('globalFilter', onSearch), [
-    handleChange,
-    onSearch,
-  ]);
-
-  const handleSortingChange: OnChangeFn<SortingState> = useCallback(handleChange('sorting', onSort), [
-    handleChange,
-    onSort,
-  ]);
-
-  const handleColumnFiltersChange: OnChangeFn<ColumnFiltersState> = useCallback(
-    handleChange('columnFilters', onFilter),
-    [handleChange, onFilter]
-  );
-
-  const handlePaginationChange: OnChangeFn<PaginationState> = useCallback(handleChange('pagination', onPageChange), [
-    handleChange,
-    onPageChange,
-  ]);
-
-  const handleRowSelectionChange: OnChangeFn<RowSelectionState> = useCallback(
-    handleChange('rowSelection', onRowSelectionChange),
-    [handleChange, onRowSelectionChange]
-  );
-
-  const handleExpandedChange: OnChangeFn<ExpandedState> = useCallback(handleChange('expanded', onExpandedChange), [
-    handleChange,
-    onExpandedChange,
-  ]);
-
   const pageCount = withPagination && total ? Math.ceil(total / table.getState().pagination.pageSize) : undefined;
 
-  table.setOptions((prev) => ({
-    ...prev,
+  useEffect(() => {
+    table.setOptions((prev) => ({
+      ...prev,
+      pageCount,
+      onGlobalFilterChange: handleChange('globalFilter', onSearch),
+      onColumnFiltersChange: handleChange('columnFilters', onFilter),
+      onSortingChange: handleChange('sorting', onSort),
+      onPaginationChange: handleChange('pagination', onPageChange),
+      onRowSelectionChange: handleChange('rowSelection', onRowSelectionChange),
+      onExpandedChange: handleChange('expanded', onExpandedChange),
+    }));
+  }, [
+    handleChange,
+    onExpandedChange,
+    onFilter,
+    onPageChange,
+    onRowSelectionChange,
+    onSearch,
+    onSort,
     pageCount,
-    onGlobalFilterChange: handleGlobalFilterChange,
-    onColumnFiltersChange: handleColumnFiltersChange,
-    onSortingChange: handleSortingChange,
-    onPaginationChange: handlePaginationChange,
-    onRowSelectionChange: handleRowSelectionChange,
-    onExpandedChange: handleExpandedChange,
-  }));
+    table,
+  ]);
 
   const defaultPageSize = Number(pageSizes?.[0] ?? DEFAULT_INITIAL_SIZE);
   useEffect(() => {
