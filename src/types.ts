@@ -1,4 +1,4 @@
-import { DefaultProps, MantineColor, MantineNumberSize, Selectors } from '@mantine/core';
+import { DefaultProps, MantineColor, MantineNumberSize, Selectors, ScrollAreaProps } from '@mantine/core';
 import {
   Cell,
   ColumnDef,
@@ -203,6 +203,11 @@ export interface DataGridProps<TData extends RowData>
    * Table Options overrides
    */
   options?: DataGridOptionsOverride<TData>;
+
+	/**
+   * Subscribe to scroll position changes
+   */
+	onScrollPositionChange?: ScrollAreaProps['onScrollPositionChange']
 }
 
 export type DataGridOptionsOverride<TData> = Partial<
