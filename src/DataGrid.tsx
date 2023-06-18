@@ -104,6 +104,7 @@ export function DataGrid<TData extends RowData>({
   } = {},
   // table option ovverides
   options,
+  onScrollPositionChange,
   // rest
   ...others
 }: DataGridProps<TData>) {
@@ -274,6 +275,7 @@ export function DataGrid<TData extends RowData>({
             },
           };
         }}
+        onScrollPositionChange={onScrollPositionChange}
       >
         <LoadingOverlay visible={loading || false} overlayOpacity={0.8} />
         <MantineTable
