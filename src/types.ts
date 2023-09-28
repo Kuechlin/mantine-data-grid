@@ -28,6 +28,7 @@ import {
   DataGridHeaderRowProps,
   DataGridHeaderWrapperProps,
 } from './TableComponents';
+import { RowSelectionColumn } from './RowSelection';
 
 export type DataGridStylesNames = Selectors<typeof useStyles>;
 
@@ -198,6 +199,11 @@ export interface DataGridProps<TData extends RowData>
    * Component overrides
    */
   components?: Partial<DataGridComponents<TData>>;
+
+  /**
+   * Row selection column override
+   */
+  rowSelectionColumn?: RowSelectionColumn<TData>;
 
   /**
    * Table Options overrides
