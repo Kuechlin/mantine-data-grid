@@ -1,7 +1,9 @@
 import { Checkbox } from '@mantine/core';
 import { ColumnDef, RowData } from '@tanstack/react-table';
 
-export const getRowSelectionColumn = <TData extends RowData>(): ColumnDef<TData, unknown> => ({
+export type DataGridRowSelectionColumn<TData extends RowData> = ColumnDef<TData, unknown>;
+
+export const getRowSelectionColumn = <TData extends RowData>(): DataGridRowSelectionColumn<TData> => ({
   id: 'select',
   header: ({ table }) =>
     table.options.enableMultiRowSelection !== false ? (

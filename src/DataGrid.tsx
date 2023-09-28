@@ -102,6 +102,7 @@ export function DataGrid<TData extends RowData>({
     columnFilter,
     columnSorter,
   } = {},
+  rowSelectionColumn,
   // table option ovverides
   options,
   // rest
@@ -135,7 +136,7 @@ export function DataGrid<TData extends RowData>({
 
   const table = useReactTable<TData>({
     data,
-    columns: withRowSelection ? [getRowSelectionColumn(), ...columns] : columns,
+    columns: withRowSelection ? [rowSelectionColumn || getRowSelectionColumn(), ...columns] : columns,
     initialState,
     state,
 
