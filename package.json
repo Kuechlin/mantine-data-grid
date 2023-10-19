@@ -12,7 +12,8 @@
   "exports": {
     ".": {
       "import": "./dist/mantine-data-grid.js",
-      "require": "./dist/mantine-data-grid.umd.cjs"
+      "require": "./dist/mantine-data-grid.umd.cjs",
+      "types": "./dist/index.d.ts"
     }
   },
   "main": "./dist/mantine-data-grid.umd.cjs",
